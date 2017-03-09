@@ -8,5 +8,11 @@
 !*.plt
 !*.pdf
 
+!*/*.db
+!*/*.proto
+!*/*.opi
+!*/*.plt
+!*/*.pdf
+
 #...even in subdirectories
 !#/
