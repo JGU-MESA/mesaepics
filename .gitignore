@@ -1,4 +1,12 @@
+#Ignore everything
+*
+#but...
+!.gitignore
 !*.db
 !*.proto
 !*.opi
 !*.plt
+!*.pdf
+
+#...even in subdirectories
+!#/

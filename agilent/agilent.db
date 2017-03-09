@@ -1,0 +1,128 @@
+record (ai, "$(P)$(R)stat_get")
+{
+	field (DESC, "Get status of device")
+	field (SCAN, "5 second")
+	field (DTYP, "stream")
+	field (INP, "@agilent.proto stat_get $(PORT)")
+}
+
+record (bi, "$(P)$(R)on_get")
+{
+	field (SCAN, "5 second")
+	field (DTYP, "stream")
+	field (INP, "@agilent.proto GetIonEnabled $(PORT)")
+	field (ZNAM, "Off")
+	field (ONAM, "On")
+}
+
+record (bo, "$(P)$(R)on_set")
+{
+	field (DTYP, "stream")
+	field (OUT, "@agilent.proto SetIonEnabled $(PORT)")
+	field (ZNAM, "Off")
+	field (ONAM, "On")
+	#field (FLNK, "$(P)$(R)SetIonEnabledMessage")
+}
+
+record (ai, "$(P)$(R)v_get")
+{
+	field (DESC, "Measure voltage on channel 1")
+	field (SCAN, "1 second")
+	field (DTYP, "stream")
+	field (INP, "@agilent.proto GetVolt $(PORT)")
+	field (EGU,  "V")
+	field (LOPR, 0)
+	field (HOPR, 7000)
+}
+
+
+record (ai, "$(P)$(R)i_get")
+{
+	field (DESC, "Measure current on channel 1")
+	field (SCAN, "1 second")
+	field (DTYP, "stream")
+	field (INP, "@agilent.proto GetCurr $(PORT)")
+	field (EGU,  "A")
+	field (LOPR, 1e-10)
+	field (HOPR, 9e-1)
+}
+
+record (ai, "$(P)$(R)p_get")
+{
+	field (DESC, "Measure current on channel 1")
+	field (SCAN, "1 second")
+	field (DTYP, "stream")
+	field (INP, "@agilent.proto GetPress $(PORT)")
+	field (EGU,  "MBAR")
+	field (LOPR, 1e-12)
+	field (HOPR, 1e-6)
+}
+
+#record (event, "$(P)$(R)SetIonEnabledMessage")
+#{
+#	field (SCAN, "Passive")
+#	field (INPA, "$(P)$(R)SetIonEnabled.RBV")
+#	#field (DTYP, "Soft Channel")
+#}
+
+record (waveform, "$(P)$(R)GetSerialNo")
+{
+	field (DESC, "Get serial number of device")
+	field (DTYP, "stream")
+	field (INP, "@agilent.proto GetSerialNo $(PORT)")
+	field (SCAN, "Passive")
+	field (PINI, "YES")
+}
+
+record (ai, "$(P)$(R)temp_get")
+{
+        field (DESC, "Get temperature of device in Degree Celsius")
+        field (SCAN, "1 second")
+        field (DTYP, "stream")
+        field (INP, "@agilent.proto GetTemp $(PORT)")
+	field (EGU, "DGC")
+	field (LOPR, "0")
+	field (HOPR, "200")
+}
+
+record (ai, "$(P)$(R)interlock_get")
+{
+        field (DESC, "Get status of the interlock")
+#       field (SCAN, "1 second")
+        field (DTYP, "stream")
+        field (INP, "@agilent.proto GetInterlock $(PORT)")
+}
+
+record (ai, "$(P)$(R)GetErrorMessage")
+{
+        field (DESC, "Get error message from channel 1")
+#       field (SCAN, "1 second")
+        field (DTYP, "stream")
+        field (INP, "@agilent.proto GetErrorMessage $(PORT)")
+}
+
+record (ao, "$(P)$(R)v_set")
+{
+	field (DESC, "Set voltage on channel 1 (def=7kV)")
+#	field (SCAN, "1 second")
+	field (DTYP, "stream")
+	field (OUT, "@agilent.proto SetVolt $(PORT)")
+	field (EGU,  "V")
+	field (LOPR, 3000)
+	field (HOPR, 7000)
+}
+
+record (ai, "$(P)$(R)ch1_v_get")
+{
+	field (DESC, "Get voltage set on channel 1 (def=7kV)")
+#	field (SCAN, "1 second")
+	field (DTYP, "stream")
+	field (INP, "@agilent.proto GetCH1Volt $(PORT)")
+	field (EGU,  "V")
+	field (LOPR, 3000)
+	field (HOPR, 7000)
+	#field (PINI, "YES")
+}
+
+
+
