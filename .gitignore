@@ -1,7 +1,10 @@
-#Ignore everything
+#Ignore
 *
 **/*
 **/**/*
+#Don't ignore directories, so we can recurse into them
+!*/
+!**/*
 #but...
 #e.g. Company/Device/protocol.proto
 !.gitignore
