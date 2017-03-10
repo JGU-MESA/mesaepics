@@ -1,9 +1,14 @@
 #Ignore everything
+*
 **/*
+**/**/*
 #but...
+#e.g. Company/Device/protocol.proto
 !.gitignore
-!**/*.db
-!**/*.proto
-!**/*.opi
-!**/*.plt
-!**/*.pdf
+!**/**/*.db
+!**/**/*.proto
+!**/**/*.opi
+!**/**/*.plt
+!**/**/*.pdf
+!**/**/*.tar*
+!**/**/*.zip
