@@ -1,0 +1,9 @@
+
+file ./db/wedlerchannels.db {
+
+  { ELMNT = wedl01:, DEVICE = buna_r5:wedlposu01:, CHAN = 0 }
+  { ELMNT = wedl02:, DEVICE = buna_r5:wedlposu01:, CHAN = 1 }
+  { ELMNT = wedl03:, DEVICE = buna_r5:wedlposu01:, CHAN = 2 }
+  #{ ELMNT = wedl04:, DEVICE = buna_r5:wedlposu01:, CHAN = 3 }
+
+}

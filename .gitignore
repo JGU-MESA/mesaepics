@@ -4,12 +4,12 @@
 **/**/*.*
 #Don't ignore directories, so we can recurse into them
 !*/
-!**/*
+#!**/*
 #but...
 #e.g. Company/Device/protocol.proto
 !.gitignore
-!**/**/*.db
-!**/**/*.proto
-!**/**/*.opi
-!**/**/*.plt
-!**/**/*.pdf
+!*.db
+!*.proto
+!*.opi
+!*.plt
+!*.pdf
