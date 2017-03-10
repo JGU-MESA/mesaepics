@@ -24,7 +24,7 @@ record (bo, "$(P)$(R)on_set")
 	#field (FLNK, "$(P)$(R)SetIonEnabledMessage")
 }
 
-record (ai, "$(P)$(R)v_get")
+record (ai, "$(P)$(R)u_get")
 {
 	field (DESC, "Measure voltage on channel 1")
 	field (SCAN, "1 second")
@@ -101,7 +101,7 @@ record (ai, "$(P)$(R)GetErrorMessage")
         field (INP, "@agilent.proto GetErrorMessage $(PORT)")
 }
 
-record (ao, "$(P)$(R)v_set")
+record (ao, "$(P)$(R)u_set")
 {
 	field (DESC, "Set voltage on channel 1 (def=7kV)")
 #	field (SCAN, "1 second")
@@ -112,7 +112,7 @@ record (ao, "$(P)$(R)v_set")
 	field (HOPR, 7000)
 }
 
-record (ai, "$(P)$(R)ch1_v_get")
+record (ai, "$(P)$(R)ch1_u_get")
 {
 	field (DESC, "Get voltage set on channel 1 (def=7kV)")
 #	field (SCAN, "1 second")
