@@ -1,0 +1,6 @@
+drvAsynSerialPortConfigure("tty_dualslider", "/dev/ttyUSB0")
+asynSetOption("tty_dualslider", 0, "baud", 9600)
+asynSetOption("tty_dualslider", 0, "bits", 8)
+asynSetOption("tty_dualslider", 0, "parity", "none")
+asynSetOption("tty_dualslider", 0, "stop", 1)
+asynSetOption("tty_dualslider", 0, "clocal", "Y")
