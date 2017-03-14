@@ -1,0 +1,86 @@
+OutTerminator = LF;
+InTerminator = "\000";
+LockTimeout = 2000;
+ReplyTimeout = 1000;
+
+debug{
+    out "%s";
+    wait 0;
+    in "%39c";
+    wait 0;
+}
+
+getIDN {
+    out "IDN?";
+    wait 0;
+    in "%\$1[^\000]";
+    ExtraInput = Ignore;
+    wait 0;
+}
+
+setOutputState {
+    out "OUTP %d";
+    wait 0;
+    ExtraInput = Ignore;
+}
+
+getOutputState {
+    out "OUTP?";
+    wait 0;
+    in "%{0|1}";
+}
+
+getVolt {
+    out "MEAS:VOLT?";
+    wait 0;
+    in "%g";
+    wait 0;
+}
+
+getCurr {
+    out "MEAS:CURR?";
+    wait 0;
+    in "%g";
+    wait 0;
+}
+
+setVolt {
+    out "VOLT %g";
+    wait 0;
+    @init {
+        out "VOLT?";
+        wait 0;
+        in "%g";
+        wait 0;
+    }
+}
+
+setCurr {
+    out "CURR %g";
+    wait 0;
+    @init {
+        out "CURR?";
+        wait 0;
+        in "%g";
+        wait 0;
+    }
+}
+
+cmd {
+    out "\$1";
+    wait 0;
+}
+
+setD {
+    out "\$1 %d";
+    wait 0;
+}
+
+getD {
+    out "\$1?";
+    wait 0;
+    in "%d";
+    ExtraInput = Ignore;
+    wait 0;
+}
+

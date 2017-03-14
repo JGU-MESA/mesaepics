@@ -1,0 +1,160 @@
+record(waveform, "$(P)$(R)id_get")
+{
+    field(DESC, "Get device identification of Toellner")
+    field(DTYP, "stream")
+    field(INP,  "@toellner.proto getDevIdent $(PORT)")
+    field(PINI, "YES") #Process at Initialization
+#If this field is set to YES during database configuration, then the record is processed once at IOC initialization (before the normal scan tasks are started). 
+    field(FTVL, "CHAR") 
+    field(NELM, "40") 
+    info(autosaveFields_pass0, "VAL")
+}
+
+record(ao, "$(P)$(R)i_set") 
+{
+    field(DESC, "Set current of Toellner-Netzgert")
+    field(DTYP, "stream")
+    field(OUT,  "@toellner.proto setCurrent $(PORT)")
+    field(EGU,  "A")
+    field(PREC, "3")   #The VAL field's value will be clipped within limits specified in the fields DRVH and DRVL
+    field(DRVL, "0")
+    field(DRVH, "2")   #Drive High
+    field(LOPR, "0")   #The HOPR and LOPR fields set the upper and lower display limits for the VAL, HIHI, HIGH, LOW, and LOLO fields
+    field(HOPR, "2")   #High operating range
+    field(HIHI, "1.9")
+    field(HIGH, "1.8")
+    field(LOLO, "0.2")
+    field(LOW,  "0.1")
+    field(HHSV, "MAJOR")
+    field(HSV,  "MINOR")
+    field(LSV,  "MINOR")
+    field(LLSV, "MAJOR")
+    info(autosaveFields, "DESC EGU PREC HOPR LOPR")
+    info(autosaveFields_pass0, "VAL")
+}
+
+
+record(ao, "$(P)$(R)u_set")
+{
+	field(DESC, "Set Voltage")
+	field(EGU, "V")
+	field(LOPR, 0)
+	field(HOPR, 50)
+	field(PREC, 2)
+	field(DTYP, "stream")
+	field(OUT, "@toellner.proto setVolt $(PORT)")
+}
+
+record(ai, "$(P)$(R)i_get")
+{
+    field(DESC, "Get Current of Toellner")
+    field(DTYP, "stream")
+    field(INP, "@toellner.proto getCurrent $(PORT)")
+    field(SCAN, "1 second")
+    field(EGU,  "A")
+    field(PREC, "4")
+    field(HOPR, "2")
+    field(LOPR, "0")
+    info(autosaveFields, "DESC EGU PREC HOPR LOPR")
+    info(autosaveFields_pass0,"VAL")
+}
+
+record(ai, "$(P)$(R)power_get")
+{
+    field(DESC, "Get Power of Toellner")
+    field(DTYP, "stream")
+    field(INP, "@toellner.proto getPower $(PORT)")
+    field(SCAN, "1 second")
+    field(EGU,  "W")
+    field(PREC, "4")
+    field(HOPR, "2")
+    field(LOPR, "0")
+    info(autosaveFields, "DESC EGU PREC HOPR LOPR")
+    info(autosaveFields_pass0,"VAL")
+}
+
+record(ai, "$(P)$(R)u_get")
+{
+    field(DESC, "Get Voltage of Toellner")
+    field(DTYP, "stream")
+    field(INP,  "@toellner.proto getVolt $(PORT)")
+    field(SCAN, "1 second")
+    field(EGU,  "V")
+    field(PREC, "4")
+    #field(HOPR,"2")
+    #field(LOPR,"0")
+    info(autosaveFields, "DESC EGU PREC")
+    info(autosaveFields_pass0,"VAL")
+}
+
+record(ai, "$(P)$(R)power_get")
+{
+    field(DESC, "Get Power of Toellner")
+    field(DTYP, "stream")
+    field(INP,  "@toellner.proto getPower $(PORT)")
+    field(SCAN, "1 second")
+    field(EGU,  "W")
+    field(PREC, "4")
+    #field(HOPR,"2")
+    #field(LOPR,"0")
+    info(autosaveFields, "DESC EGU PREC")
+    info(autosaveFields_pass0,"VAL")
+}
+
+record(ai, "$(P)$(R)imax_get")
+{
+    field(DESC, "Get maximum current of Toellner")
+    field(DTYP, "stream")
+    field(INP,  "@toellner.proto getMaxCurrent $(PORT)")
+    field(EGU,  "A")
+    field(PREC, "4")
+    info(autosaveFields_pass0,"DESC VAL")
+}
+
+record(ai, "$(P)$(R)umax_get")
+{
+    field(DESC, "Get maximum voltage of Toellner")
+    field(DTYP, "stream")
+    field(INP,  "@toellner.proto getMaxVoltage $(PORT)")
+    field(EGU,  "V")
+    field(PREC, "4")
+    info(autosaveFields_pass0,"DESC VAL")
+}
+
+record(bo, "$(P)$(R)on_set")
+{
+    field(DESC, "Switch on/off Toellner")
+    field(DTYP, "stream")
+    field(OUT,  "@toellner.proto setSwitch $(PORT)")
+    field(ZNAM, "OFF")
+    field(ONAM, "ON")
+}
+
+record(bi, "$(P)$(R)stat_get")
+{
+    field(DESC, "deliver On/Off state of Toellner")
+    field(DTYP, "stream")
+    field(INP,  "@toellner.proto getSwitch $(PORT)")
+    field(ZNAM, "Off")
+    field(ONAM, "On")
+    field(SCAN, "5 second")
+    field(ZSV,  "MAJOR")
+    #field(COSV, "MINOR")
+    info(autosaveFields, "DESC")
+    info(autosaveFields_pass0, "VAL")
+}
+
+record(ai, "$(P)$(R)StatQuesCond")
+{
+    field(DESC, "Get maximum voltage of Toellner")
+    field(DTYP, "stream")
+    field(INP,  "@toellner.proto getStatQuesCond $(PORT)")
+    field(SCAN, "1 second")
+}
+
+#Record Reference Manual    
+#https://wiki-ext.aps.anl.gov/epics/index.php/RRM_3-14
+
+#Reload dbrecord in epics
+#it's not necessary to restart the IOC
+#epcis>dbLoadRecords("/home/epics/serialTest/db/toellner.db", "P=$(P), R=$(R), PORT=L0")

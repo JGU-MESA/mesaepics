@@ -1,0 +1,43 @@
+record (ai, "$(P)$(R)$(R1):i_get")
+{
+	field (SCAN, ".5 second")
+	field (DTYP, "stream")
+	field (INP, "@riesling.proto GetCurr1() $(PORT)")
+	field (ASLO, 1e-9)
+	field (EGU, "A")
+	field (EGUL, 0)
+	field (EGUF, 2.5e-3)
+}
+
+record (ai, "$(P)$(R)$(R2):i_get")
+{
+	field (SCAN, "I/O Intr")
+	field (DTYP, "stream")
+	field (INP, "@riesling.proto GetCurr2() $(PORT)")
+	field (ASLO, 1e-9)
+	field (EGU, "A")
+	field (EGUL, 0)
+	field (EGUF, 2.5e-3)
+}
+
+record (ai, "$(P)$(R)$(R3):i_get")
+{
+	field (SCAN, "I/O Intr")
+	field (DTYP, "stream")
+	field (INP, "@riesling.proto GetCurr3() $(PORT)")
+	field (ASLO, 1e-9)
+	field (EGU, "A")
+	field (EGUL, 0)
+	field (EGUF, 2.5e-3)
+}
+
+record (ai, "$(P)$(R)$(R4):i_get")
+{
+	field (SCAN, "I/O Intr")
+	field (DTYP, "stream")
+	field (INP, "@riesling.proto GetCurr4() $(PORT)")
+	field (ASLO, 1e-9)
+	field (EGU, "A")
+	field (EGUL, 0)
+	field (EGUF, 2.5e-3)
+}

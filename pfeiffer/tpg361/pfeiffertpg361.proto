@@ -1,0 +1,8 @@
+Terminator = CR LF;
+
+p_get{
+	out "PR1";
+	in 0x06;
+	out 0x05;
+	in "0,%E";
+}

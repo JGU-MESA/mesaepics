@@ -1,0 +1,5 @@
+record(ai, "$(P)$(R)p_get"){
+	field(DTYP, "stream")
+	field(INP, "@pfeiffertpg361.proto p_get $(PORT)")
+	field(SCAN, "1 second")
+}

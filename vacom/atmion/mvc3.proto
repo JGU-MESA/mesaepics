@@ -1,0 +1,36 @@
+Terminator = CR;
+
+GetPressure {
+        out "RPV\$2";
+        in "%(\$1Status)i,\t%e";
+        @replytimeout { wait 10000; }
+}
+
+SetSensorOn {
+        out "SHV\$1,%i";
+        in "OK";
+}
+
+SetDegasOn {
+        out "SDG\$1,%i";
+        in "OK";
+}
+
+ReadVersion {
+        out "RVN";
+        in "%s";
+        @init {
+                out "RVN";
+                in "%s";
+        }
+}
+
+ReadSensorID1 {
+        out "RID1";
+        in "%i";
+        @init {
+                out "RID1";
+                in "%i";
+        }
+}
+

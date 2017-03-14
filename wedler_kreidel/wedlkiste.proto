@@ -1,0 +1,28 @@
+Terminator = CR LF;
+
+onstate {
+  out "STAT?";
+  in "%{0|1}";
+}
+
+switch {
+  out "OUTP %{0|1}";
+  @init { onstate; }
+}
+
+getval {
+   out "VAL? \$1";
+   in "%d";
+}
+
+setval {
+  out "VAL \$1 %d";
+  @init { getval; }
+}
+
+getact {
+   out "ACT? \$1";
+   in "%d %(\$2)d";
+}
+
+

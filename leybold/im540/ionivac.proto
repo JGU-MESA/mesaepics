@@ -1,0 +1,124 @@
+OutTerminator = LF;
+InTerminator = CR LF;
+
+replytimeout = 1000;
+readtimeout = 100;
+
+#@mismatch { out ETX; }
+
+debug {
+    out "%s";
+    in "%39c";
+}
+
+pressure1 {
+    out "MES R" ;  
+    in "MBAR %e";
+}
+
+rdDegas {
+	out "DGS";
+	in ACK;
+	out ENQ;
+	in "%d";
+}
+
+setDegas {
+	out "DGS,%d";
+	in ACK;
+}
+
+setEmission {
+	out "EMI,1,%d";
+	in ACK;
+}
+
+rdSetpointStatus {
+	out "SPS";
+	in ACK;
+	out ENQ;
+	in "%x";
+}
+
+rdLvlRel1Hi {
+	out "SPV,1";
+	in ACK;
+	out ENQ;
+	in "1,%(\$1)f,%f";
+}
+
+rdLvlRel2Hi {
+	out "SPV,2";
+	in ACK;
+	out ENQ;
+	in "1,%(\$1)f,%f";
+}
+
+setLvlRel1Lo {
+	out "SPV,1,1,+%.4E,+%(\$1).4E";
+	in ACK;
+}
+
+setLvlRel1Hi {
+	out "SPV,1,1,+%(\$1).4E,+%.4E";
+	in ACK;
+}
+
+setLvlRel2Lo {
+	out "SPV,2,1,+%.4E,+%(\$1).4E";
+	in ACK;
+}
+
+setLvlRel2Hi {
+	out "SPV,2,1,+%(\$1).4E,+%.4E";
+	in ACK;
+}
+
+rdGaugeAnodeVoltage {
+	out "GAV";
+	in ACK;
+	out ENQ;
+	in "%f";
+}
+
+rdGaugeCathodeVoltage {
+	out "GCV";
+	in ACK;
+	out ENQ;
+	in "%f";
+}
+
+rdGaugeEmissionCurrent {
+	out "GEC";
+	in ACK;
+	out ENQ;
+	in "%f";
+}
+
+rdGaugeFilamentCurrent {
+	out "GFC";
+	in ACK;
+	out ENQ;
+	in "%f";
+}
+
+rdGaugeFilamentPower {
+	out "GFP";
+	in ACK;
+	out ENQ;
+	in "%f";
+}
+
+rdGaugeFilamentVoltage {
+	out "GFU";
+	in ACK;
+	out ENQ;
+	in "%f";
+}
+
+rdGaugeReflectorVoltage {
+	out "GRV";
+	in ACK;
+	out ENQ;
+	in "%f";
+}

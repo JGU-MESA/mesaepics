@@ -1,0 +1,19 @@
+Terminator = LF;
+
+GetCurr1 {
+	out "r";
+	in "%f %*f %*f %*f";
+}
+
+GetCurr2 {
+	in "%*f %f %*f %*f";
+}
+
+GetCurr3 {
+	in "%*f %*f %f %*f";
+}
+
+GetCurr4 {
+	in "%*f %*f %*f %f";
+}
+

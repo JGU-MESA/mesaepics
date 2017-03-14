@@ -1,0 +1,34 @@
+record(ao,"$(P)$(R)a"){
+    field(DTYP,"Soft Channel")
+    field(VAL,0)
+    field(UDF,1)
+    field(PREC,4)
+    field(DRVH, 10)
+    field(DRVL, 0)
+    field(EGU, "A")
+    field(HOPR, 10)
+    field(LOPR, 0)
+    field(FLNK,"$(P)$(R)sum")
+}
+record(ao,"$(P)$(R)b"){
+    field(DTYP,"Soft Channel")
+    field(VAL,0)
+    field(UDF,1)
+    field(PREC,4)
+    field(DRVH, 5)
+    field(DRVL, 0)
+    field(EGU, "B")
+    field(HOPR, 5)
+    field(LOPR, 0)
+    field(FLNK,"$(P)$(R)sum")
+}
+record(calc,"$(P)$(R)sum"){
+    field(INPA,"$(P)$(R)a")
+    field(INPB,"$(P)$(R)b")
+    field(CALC,"A + B")
+    field(EGU, "A")
+    field(HOPR, 15)
+    field(LOPR, 0)
+    field(PREC,4)
+}
+

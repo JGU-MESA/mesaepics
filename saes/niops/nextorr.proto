@@ -1,0 +1,38 @@
+Terminator = CR;
+ReadTimeout = 2000;
+
+idn_get {
+        out "V";
+        in "%#s";
+}
+
+stat_get {
+        out "TS";
+        in "%#s";
+        @replytimeout { wait 10000; }
+}
+
+i_get {
+        out "i";
+        in "%x";
+        @replytimeout { wait 10000; }
+}
+
+u_get {
+        out "u";
+        in "%x";
+        @replytimeout { wait 10000; }
+}
+
+p_get {
+        out "Tb";
+        in "%e";
+        @replytimeout { wait 10000; }
+}
+
+on_set {
+        out "%{B|G}";
+        in "$";
+        @replytimeout { wait 10000; }
+}
+

@@ -1,0 +1,43 @@
+
+record(waveform, "$(P)$(R)DevIdent")
+{
+    field(DESC, "Get device identification of Powermeter")
+    field(DTYP, "stream")
+    field(INP,  "@RSpowerm.proto getDevIdent $(PORT)")
+#    field(PINI, "YES") #Process at Initialization
+#If this field is set to YES during database configuration, then the record is processed once at IOC initialization (before the normal scan tasks are started).   
+    field(FTVL, "CHAR") 
+    field(NELM, "40") 
+    info(autosaveFields_pass0, "VAL")
+}
+
+record(bo, "$(P)$(R)Display")
+{
+    field(DESC, "Switch on/off display of RSpowerm")
+    field(DTYP, "stream")
+    field(OUT,  "@RSpowerm.proto setDisp $(PORT)")
+    field(ZNAM, "OFF")
+    field(ONAM, "ON")
+}
+
+#record(bi, "$(P)$(R)Stat")
+#{
+#    field(DESC, "deliver On/Off state of RSpowerm")
+#    field(DTYP, "stream")
+#    field(INP,  "@RSpowerm.proto getSwitch $(PORT)")
+#    field(ZNAM, "Off")
+#    field(ONAM, "On")
+#    field(SCAN, "1 second")
+#    field(ZSV,  "MAJOR")
+#    #field(COSV, "MINOR")
+#    info(autosaveFields, "DESC")
+#    info(autosaveFields_pass0, "VAL")
+#}
+
+
+#Record Reference Manual    
+#https://wiki-ext.aps.anl.gov/epics/index.php/RRM_3-14
+
+#Reload dbrecord in epics
+#it's not necessary to restart the IOC
+#epcis>dbLoadRecords("/home/epics/serialTest/db/toellner.db", "P=$(P), R=$(R), PORT=L0")

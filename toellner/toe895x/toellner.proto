@@ -1,0 +1,80 @@
+Terminator = CR LF;
+
+getDevIdent {
+   out "*IDN?";
+   in "%40c";
+}
+
+getCurrent {
+   out "MEAS:CURR?";
+   in "%f";
+}
+
+setCurrent {
+   out "CURR %.4f";
+   #@init { getCurrent; }
+   @init { out "CURR %.4f"; }
+}
+
+getVolt {
+   out "MEAS:VOLT?";
+   in "%f";
+}
+
+getPower {
+   out "MEAS:POWER?";
+   in "%f";
+}
+
+setVolt {
+	out "VOLT %g";
+	wait 100;
+	@init {
+		out "VOLT?";
+		in "%g";
+	}
+}
+
+
+getPower {
+   out "MEAS:POW?";
+   in "%f";
+}
+
+getMaxCurrent {
+   out "CURR? MAX";
+   in "%f";
+   @init { 
+       out "CURR? MAX";
+       in "%f";  
+   }
+}
+
+getMaxVoltage {
+   out "VOLT? MAX";
+   in "%f";
+   @init { 
+       out "VOLT? MAX";
+       in "%f";
+   }
+}
+
+getSwitch {
+   out "OUTP:STAT?";
+   in "%{0|1}";
+}
+
+setSwitch {
+   out "OUTP %{0|1}";
+   @init { getswitch; }
+   #@init { out "OUTP %{0|1}"; }
+}
+
+getStatQuesCond {
+   out "STAT:QUES:COND?";
+   in "%d";
+}
+
+#frequently changing potocol files can be reloaded; without record argument all records
+#epics> streamReload()
+#http://epics.web.psi.ch/software/streamdevice/doc/protocol.html

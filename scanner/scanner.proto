@@ -1,0 +1,21 @@
+
+Terminator = CR LF;
+
+Separator = " ";
+
+makescan {
+   out "DATA \$1";
+   in "Data:%x";
+}
+
+getpos {
+   out"GETPOS";
+   in "Posi:%x";
+}
+
+ReplyTimeout = 5000;
+scanstart {
+   out "SCAN \$1";
+   in "Done";
+}
+

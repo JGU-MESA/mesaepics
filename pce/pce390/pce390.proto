@@ -1,0 +1,12 @@
+InTerminator = CR;
+
+ReplyTimeout = 1000;
+ExtraInput = Ignore;
+
+readraw{
+        in STX,"4","\$1","010","%*1i","%8u";
+}
+
+readds{
+        in STX,"4","\$1","010","%1i","%*u";
+}

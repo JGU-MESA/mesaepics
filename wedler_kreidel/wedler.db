@@ -1,0 +1,96 @@
+
+record(ao, "$(ELMNT):set")
+{
+    field(DESC, "Set value")
+    field(DTYP, "stream")
+    field(OUT, "@wedlkiste.proto setval($(CHAN)) $(DEVICE)")
+    field(LINR, "LINEAR")
+    field(ASLO, 2.44148075808e-4)   # 8A / 32767
+    field(EGUL, 0)
+    field(EGUF, 8)        # higest eng. value
+    field(EGU, "A")
+    field(PREC, 4)
+    field(DRVL, -8)   # max value
+    field(DRVH, 8)    # min value
+    field(LOPR, -8)   # min display
+    field(HOPR, 8)    # max display
+}
+
+record(ai, "$(ELMNT):get")
+{
+    field(DESC, "Get Value")
+    field(DTYP, "stream")
+    field(INP, "@wedlkiste.proto getval($(CHAN)) $(DEVICE)")
+    field(SCAN, "1 second")
+    field(LINR, "LINEAR")
+    field(ASLO, 2.44148075808e-4)   # 8A / 32767
+    field(EGUL, 0)
+    field(EGUF, 8)
+    field(EGU, "A")
+    field(PREC, 4)
+    field(HOPR, 8)                # max display
+    field(LOPR, -8)               # min display
+    field(FLNK, "$(ELMNT):devi")  # process devi after read
+}
+
+record(ai, "$(ELMNT):act")
+{
+    field(DESC, "Get actual Value")
+    field(DTYP, "stream")
+    field(INP, "@wedlkiste.proto getact($(CHAN),$(ELMNT):vrdy) $(DEVICE)")
+    field(SCAN, "1 second")
+    field(LINR, "LINEAR")
+    field(ASLO, 2.44148075808e-4)   # 8A / 32767
+    field(EGUL, 0)
+    field(EGUF, 8)
+    field(EGU, "A")
+    field(PREC, "4")
+    field(HOPR, 8)
+    field(LOPR, -8)
+}
+
+record(bo, "$(DEVICE):switch")
+{
+    field(DESC, "Switch on/off")
+    field(DTYP, "stream")
+    field(OUT, "@wedlkiste.proto switch $(DEVICE)")
+    field(ZNAM, "Off")
+    field(ONAM, "On")
+}
+record(bi, "$(DEVICE):stat")
+{
+    field(DESC, "deliver On/Off state")
+    field(DTYP, "stream")
+    field(INP, "@wedlkiste.proto onstate $(DEVICE)")
+    field(ZNAM, "Off")
+    field(ONAM, "On")
+    field(SCAN, "5 second")
+}
+
+record(calc, "$(ELMNT):devi")
+{
+    field(DESC, "Diff nominal-actual")
+    field(INPA, "$(ELMNT):get")
+    field(INPB, "$(ELMNT):act")
+    field(INPC, "$(ELMNT):vrdy")
+    field(INPD, 1000)
+    field(CALC, "(A - B) * C * D")
+    field(EGU, "mA")
+    field(HOPR, 1000)
+    field(LOPR, -1000)
+    field(PREC,4)
+    field(HIHI, 500)
+    field(LOLO, -500)
+    field(HIGH, 100)
+    field(LOW, -100)
+    field(LLSV, "MAJOR")
+    field(LSV, "MINOR")
+    field(HSV, "MINOR")
+    field(HHSV, "MAJOR")
+}
+
+record(bi, "$(ELMNT):vrdy") {
+    field(ZNAM, "UNREADY")
+    field(ONAM, "READY")
+}
+

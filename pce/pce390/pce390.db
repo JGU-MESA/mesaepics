@@ -1,0 +1,25 @@
+record(ai,"$(P)$(R)ch$(CH):t_get_raw")
+{
+        field(DTYP, "stream")
+        field(INP, "@pce390.proto readraw($(CH)) $(PORT)")
+	field(SCAN, "I/O Intr")
+	field(FLNK, "$(P)$(R)ch$(CH):t1_get.PROC")
+}
+
+
+record(ai,"$(P)$(R)ch$(CH):t_get_decimalsign")
+{
+        field(DTYP, "stream")
+        field(INP, "@pce390.proto readds($(CH)) $(PORT)")
+	field(SCAN, "I/O Intr")
+	field(FLNK, "$(P)$(R)ch$(CH):t_get.PROC")
+}
+
+record(calc,"$(P)$(R)ch$(CH):t_get")
+{
+	field(INPA, "$(P)$(R)ch$(CH):t_get_raw")
+	field(INPB, "$(P)$(R)ch$(CH):t_get_decimalsign")
+	field(CALC, "10^(-B)*A")
+	field(EGU, "DGC")
+}
+

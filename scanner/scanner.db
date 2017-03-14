@@ -1,0 +1,94 @@
+
+record(bo, "$(P)$(R)Start")
+{
+    field(DTYP, "stream")
+    field(OUT, "@scanner.proto scanstart($(N)) $(DEVICE)")
+    field(HIGH, 0)
+    field(ONAM, "START")
+    field(ZNAM, "STANDBY")
+    field(FLNK, "$(P)$(R)RData")    # triggers data-read first
+}
+
+record(waveform, "$(P)$(R)RPos")
+{
+    field(DTYP, "stream")
+    field(INP, "@scanner.proto getpos($(N)) $(DEVICE)")
+    field(FTVL, "USHORT")
+#    field(FTVL, "DOUBLE")  # works also, but has more bytes to trasnfer
+    field(NELM, "$(N)")
+    field(LOPR,"0")
+    field(HOPR, "65535")
+    field(FLNK, "$(P)$(R)PNord")    #trigger size eval
+    field(SCAN, "Passive")
+}
+
+record(waveform, "$(P)$(R)RData")
+{
+    field(DTYP, "stream")
+    field(INP, "@scanner.proto makescan($(N)) $(DEVICE)")
+    field(FTVL, "SHORT")
+    field(NELM, "$(N)")
+    field(LOPR,"-32767")
+    field(HOPR, "+32767")
+#    field(SCAN, "10 second")
+    field(SCAN, "Passive")
+    field(FLNK, "$(P)$(R)RPos")     #triggers position read after data
+}
+
+record(calcout, "$(P)$(R)PNord")
+{
+    field(DTYP, "Soft Channel")
+    field(INPA, "$(P)$(R)RPos.NORD")
+    field(OUT, "$(P)$(R)Position.NUSE PP")
+    field(CALC, "A")
+    field(SCAN, "Passive")
+    field(FLNK, "$(P)$(R)Position")  #triggers calc. of position array
+}
+
+record(calcout, "$(P)$(R)DNord")
+{
+    field(DTYP, "Soft Channel")
+    field(INPA, "$(P)$(R)RData.NORD")
+    field(OUT, "$(P)$(R)Data.NUSE PP")
+    field(CALC, "A")
+    field(SCAN, "Passive")
+    field(FLNK, "$(P)$(R)Data")   # triggers calc. of data array
+}
+
+record(acalcout, "$(P)$(R)Position")
+{
+    field(DTYP, "Soft Channel")
+    field(INAA, "$(P)$(R)RPos")
+    field(INPA, 32768)
+#    field(OUT, "$(P)$(R)Position CA NMS")
+    field(DOPT, "Use CALC")
+#    field(OOPT, "Every Time")
+    field(CALC, "AA / A")
+#    filed(OCALC, "AMIN(AA)")
+    field(NELM, "$(N)")
+    field(SIZE, "NUSE")
+#    field(NUSE, 1)
+    field(EGU, "mm")
+    field(HOPR, 2)
+    field(LOPR, 0)
+    field(FLNK, "$(P)$(R)DNord")   # triggers size val for Data-array
+    field(SCAN, "Passive")
+}
+
+record(acalcout, "$(P)$(R)Data")
+{
+    field(DTYP, "Soft Channel")
+    field(INAA, "$(P)$(R)RData")
+    field(INPA, "32768")
+    field(DOPT, "Use CALC")
+#    field(OOPT, "Every Time")
+    field(CALC, "AA / A")
+    field(NELM, "$(N)")
+    field(SIZE, "NUSE")
+#    field(NUSE, 1)
+    field(EGU, "mm")
+    field(HOPR, 2)
+    field(LOPR, 0)
+    field(SCAN, "Passive")
+}
+

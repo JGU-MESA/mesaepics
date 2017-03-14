@@ -1,0 +1,78 @@
+record (stringin, "$(P)$(R)idn_get")
+{
+        field (SCAN, "Passive")
+        field (DTYP, "stream")
+        field (INP, "@nextorr.proto idn_get $(PORT)")
+        field (PINI, "YES")
+}
+
+record (stringin, "$(P)$(R)stat_get")
+{
+        field (SCAN, "1 second")
+        field (DTYP, "stream")
+        field (INP, "@nextorr.proto stat_get $(PORT)")
+}
+
+record (ai, "$(P)$(R)i_getRaw")
+{
+        field (SCAN, "1 second")
+        field (DTYP, "stream")
+        field (INP, "@nextorr.proto i_get $(PORT)")
+        field (FLNK, "$(P)$(R)i_get")
+}
+
+record (calc, "$(P)$(R)i_get")
+{
+        field (SCAN, "Passive")
+        field (INPA, "$(P)$(R)i_getRaw")
+        field (CALC, "(A & 0x3fff) * 1e-9 * 10^(2 * (A >> 14))")
+        field (EGU, "A")
+        field (LOPR, 1e-9)
+        field (HOPR, 1e-1)
+}
+
+record (ai, "$(P)$(R)u_get")
+{
+        field (SCAN, "1 second")
+        field (DTYP, "stream")
+        field (INP, "@nextorr.proto u_get $(PORT)")
+        field (EGU, "V")
+        field (LOPR, 0)
+        field (HOPR, 6000)
+        field (PREC, 0)
+}
+
+record (ai, "$(P)$(R)PressureRaw")
+{
+        field (SCAN, ".1 second")
+        field (DTYP, "stream")
+        field (INP, "@nextorr.proto p_get $(PORT)")
+        field (EGU, "mbar")
+        field (LOPR, 1e-10)
+        field (HOPR, 1e-5)
+        field (PREC, 2)
+        field (FLNK, "$(P)$(R)p_get")
+}
+
+record(calc, "$(P)$(R)p_get")
+{
+        field(SCAN, "Passive")
+        field(INPA, "$(P)$(R)PressureRaw")
+        field(CALC, "A < 1e-10 ? 1e-10 : A")
+        field (EGU, "mbar")
+        field (LOPR, 1e-10)
+        field (HOPR, 1e-5)
+        field (PREC, 2)
+}
+
+record (bo, "$(P)$(R)on_set")
+{
+        field (SCAN, "Passive")
+        field (DTYP, "stream")
+        field (OUT, "@nextorr.proto on_set $(PORT)")
+        field (ZNAM, "Off")
+        field (ONAM, "On")
+        field (SEVR, "NO_ALARM")
+        field (STAT, "NO_ALARM")
+}
+

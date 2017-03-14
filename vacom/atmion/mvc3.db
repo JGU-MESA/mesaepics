@@ -1,0 +1,126 @@
+record (ai, "$(P)$(R)ReadPressure")
+{
+        field (SCAN, ".1 second")
+        field (DTYP, "stream")
+        field (INP, "@mvc3.proto GetPressure($(P)$(R),1) $(PORT)")
+        field (FLNK, "$(P)$(R)Pressure")
+}
+
+record (mbbi, "$(P)$(R)Status")
+{
+        field (SCAN, "Passive")
+        field (DTYP, "Soft Channel")
+        field (ZRVL, 0)
+        field (ONVL, 1)
+        field (TWVL, 2)
+        field (THVL, 3)
+        field (FRVL, 4)
+        field (FVVL, 5)
+        field (SXVL, 6)
+        field (SVVL, 7)
+        field (EIVL, 8)
+        field (NIVL, 9)
+        field (TEVL, 10)
+        field (ELVL, 11)
+        field (TVVL, 12)
+        field (TTVL, 13)
+        field (FTVL, 14)
+        field (ZRST, "OK")
+        field (ONST, "Underrange")
+        field (TWST, "Overrange")
+        field (THST, "Err Underrange")
+        field (FRST, "Err Overrange")
+        field (FVST, "Sensor aus")
+        field (SXST, "HV an")
+        field (SVST, "Sensor-Fehler")
+        field (EIST, "Barion-Fehler")
+        field (NIST, "kein Sensor")
+        field (TEST, "kein Schaltpunkt")
+        field (ELST, "Druckwertüberschreitung")
+        field (TVST, "Pirani-Fehler Atmion")
+        field (TTST, "Ausfall Betriebsspannung")
+        field (FTST, "Filament defekt")
+        field (TWSV, MAJOR)
+        field (FRSV, MAJOR)
+        field (SVSV, MAJOR)
+        field (EISV, MAJOR)
+        field (ELSV, MAJOR)
+        field (TVSV, MAJOR)
+        field (TTSV, MAJOR)
+        field (FTSV, MAJOR)
+        field (FLNK, "$(P)$(R)ReadSensorOn.PROC")
+}
+record (calc, "$(P)$(R)p_get")
+{
+        field (SCAN, "Passive")
+        field (EGU, "mbar")
+        field (LOPR, 1e-12)
+        field (HOPR, 1e-5)
+        field (PREC, 2)
+        field (INPA, "$(P)$(R)ReadPressure")
+        field (INPB, "$(P)$(R)Status")
+        field (CALC, "B==0?A:0")
+}
+
+record (calc, "$(P)$(R)ReadSensorOn")
+{
+        field (SCAN, "Passive")
+        field (INPA, "$(P)$(R)CH1:Status")
+        field (CALC, "(A <= 4)?1:0")
+}
+
+record (bo, "$(P)$(R)SetSensorOn")
+{
+        field (SCAN, "Passive")
+        field (DTYP, "stream")
+        field (OUT, "@mvc3.proto SetSensorOn(1) $(PORT)")
+        field (ZNAM, "Off")
+        field (ONAM, "On")
+        field (SEVR, "NO_ALARM")
+        field (STAT, "NO_ALARM")
+}
+
+record (bo, "$(P)$(R)SetDegasOn")
+{
+        field (SCAN, "Passive")
+        field (DTYP, "stream")
+        field (OUT, "@mvc3.proto SetDegasOn(1) $(PORT)")
+        field (ZNAM, "Off")
+        field (ONAM, "On")
+        field (SEVR, "NO_ALARM")
+        field (STAT, "NO_ALARM")
+}
+
+record(stringin, "$(P)$(R)id_get")
+{
+        field (SCAN, "Passive")
+        field (DTYP, "stream")
+        field (INP, "@mvc3.proto ReadVersion() $(PORT)")
+}
+
+record(mbbi, "$(P)$(R)ReadSensorID")
+{
+        field (SCAN, "Passive")
+        field (DTYP, "stream")
+        field (INP, "@mvc3.proto ReadSensorID1 $(PORT)")
+        field (ZRVL, 0)
+        field (ONVL, 1)
+        field (TWVL, 2)
+        field (THVL, 3)
+        field (FRVL, 4)
+        field (FVVL, 5)
+        field (SXVL, 6)
+        field (SVVL, 7)
+        field (EIVL, 8)
+        field (ZRST, "kein Sensor")
+        field (ONST, "Ptr")
+        field (TWST, "ttr1")
+        field (THST, "ttr")
+        field (FRST, "Ctr")
+        field (FVST, "Barion")
+        field (SXST, "bEE")
+        field (SVST, "Atmion")
+        field (EIST, "Ptr90")
+}
+
+
