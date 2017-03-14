@@ -17,3 +17,5 @@
 !*.plt
 !*.pdf
 !*.zip
+!*.cmd
+!*.txt
