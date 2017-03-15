@@ -1,86 +1,88 @@
 OutTerminator = LF;
-InTerminator = "\000";
-LockTimeout = 2000;
+InTerminator = NUL;
+#LockTimeout = 2000;
 ReplyTimeout = 1000;
+ExtraInput = Ignore;
+
+delay = 50;
 
 debug{
     out "%s";
-    wait 0;
+    wait $delay;
     in "%39c";
-    wait 0;
+    wait $delay;
 }
 
 getIDN {
     out "IDN?";
-    wait 0;
+    wait $delay;
     in "%\$1[^\000]";
-    ExtraInput = Ignore;
-    wait 0;
-}
-
-setOutputState {
-    out "OUTP %d";
-    wait 0;
-    ExtraInput = Ignore;
+    wait $delay;
 }
 
 getOutputState {
     out "OUTP?";
-    wait 0;
-    in "%{0|1}";
+    wait $delay;
+    in "%{1|0}";
+}
+
+setOutputState {
+    out "OUTP %d";
+    wait $delay;
+    @init{ getOutputState; wait $delay;}
 }
 
 getVolt {
     out "MEAS:VOLT?";
-    wait 0;
+    wait $delay;
     in "%g";
-    wait 0;
+    wait $delay;
 }
 
 getCurr {
     out "MEAS:CURR?";
-    wait 0;
+    wait $delay;
     in "%g";
-    wait 0;
+    wait $delay;
 }
 
 setVolt {
     out "VOLT %g";
-    wait 0;
+    wait $delay;
     @init {
         out "VOLT?";
-        wait 0;
+        wait $delay;
         in "%g";
-        wait 0;
+        wait $delay;
     }
 }
 
 setCurr {
     out "CURR %g";
-    wait 0;
+    wait $delay;
     @init {
         out "CURR?";
-        wait 0;
+        wait $delay;
         in "%g";
-        wait 0;
+        wait $delay;
     }
 }
 
 cmd {
     out "\$1";
-    wait 0;
+    wait $delay;
 }
 
 setD {
     out "\$1 %d";
-    wait 0;
+    wait $delay;
 }
 
 getD {
     out "\$1?";
-    wait 0;
+    wait $delay;
     in "%d";
-    ExtraInput = Ignore;
-    wait 0;
+    
+    wait $delay;
 }
 
