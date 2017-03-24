@@ -12,6 +12,7 @@
 #e.g. Company/Device/protocol.proto
 !.gitignore
 !*.db
+Thumbs.db
 !*.proto
 !*.opi
 !*.plt
