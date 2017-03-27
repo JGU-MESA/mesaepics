@@ -5,11 +5,11 @@
     <show_legend>false</show_legend>
     <show_toolbar>true</show_toolbar>
     <grid>false</grid>
-    <scroll>true</scroll>
+    <scroll>false</scroll>
     <update_period>0.1</update_period>
     <scroll_step>1</scroll_step>
-    <start>-1 hours 0.0 seconds</start>
-    <end>now</end>
+    <start>2017/03/27 11:40:55.709</start>
+    <end>2017/03/27 12:40:56.709</end>
     <archive_rescale>NONE</archive_rescale>
     <background>
         <red>255</red>
