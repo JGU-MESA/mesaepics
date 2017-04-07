@@ -3,8 +3,8 @@ record (ai, "$(P)$(R)i_get")
 	field (SCAN, ".5 second")
 	field (DTYP, "stream")
 	field (INP, "@riesling_spaetlese.proto read $(PORT)")
-	field (ASLO, 1e-12)
-	field (EGU, "A")
-	#field (EGUL, 0)
-	#field (EGUF, 2.5e-3)
+	field (LINR, "LINEAR")
+	field (ASLO, 1e-9)
+	field (EGU, "mA")
+
 }
