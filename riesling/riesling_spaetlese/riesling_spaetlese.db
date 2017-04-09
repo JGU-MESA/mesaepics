@@ -1,8 +1,8 @@
 record (ai, "$(P)$(R)i_get")
 {
-	field (SCAN, ".5 second")
 	field (DTYP, "stream")
 	field (INP, "@riesling_spaetlese.proto read $(PORT)")
+	field (SCAN, "I/O Intr")
 	field (LINR, "LINEAR")
 	field (ASLO, 1e-9)
 	field (EGU, "mA")
