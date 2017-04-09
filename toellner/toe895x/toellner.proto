@@ -13,16 +13,11 @@ getCurrent {
 setCurrent {
    out "CURR %.4f";
    #@init { getCurrent; }
-   @init { out "CURR %.4f"; }
+   @init { out "CURR?"; in "%g" }
 }
 
 getVolt {
    out "MEAS:VOLT?";
-   in "%f";
-}
-
-getPower {
-   out "MEAS:POWER?";
    in "%f";
 }
 
@@ -35,11 +30,16 @@ setVolt {
 	}
 }
 
-
 getPower {
    out "MEAS:POW?";
    in "%f";
 }
+
+setPower {
+   out "POW %.4f";
+    @init { out "POW?"; in "%g" }
+}
+
 
 getMaxCurrent {
    out "CURR? MAX";
