@@ -8,19 +8,19 @@
 #Don't ignore directories, so we can recurse into them
 !*/
 #!**/*
-#but...
-#e.g. Company/Device/protocol.proto
-!.gitignore
-!*.db
-Thumbs.db
-!*.proto
-!*.opi
-!*.plt
-!*.pdf
-!*.zip
+
+!.gitignore	#Gitignore file should not be ignored
+!*.db		#EPICS database files
+!*.proto	#EPICS protocol files
+!*.subs
+
+#Additional files
 !*.cmd
+!*.ino		#Arduino files
+!*.pdf
+!*.py		#Python scripts
 !*.txt
-!*.def
-!*.py
-#Arduino files
-!*.ino
+!*.zip
+
+#Ignore especially
+Thumbs.db
