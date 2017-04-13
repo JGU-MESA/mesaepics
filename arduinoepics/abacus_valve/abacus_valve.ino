@@ -1,4 +1,4 @@
-//Latest update: 12.04.2017
+//Latest update: 13.04.2017
 /*
     Arduino_TCP
 
@@ -42,6 +42,7 @@ boolean connected = false; // whether or not the client was connected previously
 String cmdstr; // command string that will be evaluated when received via ethernet
 const byte readonstate[]  = { A0, A2, A4 }; // Define analog pins in array for on measurement
 const byte readoffstate[] = { A1, A3, A5 }; // Define analog pins in array for off measurement
+#define lasershutterpin 0 //Select pin for lasershutter
 
 void setup() {
     //===== Serial =====
@@ -61,6 +62,7 @@ void setup() {
 
     //===== Define Input and Output pins =====
     pinMode(testled, OUTPUT); // set led pin to output
+    pinMode(lasershutterpin, OUTPUT); // set led pin to output
     for (int i = 1; i<=8; i++) {
         pinMode(i,OUTPUT); // set pin i to output
         digitalWrite(i,HIGH); // set pin i to HIGH (inverse logic for relais)
@@ -201,8 +203,9 @@ void parseCommand(EthernetClient &client) {
         client.println("on|off                   : switch test led on/off");
         client.println("quit                     : close the connection");
         client.println("ip?                      : get ip address");
-        client.println("ch {1|2..|8} {on|off|?}  : set channel {1|2..|8} {on|off}");
+        client.println("ch {1|2..|8} {off|on|?}  : set channel {1|2..|8} {off|on|?}");
         client.println("meas:ch {1|2|3}          : read channel {1|2|3} state");
+        client.println("ls {off|on|?}            : open or close laser shutter");
     }
 
     //===== IP =====
@@ -265,6 +268,20 @@ void parseCommand(EthernetClient &client) {
                     client.println("undefined");
         }
     }
+
+    //===== Laser Shutter =====
+    else if (cmdstr.equals("ls on"))
+        digitalWrite(lasershutterpin, HIGH);
+    else if (cmdstr.equals("ls off"))
+        digitalWrite(lasershutterpin, LOW);
+
+    //===== Read Laser Shutter state on/off =====
+    else if(cmdstr.equals("ls ?")) {
+        client.print("ls: ");   
+        client.println(digitalRead(lasershutterpin));
+    }  
+
+    
     //===== Invalid Command, HELP =====
     else {
         client.println("Invalid command, type help");
