@@ -1,0 +1,52 @@
+#!../../bin/linux-x86/lifetime
+
+## You may have to change lifetime to something else
+## everywhere it appears in this file
+
+< /home/epics/lifetimeioc/iocBoot/ioclifetime/envPaths
+
+epicsEnvSet ("STREAM_PROTOCOL_PATH", ".:../../protocols")
+
+cd "${TOP}"
+
+## Register all support components
+dbLoadDatabase "dbd/lifetime.dbd"
+lifetime_registerRecordDeviceDriver pdbbase
+
+## Load record instances
+#dbLoadRecords("db/xxx.db","user=b2Host")
+#dbLoadRecords("db/mvc3.db", "P=hll:,R=mvc3:,PORT=tty_mvc3")
+
+#drvAsynSerialPortConfigure("tty_mvc3", "/dev/ttyS0")
+#asynSetOption("tty_mvc3", 0, "baud", 19200)
+#asynSetOption("tty_mvc3", 0, "bits", 8)
+#asynSetOption("tty_mvc3", 0, "parity", "none")
+#asynSetOption("tty_mvc3", 0, "stop", 1)
+#asynSetOption("tty_mvc3", 0, "clocal", "Y")
+#asynSetOption("tty_mvc3", 0, "crtscts", "N")
+
+
+
+dbLoadRecords("db/pce390.db", "P=hll:,R=pce390:,CH=1,PORT=tty_pce390")
+dbLoadRecords("db/pce390.db", "P=hll:,R=pce390:,CH=2,PORT=tty_pce390")
+dbLoadRecords("db/pce390.db", "P=hll:,R=pce390:,CH=3,PORT=tty_pce390")
+dbLoadRecords("db/pce390.db", "P=hll:,R=pce390:,CH=4,PORT=tty_pce390")
+
+drvAsynSerialPortConfigure("tty_pce390", "/dev/ttyS0")
+asynSetOption("tty_pce390", 0, "baud", 9600)
+asynSetOption("tty_pce390", 0, "bits", 8)
+asynSetOption("tty_pce390", 0, "parity", "none")
+asynSetOption("tty_pce390", 0, "stop", 1)
+asynSetOption("tty_pce390", 0, "clocal", "Y")
+asynSetOption("tty_pce390", 0, "crtscts", "N")
+
+
+
+cd "${TOP}/iocBoot/${IOC}"
+iocInit
+
+## Start any sequence programs
+#seq sncxxx,"user=b2Host"
+
+asynSetTraceIOMask("tty_pce390",-1,0x6) 
+asynSetTraceMask("tty_pce390",-1,0x9) 

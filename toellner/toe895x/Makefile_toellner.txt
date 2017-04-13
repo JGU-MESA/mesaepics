@@ -1,0 +1,57 @@
+TOP=../..
+
+include $(TOP)/configure/CONFIG
+#----------------------------------------
+#  ADD MACRO DEFINITIONS AFTER THIS LINE
+#=============================
+
+#=============================
+# Build the IOC application
+
+PROD_IOC = serialTest
+
+# serialTest.dbd will be created and installed
+DBD += serialTest.dbd
+
+# serialTest.dbd will be made up from these files:
+serialTest_DBD += base.dbd
+
+# Include dbd files from all support applications:
+#Wo sind die unten stehenden dbd files?
+#im jeweiligen SynApps module in der DIR dbd
+serialTest_DBD += asyn.dbd
+serialTest_DBD += asSupport.dbd
+serialTest_DBD += busyRecord.dbd
+serialTest_DBD += drvAsynIPPort.dbd
+serialTest_DBD += stream.dbd
+
+
+# Add all the support libraries needed by this IOC
+#serialTest_LIBS += xxx
+serialTest_LIBS += asyn
+serialTest_LIBS += autosave
+serialTest_LIBS += busy
+serialTest_LIBS += stream
+
+
+
+
+# serialTest_registerRecordDeviceDriver.cpp derives from serialTest.dbd
+serialTest_SRCS += serialTest_registerRecordDeviceDriver.cpp
+
+# Build the main IOC entry point on workstation OSs.
+serialTest_SRCS_DEFAULT += serialTestMain.cpp
+serialTest_SRCS_vxWorks += -nil-
+
+# Add support from base/src/vxWorks if needed
+#serialTest_OBJS_vxWorks += $(EPICS_BASE_BIN)/vxComLibrary
+
+# Finally link to the EPICS Base libraries
+serialTest_LIBS += $(EPICS_BASE_IOC_LIBS)
+
+#===========================
+
+include $(TOP)/configure/RULES
+#----------------------------------------
+#  ADD RULES AFTER THIS LINE
+

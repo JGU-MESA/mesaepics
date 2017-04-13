@@ -1,0 +1,7 @@
+file ./db/wedler.db {
+
+  { ELMNT = wedl01, DEVICE = kiste1, CHAN = 0 }
+  { ELMNT = wedl02, DEVICE = kiste1, CHAN = 1 }
+  { ELMNT = wedl03, DEVICE = kiste1, CHAN = 2 }
+
+}
