@@ -27,9 +27,18 @@ channel_set{
     @init{channel_set_read;}
 }
 
-
 channel_get{
     out "meas:ch \$1";
     in "actual state: ch \$1 %{0|1|undefined}";
     @mismatch{ in "Invalid channel";}
+}
+
+ls_on_get{
+    out "ls ?";
+    in "ls: %{0|1}";
+}
+
+ls_on_set{
+    out "ls %{off|on}";
+    @init{ls_on_get;}
 }
