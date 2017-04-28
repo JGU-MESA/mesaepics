@@ -21,7 +21,7 @@
 !*.py		#Python scripts
 !*.txt
 !*.zip
-!*.tar
+!*.tar.gz
 
 #Ignore especially
 Thumbs.db
