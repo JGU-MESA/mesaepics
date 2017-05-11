@@ -11,7 +11,9 @@
 **/**/**/**/*.*
 #Don't ignore directories, so we can recurse into them
 !*/
-#!**/*
+!**/*
+!**/**/*
+!**/**/**/*
 
 !.gitignore	#Gitignore file should not be ignored
 !*.db		#EPICS database files
