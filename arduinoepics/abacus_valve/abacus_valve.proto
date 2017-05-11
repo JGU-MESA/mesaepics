@@ -42,3 +42,8 @@ ls_on_set{
     out "ls %{off|on}";
     @init{ls_on_get;}
 }
+
+slit_get{
+    out "slit ?";
+    in "actual slit state: %{0|1|undefined}";
+}
