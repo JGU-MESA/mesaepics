@@ -1,4 +1,5 @@
-//Latest update: 11.05.2017
+//Latest update: 30.05.2017
+//Latest improvement: Timer added
 /*
     Arduino_TCP
 
@@ -11,18 +12,19 @@
 
 */
 
-// Needed Packages
+//========== Needed Packages ==========
 #include <EEPROM.h>
 #include <SPI.h>
 #include <Ethernet2.h> //Maybe this package needs to be changed
+#include <MsTimer2.h> //Needed to start a timer
 
+//========== Define Constants ==========
 #define MAX_CMD_LENGTH 25
-//All pins are at startup by default in INPUT-Mode (besides PIN 13!!)
+// Note: All pins are at startup by default in INPUT-Mode (besides PIN 13!!)
 #define testled 13 //Select testled pin
 
 //==========Static/DHCP===============
 byte mac[] = {0x90, 0xA2, 0xDA, 0x10, 0xC3, 0x0F}; // Enter a MAC address
-
 
 struct IPObject {
     boolean dhcp_state; //static IP (false) or DHCP (true)
@@ -34,17 +36,31 @@ int eeAddress = 0; // Defined address for EEPROM
 
 //==============================
 
+//========== Ethernet server port ==========
 // Initialize the Ethernet server library with a port you want to use
 EthernetServer server(23); //TELNET defaults to port 23
 
-// Needed variables or constants
+
+//========== Needed variables or constants ==========
 boolean connected = false; // whether or not the client was connected previously
 String cmdstr; // command string that will be evaluated when received via ethernet
 const byte readonstate[]  = { A0, A2, A4 }; // Define analog pins in array for on measurement of valve status
 const byte readoffstate[] = { A1, A3, A5 }; // Define analog pins in array for off measurement of valve status
+//===== Timer variables and constants =====
+boolean allowchange = false; // whether or not the status of a valve may be changed
+const uint16_t timeperiod = 2000; // timer to wait until valve status may be changed in ms
+
+//===== Pins needed for slit control =====
 #define lasershutterpin 0 //Select pin for lasershutter
-#define slit_ZLDP210P_in 11 // slit pressure ZLDP210P "Endschalter 1"
-#define slit_ZLDP210P_out 12 // slit pressure ZLDP210P "Endschalter 2"
+
+//===== Pins needed for slit control =====
+#define slit_ZLDP210P_on 11 // slit pressure ZLDP210P "Endschalter 1"
+#define slit_ZLDP210P_off 12 // slit pressure ZLDP210P "Endschalter 2"
+
+void timer(){
+    allowchange = true;
+}
+
 
 void setup() {
     //===== Serial =====
@@ -75,9 +91,12 @@ void setup() {
     }
     //==== Do the same for the pneumatic slit driver ====
     //Endschalter on pin 11 and 12
-    digitalWrite(slit_ZLDP210P_in, INPUT_PULLUP); // Set pins for on state to input_pullup
-    digitalWrite(slit_ZLDP210P_out, INPUT_PULLUP); // Set pins for off state to input_pullup
+    digitalWrite(slit_ZLDP210P_on, INPUT_PULLUP); // Set pins for on state to input_pullup
+    digitalWrite(slit_ZLDP210P_off, INPUT_PULLUP); // Set pins for off state to input_pullup
 
+    //==== Timer =====
+     MsTimer2::set(timeperiod, timer); //
+     MsTimer2::start();
 
     //===== Serial communication on startup =====
     Serial.print("server is at ");
@@ -208,15 +227,15 @@ void parseCommand(EthernetClient &client) {
         client.println("--- Telnet Server Help ---");
         client.println("on|off                   : switch test led on/off");
         client.println("quit                     : close the connection");
-        client.println("ip ?                     : get ip address");
+        client.println("ip?                      : get ip address");
         client.println("ch {1|2..|8} {off|on|?}  : set channel {1|2..|8} {off|on|?}");
         client.println("meas:ch {1|2|3}          : read channel {1|2|3} state");
         client.println("ls {off|on|?}            : open or close laser shutter");
-        client.println("slit ?                   : read actual slit state {in|out}");
+        client.println("slit ?                   : read current slit status ");
     }
 
     //===== IP =====
-    else if (cmdstr.equals("ip ?")) {
+    else if (cmdstr.equals("ip?")) {
         client.println(Ethernet.localIP());
         //Debug: Serial.println(Ethernet.localIP());
     }
@@ -235,16 +254,22 @@ void parseCommand(EthernetClient &client) {
         client.println(digitalRead(testled));
     }  
     
-    //===== Set channel on|off =====
+    //===== Set valve channel on|off =====
     else if (cmdstr.startsWith("ch ")) {
         int channelnumber = cmdstr.substring(3,4).toInt(); // e.g. "ch 1 on"
         if (cmdstr.endsWith("on")) {
-            digitalWrite(channelnumber, LOW); // Inverse logic (on=LOW)
-            delay(2000); //Delay for valve to react properly
+            if (allowchange == true && digitalRead(channelnumber) == HIGH) {
+                digitalWrite(channelnumber, LOW); // Inverse logic (on=LOW)
+                allowchange = false;
+                MsTimer2::start();
+            }
         }
         else if (cmdstr.endsWith("off")) {
-            digitalWrite(channelnumber, HIGH); // Inverse logic (on=LOW)
-            delay(2000); //Delay for valve to react properly   
+            if (allowchange == true && digitalRead(channelnumber) == LOW) {
+                digitalWrite(channelnumber, HIGH); // Inverse logic (on=LOW)
+                allowchange = false;
+                MsTimer2::start();
+            }
         }
         //===== Read set channel state =====
         else if (cmdstr.endsWith("?")) {
@@ -258,7 +283,7 @@ void parseCommand(EthernetClient &client) {
         
     }
 
-    //===== Read actual channel state =====
+    //===== Read actual valve channel state =====
     else if (cmdstr.startsWith("meas:ch ")) {
         int channelnumber = cmdstr.substring(8,9).toInt(); // e.g. "meas:ch 1"
         if (channelnumber > 3) // Currently: only 3 channel states are wired and assigned
@@ -288,10 +313,10 @@ void parseCommand(EthernetClient &client) {
         client.println(digitalRead(lasershutterpin));
     }  
 
-    //===== Read actual slit ZLDP210P state in/out =====
+    //===== Read Slit ZLDP210P state on/off =====
     else if(cmdstr.equals("slit ?")) {
-        int channelstate_on = digitalRead(slit_ZLDP210P_in); // 
-        int channelstate_off = digitalRead(slit_ZLDP210P_out); // 
+        int channelstate_on = digitalRead(slit_ZLDP210P_on); // 
+        int channelstate_off = digitalRead(slit_ZLDP210P_off); // 
         client.print("actual slit state: ");
                 if (channelstate_on == LOW && channelstate_off) 
                     client.println("1");

@@ -23,7 +23,6 @@ channel_set_read{
 
 channel_set{
     out "ch \$1 %{off|on}";
-    wait 2000;
     @init{channel_set_read;}
 }
 
