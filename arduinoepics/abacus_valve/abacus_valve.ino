@@ -1,5 +1,6 @@
 //Latest update: 30.05.2017
 //Latest improvement: Timer added
+const float version = 1.0;
 /*
     Arduino_TCP
 
@@ -224,7 +225,7 @@ void parseCommand(EthernetClient &client) {
 
     //===== HELP =====
     else if (cmdstr.equals("help")) {
-        client.println("--- Telnet Server Help ---");
+        client.print("--- Abacus Valve Version ");client.print(version,1);client.println(" ---");
         client.println("on|off                   : switch test led on/off");
         client.println("quit                     : close the connection");
         client.println("ip?                      : get ip address");
@@ -232,6 +233,8 @@ void parseCommand(EthernetClient &client) {
         client.println("meas:ch {1|2|3}          : read channel {1|2|3} state");
         client.println("ls {off|on|?}            : open or close laser shutter");
         client.println("slit ?                   : read current slit status ");
+        client.println();
+        client.println("By S.Friederich");
     }
 
     //===== IP =====

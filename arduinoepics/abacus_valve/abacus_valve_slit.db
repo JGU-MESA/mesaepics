@@ -1,0 +1,24 @@
+record (mbbi, "$(P)$(R)slit_get")
+{
+    field (DTYP, "stream")
+    field (INP, "@abacus_valve.proto slit_get $(PORT)")
+    field (SCAN, ".5 second")
+
+}
+
+record (bi, "$(P)$(R)slit_set_read")
+{
+    field (DTYP, "stream")
+    field (INP, "@abacus_valve.proto channel_set_read($(RELAIS)) $(PORT)")
+    field (SCAN, ".5 second")
+    field (ZNAM, "Off")
+    field (ONAM, "On")
+}
+
+record (bo, "$(P)$(R)slit_set")
+{
+    field (DTYP, "stream")
+    field (OUT, "@abacus_valve.proto channel_set($(RELAIS)) $(PORT)")
+    field (ZNAM, "Off")
+    field (ONAM, "On")
+}

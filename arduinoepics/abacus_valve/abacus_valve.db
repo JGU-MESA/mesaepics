@@ -39,12 +39,4 @@ record (bo, "$(P)$(R)ls_set")
     field (ONAM, "On")
 }
 
-record (mbbi, "$(P)$(R)slit_get")
-{
-    field (DTYP, "stream")
-    field (INP, "@abacus_valve.proto slit_get $(PORT)")
-    field (SCAN, ".5 second")
-#    field (ZRVL, "Off")
-#    field (ONVL, "On")
-#    field (TWVL, "Undefined")
-}
+
