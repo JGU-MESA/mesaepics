@@ -1,4 +1,4 @@
-record(bo, "$(P)$(R)on_set") {
+record(bo, "$(P)$(R)controller_on_set") {
     field(VAL, "0")
     field(ZNAM, "On")
     field(ONAM, "Off")
@@ -8,28 +8,28 @@ record(bo, "$(P)$(R)on_set") {
 
 record(stringout, "$(P)$(R)debug") {
     field(DTYP, "stream")
-    field(OUT, "@gv4qpc_controller.proto debug $(PORT)")
+    field(OUT, "@gv4qpc.proto debug $(PORT)")
 }
 
 record(stringout, "$(P)$(R)pressureunit_set") {
     field(DTYP, "stream")
-    field(OUT, "@gv4qpc_controller.proto setPressureUnit $(PORT)")
+    field(OUT, "@gv4qpc.proto setPressureUnit $(PORT)")
 }
 
 record(stringin, "$(P)$(R)model_get") {
     field(DESC, "A description of the controller")
     field(DTYP, "stream")
-    field(INP, "@gv4qpc_controller.proto modelNumber $(PORT)")
+    field(INP, "@gv4qpc.proto modelNumber $(PORT)")
     field(SCAN, "Passive")
     field(PINI, "YES")
-    field(SDIS, "$(P)$(R)deviceEnabled.RVAL")
+    #field(SDIS, "$(P)$(R)deviceEnabled.RVAL")
 }
 
 record(stringin, "$(P)$(R)firmware_get") {
     field(DESC, "Firmware revision level")
     field(DTYP, "stream")
-    field(INP, "@gv4qpc_controller.proto firmwareVersion $(PORT)")
+    field(INP, "@gv4qpc.proto firmwareVersion $(PORT)")
     field(SCAN, "Passive")
     field(PINI, "YES")
-    field(SDIS, "$(P)$(R)deviceEnabled.RVAL")
+    #field(SDIS, "$(P)$(R)deviceEnabled.RVAL")
 }
