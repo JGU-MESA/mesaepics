@@ -1,8 +1,8 @@
 OutTerminator = CR;
 InTerminator = CR CR LF ">";
 
-replytimeout = 1000; # 500 ms for the device and another 500 ms for network latency
-readtimeout = 2000;
+replytimeout = 2000; # 500 ms for the device and another 500 ms for network latency
+#readtimeout = 2000;
 extrainput = Ignore;
 
 setPressureUnit {
