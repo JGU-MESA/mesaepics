@@ -1,0 +1,8 @@
+record(ai, "$(P)$(R)ch$(CH):t_get") {
+        field (SCAN, "I/O Intr")
+        field (DTYP, "stream")
+        field (INP, "@merlot.proto GetCurrentTemp$(CH) $(PORT)")
+	#Use unicode sign for °C
+        field (EGU, "\260C")
+        field (ASLO, "0.001")
+}

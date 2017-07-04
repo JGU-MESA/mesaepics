@@ -1,10 +1,13 @@
 record (ai, "$(P)$(R)i_get")
 {
+	field (SCAN, ".5 second")
 	field (DTYP, "stream")
 	field (INP, "@riesling_spaetlese.proto read $(PORT)")
-	field (SCAN, "I/O Intr")
+	#Linear Conversion
+	#Input: Val = Val * ASLO + AOFF
 	field (LINR, "LINEAR")
-	field (ASLO, 1e-9)
+	field (ASLO, 1e-3)
+	field (AOFF, 5)
 	field (EGU, "mA")
 
 }

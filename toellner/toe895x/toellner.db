@@ -1,3 +1,15 @@
+##Needed for TOE 8872
+record(stringout, "$(P)$(R)remote_set"){
+	field(DTYP, "stream")
+	field(OUT, "@toellner.proto enable_remote $(PORT)")
+}
+
+
+record(stringout, "$(P)$(R)debug") {
+   field(DTYP, "stream")
+   field(OUT, "@toellner.proto debug $(PORT)")
+  }
+
 record(waveform, "$(P)$(R)id_get")
 {
     field(DESC, "Get device identification of Toellner")
@@ -10,6 +22,20 @@ record(waveform, "$(P)$(R)id_get")
     info(autosaveFields_pass0, "VAL")
 }
 
+record(ai, "$(P)$(R)i_get")
+{
+    field(DESC, "Get Current of Toellner")
+    field(DTYP, "stream")
+    field(INP, "@toellner.proto getCurrent $(PORT)")
+    field(SCAN, "1 second")
+    field(EGU,  "A")
+    field(PREC, "4")
+    field(HOPR, "10")
+    field(LOPR, "0")
+    info(autosaveFields, "DESC EGU PREC HOPR LOPR")
+    info(autosaveFields_pass0,"VAL")
+}
+
 record(ao, "$(P)$(R)i_set") 
 {
     field(DESC, "Set current of Toellner-Netzgert")
@@ -18,9 +44,9 @@ record(ao, "$(P)$(R)i_set")
     field(EGU,  "A")
     field(PREC, "3")   #The VAL field's value will be clipped within limits specified in the fields DRVH and DRVL
     field(DRVL, "0")
-    field(DRVH, "2")   #Drive High
+    field(DRVH, "10")   #Drive High
     field(LOPR, "0")   #The HOPR and LOPR fields set the upper and lower display limits for the VAL, HIHI, HIGH, LOW, and LOLO fields
-    field(HOPR, "2")   #High operating range
+    field(HOPR, "10")   #High operating range
     field(HIHI, "1.9")
     field(HIGH, "1.8")
     field(LOLO, "0.2")
@@ -31,46 +57,6 @@ record(ao, "$(P)$(R)i_set")
     field(LLSV, "MAJOR")
     info(autosaveFields, "DESC EGU PREC HOPR LOPR")
     info(autosaveFields_pass0, "VAL")
-}
-
-
-record(ao, "$(P)$(R)u_set")
-{
-	field(DESC, "Set Voltage")
-	field(EGU, "V")
-	field(LOPR, 0)
-	field(HOPR, 50)
-	field(PREC, 2)
-	field(DTYP, "stream")
-	field(OUT, "@toellner.proto setVolt $(PORT)")
-}
-
-record(ai, "$(P)$(R)i_get")
-{
-    field(DESC, "Get Current of Toellner")
-    field(DTYP, "stream")
-    field(INP, "@toellner.proto getCurrent $(PORT)")
-    field(SCAN, "1 second")
-    field(EGU,  "A")
-    field(PREC, "4")
-    field(HOPR, "2")
-    field(LOPR, "0")
-    info(autosaveFields, "DESC EGU PREC HOPR LOPR")
-    info(autosaveFields_pass0,"VAL")
-}
-
-record(ai, "$(P)$(R)power_get")
-{
-    field(DESC, "Get Power of Toellner")
-    field(DTYP, "stream")
-    field(INP, "@toellner.proto getPower $(PORT)")
-    field(SCAN, "1 second")
-    field(EGU,  "W")
-    field(PREC, "4")
-    field(HOPR, "2")
-    field(LOPR, "0")
-    info(autosaveFields, "DESC EGU PREC HOPR LOPR")
-    info(autosaveFields_pass0,"VAL")
 }
 
 record(ai, "$(P)$(R)u_get")
@@ -87,7 +73,19 @@ record(ai, "$(P)$(R)u_get")
     info(autosaveFields_pass0,"VAL")
 }
 
-record(ai, "$(P)$(R)power_get")
+
+record(ao, "$(P)$(R)u_set")
+{
+	field(DESC, "Set Voltage")
+	field(EGU, "V")
+	field(LOPR, 0)
+	field(HOPR, 50)
+	field(PREC, 2)
+	field(DTYP, "stream")
+	field(OUT, "@toellner.proto setVolt $(PORT)")
+}
+
+record(ai, "$(P)$(R)pow_get")
 {
     field(DESC, "Get Power of Toellner")
     field(DTYP, "stream")
@@ -100,6 +98,19 @@ record(ai, "$(P)$(R)power_get")
     info(autosaveFields, "DESC EGU PREC")
     info(autosaveFields_pass0,"VAL")
 }
+
+
+record(ao, "$(P)$(R)pow_set")
+{
+	field(DESC, "Set Power")
+	field(EGU, "W")
+	field(LOPR, 0)
+	field(HOPR, 200)
+	field(PREC, 2)
+	field(DTYP, "stream")
+	field(OUT, "@toellner.proto setPower $(PORT)")
+}
+
 
 record(ai, "$(P)$(R)imax_get")
 {

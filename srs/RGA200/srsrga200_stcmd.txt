@@ -1,0 +1,7 @@
+drvAsynSerialPortConfigure("TTY_SRSRGA", "/dev/ttyS6")
+asynSetOption("TTY_SRSRGA", 0, "baud", "28800")
+asynSetOption("TTY_SRSRGA", 0, "bits", 8)
+asynSetOption("TTY_SRSRGA", 0, "parity", "none")
+asynSetOption("TTY_SRSRGA", 0, "stop", 2)
+asynSetOption("TTY_SRSRGA", 0, "clocal", "Y")
+asynSetOption("TTY_SRSRGA", 0, "crtscts", "Y")

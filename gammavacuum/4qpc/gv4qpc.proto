@@ -1,0 +1,72 @@
+OutTerminator = CR;
+InTerminator = CR CR LF ">";
+
+replytimeout = 2000; # 500 ms for the device and another 500 ms for network latency
+#readtimeout = 2000;
+extrainput = Ignore;
+
+setPressureUnit {
+    out "cmd 0E MBR";
+    in "%*?[>]OK 00 ";
+    @init {
+        # set pressure units to mbar
+        out "cmd 0E MBR";
+        in "%*?[>]OK 00 ";
+    }
+}
+
+debug {
+    out "%s";
+    in "%39c";
+}
+
+modelNumber {
+    out "cmd 01";
+    in "%*?[>]OK 00 %39c";
+}
+
+firmwareVersion {
+    out "cmd 02";
+    in "%*?[>]OK 00 %39c";
+}
+
+getHVStatus {
+    out "cmd 61 \$1";
+    in "%*?[>]OK 00 %{NO|YES}";
+}
+
+
+rdCurrent {
+    out "cmd 0A \$1";
+    in "%*?[>]OK 00 %e AMPS";
+}
+
+
+rdPressure {
+    out "cmd 0B \$1";
+    in "%*?[>]OK 00 %e MBAR";
+}
+
+
+rdVoltage {
+    out "cmd 0C \$1";
+    in "%*?[>]OK 00 %i";
+}
+
+
+rdSupplyStatus {
+    out "cmd 0D \$1";
+    in "%*?[>]OK 00 %39c";
+#"%{WAITING TO START|STANDBY|SAFE-CONN|Running|Disabled|COOL DOWN|PUMP ERROR|HV SWITCH IS OFF} %?d";
+}
+
+
+startPump {
+    out "cmd %{38|37} \$1";
+    in "%*?[>]OK 00 ";
+    @mismatch{ in "%*?[>]OK 00 %{*ERROR: PUMP IS ON|*ERROR: PUMP CANNOT START}";}
+    @init{
+        out "cmd 61 \$1";
+        in "%*?[>]OK 00 %{NO|YES}";
+    }
+}

@@ -1,54 +1,75 @@
-record(bi, "$(P)$(R)ch$(Ch):stat_get") {
+record(bi, "$(P)$(R)stat_get") {
     #field(DESC, "Indicates if the high voltage for supply Ch$(Ch) is enabled")
     field(DTYP, "stream")
-    field(INP, "@gv4qpc_channel.proto getHVStatus($(Ch)) $(PORT)")
-    field(SCAN, "1 second") 
+    field(INP, "@gv4qpc.proto getHVStatus($(Ch)) $(PORT)")
+    field(SCAN, "2 second") 
     #field(PINI, "YES")
     field(ZNAM, "NO")
     field(ONAM, "YES")
+    field(FLNK, "$(P)$(R)p_get")
+    field(FLNK, "$(P)$(R)i_get")
 }
 
-record(ai, "$(P)$(R)ch$(Ch):i_get") {
+record(ai, "$(P)$(R)i_get_raw") {
     field(DESC, "Reads pump current from supply Ch$(Ch)")
     field(DTYP, "stream")
-    field(INP, "@gv4qpc_channel.proto rdCurrent($(Ch)) $(PORT)")
+    field(INP, "@gv4qpc.proto rdCurrent($(Ch)) $(PORT)")
     field(SCAN, "1 second")
     #field(PINI, "YES")
+    field(EGU, "A")
+    field(PREC, 2)
+    field(FLNK, "$(P)$(R)i_get")
+}
+
+record(calc, "$(P)$(R)i_get") {
+    field(DESC, "Reads pump current from supply Ch$(Ch)")
+    field(INPA, "$(P)$(R)stat_get")
+    field(INPB, "$(P)$(R)i_get_raw")
+    field(CALC, "A==1?B:0")
     field(EGU, "A")
     field(HOPR, 1e-5)
     field(LOPR, 1e-10)
     field(PREC, 2)
 }
 
-record(ai, "$(P)$(R)ch$(Ch):p_get") {
+record(ai, "$(P)$(R)p_get_raw") {
     field(DTYP, "stream")
-    field(INP, "@gv4qpc_channel.proto rdPressure($(Ch)) $(PORT)")
+    field(INP, "@gv4qpc.proto rdPressure($(Ch)) $(PORT)")
     field(SCAN, "1 second")
     #field(PINI, "YES")
-    field(EGU, "mbar")
+    field(EGU, "MBAR")
+    field(PREC, 2)
+    field(FLNK, "$(P)$(R)p_get")
+}
+
+record(calc, "$(P)$(R)p_get") {
+    field(INPA, "$(P)$(R)stat_get")
+    field(INPB, "$(P)$(R)p_get_raw")
+    field(CALC, "A==1?B:0")
+    field(EGU, "MBAR")
     field(HOPR, 1e-5)
     field(LOPR, 1e-10)
     field(PREC, 2)
 }
 
-record(ai, "$(P)$(R)ch$(Ch):u_get") {
+record(ai, "$(P)$(R)u_get") {
     field(DTYP, "stream")
-    field(INP, "@gv4qpc_channel.proto rdVoltage($(Ch)) $(PORT)")
-    field(SCAN, "1 second")
+    field(INP, "@gv4qpc.proto rdVoltage($(Ch)) $(PORT)")
+    field(SCAN, "2 second")
     field(EGU, "V")
     field(PREC, 0)
 }
 
-record(stringin, "$(P)$(R)ch$(Ch):supplystatus_get") {
+record(stringin, "$(P)$(R)supplystatus_get") {
     field(DTYP, "stream")
-    field(INP, "@gv4qpc_channel.proto rdSupplyStatus($(Ch)) $(PORT)")
+    field(INP, "@gv4qpc.proto rdSupplyStatus($(Ch)) $(PORT)")
     #field(SCAN, "5 second")
     #field(PINI, "YES")
 }
 
-record(bo, "$(P)$(R)ch$(Ch):on_set") {
+record(bo, "$(P)$(R)on_set") {
     field(DTYP, "stream")
-    field(OUT, "@gv4qpc_channel.proto startPump($(Ch)) $(PORT)") 
+    field(OUT, "@gv4qpc.proto startPump($(Ch)) $(PORT)") 
     field(ZNAM, "OFF")
     field(ONAM, "ON")
 }
