@@ -1,25 +1,27 @@
-record (mbbi, "$(P)$(R)slit_get")
+record (mbbi, "$(P)$(R)pos_get")
 {
     field (DTYP, "stream")
     field (INP, "@abacus_valve.proto slit_get $(PORT)")
     field (SCAN, ".5 second")
     field (SHFT, 3)
-    field (ZRST, "OUT")
-    field (ONST, "IN")
-    field (TWST, "undefined")
+    field (ZRST, "OUT") #slit is not in beam line
+    field (ONST, "IN")  #slit is in beam line
+    field (TWST, "UNDEFINED")
+    field (ONSV, "MINOR") #show "alarm" that slit is in beam line
+    field (TWSV, "MAJOR") #Show "alarm", if slit is neither in nor really out the beam line
 
 }
 
-record (bi, "$(P)$(R)slit_set_read")
+record (bi, "$(P)$(R)pos_set_read")
 {
     field (DTYP, "stream")
     field (INP, "@abacus_valve.proto channel_set_read($(RELAIS)) $(PORT)")
-    field (SCAN, ".5 second")
-    field (ZNAM, "Off")
-    field (ONAM, "On")
+    field (SCAN, "5 second")
+    field (ZNAM, "OUT")
+    field (ONAM, "IN")
 }
 
-record (bo, "$(P)$(R)slit_set")
+record (bo, "$(P)$(R)pos_set")
 {
     field (DTYP, "stream")
     field (OUT, "@abacus_valve.proto channel_set($(RELAIS)) $(PORT)")
