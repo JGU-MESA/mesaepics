@@ -2,30 +2,51 @@ record(bi, "$(P)$(R)stat_get") {
     #field(DESC, "Indicates if the high voltage for supply Ch$(Ch) is enabled")
     field(DTYP, "stream")
     field(INP, "@gv4qpc.proto getHVStatus($(Ch)) $(PORT)")
-    field(SCAN, "1 second") 
+    field(SCAN, "2 second") 
     #field(PINI, "YES")
     field(ZNAM, "NO")
     field(ONAM, "YES")
+    field(FLNK, "$(P)$(R)p_get")
+    field(FLNK, "$(P)$(R)i_get")
 }
 
-record(ai, "$(P)$(R)i_get") {
+record(ai, "$(P)$(R)i_get_raw") {
     field(DESC, "Reads pump current from supply Ch$(Ch)")
     field(DTYP, "stream")
     field(INP, "@gv4qpc.proto rdCurrent($(Ch)) $(PORT)")
     field(SCAN, "1 second")
     #field(PINI, "YES")
     field(EGU, "A")
+    field(PREC, 2)
+    field(FLNK, "$(P)$(R)i_get")
+}
+
+record(calc, "$(P)$(R)i_get") {
+    field(DESC, "Reads pump current from supply Ch$(Ch)")
+    field(INPA, "$(P)$(R)stat_get")
+    field(INPB, "$(P)$(R)i_get_raw")
+    field(CALC, "A==1?B:0")
+    field(EGU, "A")
     field(HOPR, 1e-5)
     field(LOPR, 1e-10)
     field(PREC, 2)
 }
 
-record(ai, "$(P)$(R)p_get") {
+record(ai, "$(P)$(R)p_get_raw") {
     field(DTYP, "stream")
     field(INP, "@gv4qpc.proto rdPressure($(Ch)) $(PORT)")
     field(SCAN, "1 second")
     #field(PINI, "YES")
-    field(EGU, "mbar")
+    field(EGU, "MBAR")
+    field(PREC, 2)
+    field(FLNK, "$(P)$(R)p_get")
+}
+
+record(calc, "$(P)$(R)p_get") {
+    field(INPA, "$(P)$(R)stat_get")
+    field(INPB, "$(P)$(R)p_get_raw")
+    field(CALC, "A==1?B:0")
+    field(EGU, "MBAR")
     field(HOPR, 1e-5)
     field(LOPR, 1e-10)
     field(PREC, 2)
@@ -34,7 +55,7 @@ record(ai, "$(P)$(R)p_get") {
 record(ai, "$(P)$(R)u_get") {
     field(DTYP, "stream")
     field(INP, "@gv4qpc.proto rdVoltage($(Ch)) $(PORT)")
-    field(SCAN, "1 second")
+    field(SCAN, "2 second")
     field(EGU, "V")
     field(PREC, 0)
 }

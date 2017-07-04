@@ -1,0 +1,8 @@
+drvAsynSerialPortConfigure("TTY_nextorr", "/dev/ttyS4")
+asynSetOption("TTY_nextorr", 0, "baud", 115200)
+asynSetOption("TTY_nextorr", 0, "bits", 8)
+asynSetOption("TTY_nextorr", 0, "parity", "none")
+asynSetOption("TTY_nextorr", 0, "stop", 1)
+asynSetOption("TTY_nextorr", 0, "clocal", "Y")
+asynSetOption("TTY_nextorr", 0, "crtscts", "N")
+dbLoadRecords("db/nextorr.db"   ,"P=steam:,R=nextorr:   ,PORT=TTY_nextorr")

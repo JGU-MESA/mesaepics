@@ -1,0 +1,9 @@
+drvAsynSerialPortConfigure("TTY_MVC_1", "/dev/ttyS6")
+asynSetOption("TTY_MVC_1", 0, "baud", 19200)
+asynSetOption("TTY_MVC_1", 0, "bits", 8)
+asynSetOption("TTY_MVC_1", 0, "parity", "none")
+asynSetOption("TTY_MVC_1", 0, "stop", 1)
+asynSetOption("TTY_MVC_1", 0, "clocal", "Y")
+asynSetOption("TTY_MVC_1", 0, "crtscts", "N")
+
+dbLoadRecords("db/mvc3.db", "P=steam:,R=MVC1:,PORT=TTY_MVC_1")
