@@ -1,0 +1,79 @@
+record(stringin, "$(P)$(R)IDN") {
+	field (PINI, "YES")
+	field (DTYP, "stream")
+	field (INP, "@merlot.proto GetVersion $(PORT)")
+}
+
+record(bo, "$(P)$(R)CH1:Enable") {
+	field (DTYP, "stream")
+	field (OUT, "@merlot.proto Enable1 $(PORT)")
+	field (ONAM, "On")
+	field (ZNAM, "Off")
+}
+record(ai, "$(P)$(R)CH1:GetCurrentTemp") {
+	field (SCAN, ".5 second")
+	field (DTYP, "stream")
+	field (INP, "@merlot.proto GetCurrentTemp1 $(PORT)")
+	field (EGU, "°C")
+	field (ASLO, "0.001")
+}
+record(ao, "$(P)$(R)CH1:SetDesiredTemp") {
+	field (DTYP, "stream")
+	field (OUT, "@merlot.proto SetDesiredTemp1 $(PORT)")
+	field (EGU, "°C")
+	field (ASLO, "0.001")
+}
+record(ai, "$(P)$(R)CH1:GetDutyCycle") {
+	field (SCAN, "I/O Intr")
+	field (DTYP, "stream")
+	field (INP, "@merlot.proto GetDutyCycle1 $(PORT)")
+}
+record(ai, "$(P)$(R)CH1:GetPTerm") {
+	field (SCAN, "I/O Intr")
+	field (DTYP, "stream")
+	field (INP, "@merlot.proto GetPTerm1 $(PORT)")
+}
+record(ai, "$(P)$(R)CH1:GetITerm") {
+	field (SCAN, "I/O Intr")
+	field (DTYP, "stream")
+	field (INP, "@merlot.proto GetITerm1 $(PORT)")
+}
+record(ai, "$(P)$(R)CH1:GetDTerm") {
+	field (SCAN, "I/O Intr")
+	field (DTYP, "stream")
+	field (INP, "@merlot.proto GetDTerm1 $(PORT)")
+}
+record(ao, "$(P)$(R)CH1:SetMaxDutyCycle") {
+	field (DTYP, "stream")
+	field (OUT, "@merlot.proto SetMaxDutyCycle1 $(PORT)")
+}
+record(ao, "$(P)$(R)CH1:P") {
+	field (DTYP, "stream")
+	field (OUT, "@merlot.proto SetP1 $(PORT)")
+	field (FLNK, "$(P)$(R)CH1:PID.PROC")
+}
+record(ao, "$(P)$(R)CH1:I") {
+	field (DTYP, "stream")
+	field (OUT, "@merlot.proto SetI1 $(PORT)")
+	field (FLNK, "$(P)$(R)CH1:PID.PROC")
+}
+record(ao, "$(P)$(R)CH1:D") {
+	field (DTYP, "stream")
+	field (OUT, "@merlot.proto SetD1 $(PORT)")
+	field (FLNK, "$(P)$(R)CH1:PID.PROC")
+}
+record(calcout, "$(P)$(R)CH1:PID") {
+	field (DTYP, "stream")
+	field (CALC, "0")
+	field (OUT, "@merlot.proto SetPID1 $(PORT)")
+	field (INPA, "$(P)$(R)CH1:P")
+	field (INPB, "$(P)$(R)CH1:I")
+	field (INPC, "$(P)$(R)CH1:D")
+}
+record(ao, "$(P)$(R)CH1:SetRampTargetTemp") {
+	field (EGU, "°C")
+}
+record(ao, "$(P)$(R)CH1:SetRampSpeed") {
+	field (EGU, "°C/min")
+}
+
