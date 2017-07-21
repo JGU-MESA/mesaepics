@@ -1,3 +1,21 @@
+record (stringout, "$(P)$(R)debug"){
+    field (DTYP, "stream")
+    field (OUT, "@mvc3.proto debug $(PORT)")
+}
+
+record (ai, "$(P)$(R)sp1_low_get"){
+    field (DTYP, "stream")
+    field (INP, "@mvc3.proto ReadSetPoint1_LOW $(PORT)")
+    field (PINI, "YES")
+}
+
+record (ai, "$(P)$(R)sp1_high_get"){
+    field (DTYP, "stream")
+    field (INP, "@mvc3.proto ReadSetPoint1_HIGH $(PORT)")
+    field (PINI, "YES")
+}
+
+
 record (ai, "$(P)$(R)ReadPressure")
 {
     field (SCAN, ".1 second")

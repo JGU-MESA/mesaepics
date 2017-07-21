@@ -1,9 +1,14 @@
 Terminator = CR;
 
+debug {
+    out "%s";
+    in "%39c";
+}
+
 GetPressure {
-        out "RPV\$2";
-        in "%(\$1Status)i,\t%e";
-        @replytimeout { wait 10000; }
+    out "RPV\$2";
+    in "%(\$1Status)i,\t%e";
+    @replytimeout { wait 10000; }
 }
 
 SetSensorOn {
@@ -34,3 +39,18 @@ ReadSensorID1 {
         }
 }
 
+SetSetPoint1 {
+    separator = ", ";
+    out "SSP1, (%6.4E)";
+    in "OK";
+}
+
+ReadSetPoint1_LOW {
+    out "RSP1";
+    in "%e,\t%*e,\t1";
+}
+
+ReadSetPoint1_HIGH {
+    out "RSP1";
+    in "%*e,\t%e,\t1";
+}
