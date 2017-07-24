@@ -4,7 +4,8 @@ InTerminator = NUL;
 ReplyTimeout = 1000;
 ExtraInput = Ignore;
 
-delay = 50;
+delay = 100;
+delay_meas = 320;
 
 debug{
     out "%s";
@@ -22,28 +23,30 @@ getIDN {
 
 getOutputState {
     out "OUTP?";
+    #out "DATA?";
     wait $delay;
     in "%{1|0}";
+    wait $delay;
 }
 
 setOutputState {
     out "OUTP %d";
     wait $delay;
-    @init{ getOutputState; wait $delay;}
+    @init{ getOutputState;}
 }
 
 getVolt {
     out "MEAS:VOLT?";
     wait $delay;
     in "%g";
-    wait $delay;
+    wait $delay_meas;
 }
 
 getCurr {
     out "MEAS:CURR?";
     wait $delay;
     in "%g";
-    wait $delay;
+    wait $delay_meas;
 }
 
 setVolt {
@@ -82,7 +85,18 @@ getD {
     out "\$1?";
     wait $delay;
     in "%d";
-    
     wait $delay;
 }
 
+getAver {
+    out "AVER?";
+    in "%d";
+    @init{ out "AVER?";
+           in "%d";
+    }
+}
+
+setAver {
+    out "AVER %d"; 
+    @init{ getAver;}
+}
