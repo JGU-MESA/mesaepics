@@ -1,84 +1,147 @@
-record(ai,"$(P)$(R)amp_get"){
-    field(DTYP,"stream")
-    field(INP, "@laser49.proto info_amplitude $(PORT)")
-    field(SCAN, "10 second")
+record(stringout, "$(P)$(R)debug"){
+    field(DTYP, "stream")
+    field(OUT, "@laser49.proto debug $(PORT)")
 }
 
-record(ai,"$(P)$(R)pl_get"){
+record(bi,"$(P)$(R)on_get"){
+    field(DESC, "Read on/off status of laser")
     field(DTYP,"stream")
-    field(INP, "@laser49.proto info_pulselength $(PORT)")
-    field(SCAN, "I/O Intr")
-}
-
-record(ai,"$(P)$(R)nos_get"){
-    field(DTYP,"stream")
-    field(INP, "@laser49.proto info_numberofshots $(PORT)")
-    field(SCAN, "I/O Intr")
-}
-
-record(ai,"$(P)$(R)ct_get"){
-    field(DTYP,"stream")
-    field(INP, "@laser49.proto info_cycletime $(PORT)")
-    field(SCAN, "I/O Intr")
-}
-
-record(ai,"$(P)$(R)hl_get"){
-    field(DTYP,"stream")
-    field(INP, "@laser49.proto info_handshake $(PORT)")
-    field(SCAN, "I/O Intr")
+    field(INP, "@laser49.proto on_set $(PORT)")
+    field(ZNAM, "OFF")
+    field(ONAM, "ON")
 }
 
 record(bo,"$(P)$(R)on_set"){
+    field(DESC, "Set laser on/off")
     field(DTYP,"stream")
     field(OUT, "@laser49.proto on_set $(PORT)")
     field(ZNAM, "OFF")
     field(ONAM, "ON")
 }
 
+
+record(ai,"$(P)$(R)pl_get"){
+    field(DESC, "Read pulse length")
+    field(DTYP,"stream")
+    field(INP, "@laser49.proto pl_get $(PORT)")
+    field(SCAN, "1 second")
+    field(EGU, "microseconds")
+    field(HOPR, "5000")
+    field(LOPR, "1")
+}
+
 record(ao,"$(P)$(R)pl_set"){
     field(DESC, "Set pulse length")
     field(DTYP,"stream")
     field(OUT, "@laser49.proto pl_set $(PORT)")
+    field(DRVH, "65535")
     field(DRVL, "1")
-    field(LOPR, "1")
-    field(EGU, "microseconds")
+    field(HOPR, "65535")
+    field(LOPR, "0")
+    field(PREC, "0")
+    field(EGU, "microseconds")    
 }
 
-record(ao,"$(P)$(R)a_set"){
+
+record(ai,"$(P)$(R)amp_get"){
+    field(DESC, "Read amplitude")
+    field(DTYP,"stream")
+    field(INP, "@laser49.proto amp_get $(PORT)")
+    field(SCAN, "1 second")
+    field(HOPR, "65535")
+    field(LOPR, "0")
+    field(PREC, "0")
+    field(EGU, "")
+    field(HOPR, "65535")
+    field(LOPR, "1")
+    field(HIGH, "20000") #=1W laser power
+    field(HIHI, "35000") #=3W laser power
+    field(HHSV, "MAJOR") 
+    field(HHSV, "MINOR")
+}
+
+record(ao,"$(P)$(R)amp_set"){
     field(DESC, "Set amplitude")
     field(DTYP,"stream")
-    field(OUT, "@laser49.proto a_set $(PORT)")
+    field(OUT, "@laser49.proto amp_set $(PORT)")
+    field(DRVH, "65535")
     field(DRVL, "1")
+    field(HOPR, "65535")
+    field(LOPR, "0")
+    field(PREC, "0")
+    field(EGU, "")    
+}
+
+
+record(ai,"$(P)$(R)nos_get"){
+    field(DESC, "Read number of shots")
+    field(DTYP,"stream")
+    field(INP, "@laser49.proto nos_get $(PORT)")
+    field(SCAN, "1 second")
+    field(EGU, "")
+    field(HOPR, "5000")
     field(LOPR, "1")
-    field(EGU, "None")
 }
 
 record(ao,"$(P)$(R)nos_set"){
-    field(DESC, "Set number of shots")
-    field(DTYP,"stream")
+    field(DESC, "Set pulse length")
+    field(DTYP, "stream")
     field(OUT, "@laser49.proto nos_set $(PORT)")
+    field(DRVH, "65535")
     field(DRVL, "1")
+    field(HOPR, "65535")
+    field(LOPR, "0")
+    field(PREC, "0")
+    field(EGU, "")    
+}
+
+
+record(ai,"$(P)$(R)dt_get"){
+    field(DESC, "Read time betw. two shots")
+    field(DTYP,"stream")
+    field(INP, "@laser49.proto dt_get $(PORT)")
+    field(SCAN, "1 second")
+    field(EGU, "microseconds")
+    field(HOPR, "65563")
     field(LOPR, "1")
-    field(EGU, "None")
 }
 
 record(ao,"$(P)$(R)dt_set"){
-    field(DESC, "Set cycle time (between two shots)")
+    field(DESC, "Set time betw. two shots")
     field(DTYP,"stream")
     field(OUT, "@laser49.proto dt_set $(PORT)")
+    field(DRVH, "65535")
     field(DRVL, "1")
-    field(LOPR, "1")
+    field(HOPR, "65535")
+    field(LOPR, "0")
+    field(PREC, "0")
+    field(EGU, "microseconds")    
+}
+
+
+record(ai,"$(P)$(R)handshake_get"){
+    field(DESC, "Read handshake")
+    field(DTYP,"stream")
+    field(INP, "@laser49.proto handshake_get $(PORT)")
+    field(SCAN, "5 second")
     field(EGU, "microseconds")
+    field(HOPR, "65563")
+    field(LOPR, "1")
 }
 
 record(ao,"$(P)$(R)handshake_set"){
-    field(DESC, "Set Handshake (do not change!)")
+    field(DISP, "1")
+    field(DESC, "Set time betw. two shots")
     field(DTYP,"stream")
     field(OUT, "@laser49.proto handshake_set $(PORT)")
+    field(DRVH, "65535")
     field(DRVL, "1")
-    field(LOPR, "1")
-    field(EGU, "microseconds")
+    field(HOPR, "65535")
+    field(LOPR, "0")
+    field(PREC, "0")
+    field(EGU, "microseconds")    
 }
+
 
 record(bo,"$(P)$(R)dc_set"){
     field(DESC, "Set dc beam on or off")
@@ -86,4 +149,17 @@ record(bo,"$(P)$(R)dc_set"){
     field(OUT, "@laser49.proto dc_set $(PORT)")
     field(ZNAM, "OFF")
     field(ONAM, "ON")
+    field(OSV, "MAJOR")
+}
+
+record(bo,"$(P)$(R)sh_set"){
+    field(DESC, "Execute one shot")
+    field(DTYP,"stream")
+    field(OUT, "@laser49.proto sh_set $(PORT)")
+}
+
+record(bo,"$(P)$(R)mu_set"){
+    field(DESC, "Execute multiple shot")
+    field(DTYP,"stream")
+    field(OUT, "@laser49.proto mu_set $(PORT)")
 }

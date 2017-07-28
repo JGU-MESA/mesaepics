@@ -51,7 +51,7 @@ pl_set{
 }
 
 #===== Amplitude =====
-a_get{
+amp_get{
     out "a?";
     in  "Amplitude is set to:";
     in  "%u";
@@ -64,7 +64,7 @@ a_get{
     }
 }
 
-a_set{
+amp_set{
     out "%u";
     in  "Requested value = %u";
     in  "-----";
@@ -72,7 +72,7 @@ a_set{
     in  "Amplitude is set to:";
     in  "%u";
     in  "-----";
-    @init{ a_get; }
+    @init{ amp_get; }
 }
 
 #===== Number of shots =====
@@ -86,6 +86,7 @@ nos_get{
         in  "Number of shots is set to:";
         in  "%u";
         in  "-----";
+    }
 }
 
 nos_set{
@@ -123,6 +124,7 @@ dt_set{
     in  "-----";
     @init{ dt_get; }
 }
+
 #===== Handshake =====
 handshake_get{
     out "x?";
@@ -153,4 +155,22 @@ dc_set{
     out "dc %{off|on}";
     in  "Set request for dc %{off|on}";
     in  "-----";
+}
+
+#===== Shot =====
+sh_set{
+    out "sh";
+    in "Set request for single shot";
+    in "-----";
+    in "Shot were fired!";
+    in "-----";
+}
+
+#===== Multiple Shot =====
+mu_set{
+    out "mu";
+    in "Set request for multplie shot";
+    in "-----";
+    in "Shots were fired!";
+    in "-----";
 }

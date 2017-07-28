@@ -85,9 +85,9 @@ void setup() {
   digitalWrite(HandshakePin, HIGH);
   digitalWrite(AmpPin, HIGH);
   digitalWrite(PLPin, HIGH);
-  //Confirmation:
-  pinMode(interruptPin, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(interruptPin), confirm, FALLING);
+  //Confirmation (optional):
+  //pinMode(interruptPin, INPUT_PULLUP);
+  //attachInterrupt(digitalPinToInterrupt(interruptPin), confirm, FALLING);
 }
 
 void loop() {
@@ -359,9 +359,9 @@ void parseCommand(EthernetClient &client) {
     digitalWrite(HandshakePin, LOW);
     delay(10);
     digitalWrite(HandshakePin, HIGH);
-    while (TestVariable == 0);
-    TestVariable = 1;
-    client.println("fertig!");
+    //while (TestVariable == 0);
+    //TestVariable = 1;
+    client.println("Finished!");
     client.println("-----");
   }
 
@@ -379,16 +379,16 @@ void parseCommand(EthernetClient &client) {
     digitalWrite(HandshakePin, LOW);
     delay(10);
     digitalWrite(HandshakePin, HIGH);
-    while (TestVariable == 0);
-    TestVariable = 1;
-    client.println("fertig!");
+    //while (TestVariable == 0);
+    //TestVariable = 1;
+    client.println("Finished!");
     client.println("-----");
   }
+
   //===== Single shot =====
   else if (cmdstr.equals("sh")) {
     // message:
-    client.println("Set request for single shot with amplitude");
-    client.println(amplitude);
+    client.println("Set request for single shot");
     client.println("-----");
     //Single shot:
     for (int n = 0; n < 16; n++) {
@@ -432,9 +432,8 @@ void parseCommand(EthernetClient &client) {
     delayMicroseconds(D1);
     digitalWriteFast(HandshakePin, HIGH);
     delayMicroseconds(1);
-    //Handshake
-    while (TestVariable == 0);
-    TestVariable = 1;
+    //while (TestVariable == 0);//Handshake
+    //TestVariable = 1;
     client.println("Shot was fired!");
     client.println("-----");
   }
@@ -443,14 +442,14 @@ void parseCommand(EthernetClient &client) {
   //===== Multiple shots =====
   else if (cmdstr.equals("mu")) {
     // message:
-    client.println("Set request for ");
-    client.print(Nshot);
-    client.println(" shots");
-    client.println("with distance ");
-    client.print(Tshot);
-    client.println(" microseconds");
-    client.println("and amplitude ");
-    client.print(amplitude);
+    client.println("Set request for multiple shots");
+    /*client.print(Nshot);
+      client.println(" shots");
+      client.println("with distance ");
+      client.print(Tshot);
+      client.println(" microseconds");
+      client.println("and amplitude ");
+      client.print(amplitude);*/
     client.println("-----");
     // Multiple shots:
     for (int i = 0; i < Nshot; i++) {
@@ -507,25 +506,25 @@ void parseCommand(EthernetClient &client) {
     client.println("Shots were fired!");
     client.println("-----");
   }
-/*
-//  //===== list all information =====
-//  else if (cmdstr.equals("list")) {
-//    client.print("amplitude: ");
-//    client.println(amplitude);
-//    client.print("pulse length: ");
-//    client.print(D2);
-//    client.println(" microseconds");
-//    client.print("Number of shots: ");
-//    client.println(Nshot);
-//    client.print("Cycle time: ");
-//    client.print(Tshot);
-//    client.println(" microseconds");
-//    client.print("Handshake length: ");
-//    client.print(D1);
-//    client.println(" microseconds");
-//    client.println("-----");
-//  }
-*/
+  /*
+    //  //===== list all information =====
+    //  else if (cmdstr.equals("list")) {
+    //    client.print("amplitude: ");
+    //    client.println(amplitude);
+    //    client.print("pulse length: ");
+    //    client.print(D2);
+    //    client.println(" microseconds");
+    //    client.print("Number of shots: ");
+    //    client.println(Nshot);
+    //    client.print("Cycle time: ");
+    //    client.print(Tshot);
+    //    client.println(" microseconds");
+    //    client.print("Handshake length: ");
+    //    client.print(D1);
+    //    client.println(" microseconds");
+    //    client.println("-----");
+    //  }
+  */
 
   //===== Invalid Command, HELP =====
   else {
