@@ -7,45 +7,36 @@ debug{
     in "%39c";
 }
 
-#===== Infos =====
-info_amplitude{
-    out "list";
-    in "amplitude: %u";
+on_get{
+    out "state?";
+    in  "power %{off|on}";
+    in  "-----";
+    @init{
+        out "state?";
+        in  "power %{off|on}";
+        in  "-----";
+    }
 }
-
-info_pulselength{
-    in "amplitude: %*u";
-    in "pulse length: %u microseconds";
-}
-
-info_numberofshots{
-    in "amplitude: %*u";
-    in "pulse length: %*u microseconds";
-    in "Number of shots: %u";
-}
-
-info_cycletime{
-    in "amplitude: %*u";
-    in "pulse length: %*u microseconds";
-    in "Number of shots: %*u";
-    in "Cycle time: %u microseconds";
-}
-
-info_handshake{
-    in "amplitude: %*u";
-    in "pulse length: %*u microseconds";
-    in "Number of shots: %*u";
-    in "Cycle time: %*u microseconds";
-    in "Handshake length: %u microseconds";
-    in "-----"
-}
-
-#===== /Infos =====
 
 on_set{
     out "%{off|on}";
     in  "power %{off|on}";
     in  "-----";
+    @init{ on_get;}
+}
+
+#===== Pulse Length =====
+pl_get{
+    out "p?";
+    in  "Pulse length is set to:";
+    in  "%u microseconds";
+    in  "-----";
+    @init{
+        out "p?";
+        in  "Pulse length is set to:";
+        in  "%u microseconds";
+        in  "-----";
+    }
 }
 
 pl_set{
@@ -56,6 +47,21 @@ pl_set{
     in  "Pulse length is set to:";
     in  "%u microseconds";
     in  "-----";
+    @init{ pl_get; }
+}
+
+#===== Amplitude =====
+a_get{
+    out "a?";
+    in  "Amplitude is set to:";
+    in  "%u";
+    in  "-----";
+    @init{
+        out "a?";
+        in  "Amplitude is set to:";
+        in  "%u";
+        in  "-----";
+    }
 }
 
 a_set{
@@ -66,35 +72,85 @@ a_set{
     in  "Amplitude is set to:";
     in  "%u";
     in  "-----";
+    @init{ a_get; }
+}
+
+#===== Number of shots =====
+nos_get{
+    out "n?";
+    in  "Number of shots is set to:";
+    in  "%u";
+    in  "-----";
+    @init{
+        out "n?";
+        in  "Number of shots is set to:";
+        in  "%u";
+        in  "-----";
 }
 
 nos_set{
     out "%u";
     in  "Requested value = %u";
     in  "-----";
-    out "a";
+    out "n";
     in  "Number of shots is set to:";
     in  "%u";
     in  "-----";
+    @init{ nos_get;}
+}
+
+#===== Cycle time = time span between two shots =====
+dt_get{
+    out "t?";
+    in  "Cycle time is set to:";
+    in  "%u microseconds";
+    in  "-----";
+    @init{
+        out "t?";
+        in  "Cycle time is set to:";
+        in  "%u microseconds";
+        in  "-----";
+    }
 }
 
 dt_set{
     out "%u";
     in  "Requested value = %u";
     in  "-----";
-    out "a";
+    out "t";
     in  "Cycle time is set to:";
     in  "%u microseconds";
     in  "-----";
+    @init{ dt_get; }
+}
+#===== Handshake =====
+handshake_get{
+    out "x?";
+    in  "Set-delay is set to:";
+    in  "%u microseconds";
+    in  "-----";
+    @init{
+        out "x?";
+        in  "Set-delay is set to:";
+        in  "%u microseconds";
+        in  "-----";
+    }
 }
 
 handshake_set{
     out "%u";
     in  "Requested value = %u";
     in  "-----";
-    out "a";
+    out "x";
     in  "Set-delay is set to:";
     in  "%u microseconds";
     in  "-----";
+    @init{ handshake_get;}
 }
 
+#===== DC mode =====
+dc_set{
+    out "dc %{off|on}";
+    in  "Set request for dc %{off|on}";
+    in  "-----";
+}

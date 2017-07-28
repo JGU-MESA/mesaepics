@@ -6,4 +6,4 @@ asynSetOption("TTY_MVC_1", 0, "stop", 1)
 asynSetOption("TTY_MVC_1", 0, "clocal", "Y")
 asynSetOption("TTY_MVC_1", 0, "crtscts", "N")
 
-dbLoadRecords("db/mvc3.db", "P=steam:,R=MVC1:,PORT=TTY_MVC_1")
+dbLoadRecords("db/mvc3.db", "P=melba_030:,R=gauge:,PORT=TTY_MVC_1")
