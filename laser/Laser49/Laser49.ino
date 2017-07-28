@@ -1,8 +1,8 @@
 //  Laser controller script
 //  Originally by S.Heidrich
 //  Edited by S.Friederich (IP configuration part)
-//  latest update: 19.07.2017
-const float version = 1.0;
+//  latest update: 28.07.2017
+const float version = 1.1;
 //========== Needed Packages ==========
 #include <EEPROM.h>
 #include <SPI.h>
@@ -18,7 +18,7 @@ int printwert = 0;
 int dataPin = 7;
 int shiftPin = 8;
 int storePin = 9;
-int DCPin = 12;
+int HandshakePin = 12;
 int AmpPin = 11;
 int PLPin = 13;
 uint32_t D1 = 150;
@@ -74,12 +74,12 @@ void setup() {
   //Laser:
   pinMode(5, OUTPUT); //On
   pinMode(6, OUTPUT); //Off
-  pinMode(DCPin, OUTPUT); //Set DC amplitude
+  pinMode(HandshakePin, OUTPUT); //Set DC amplitude
   pinMode(AmpPin, OUTPUT); //Set pulse amplitude
   pinMode(PLPin, OUTPUT); //Set pulse length
   digitalWrite(5,HIGH);
   digitalWrite(6,HIGH);
-  digitalWrite(DCPin,HIGH);
+  digitalWrite(HandshakePin,HIGH);
   digitalWrite(AmpPin,HIGH);
   digitalWrite(PLPin,HIGH);
   //Confirmation:
@@ -159,7 +159,7 @@ void loop() {
         if (client.available() > 0) {
             char zeichen = client.read();
             value0 = strtoul(cmdstr.c_str(), NULL, 10);
-            if (value0 > 0){
+            if (value0 > 0 && value0 < 65536){
                 value = value0;
             }
             //convert all capitalized letters into small ones
@@ -212,17 +212,15 @@ void parseCommand(EthernetClient &client) {
       client.println("n = Set number of shots in multiple shot mode");
       client.println("t = Set time in microseconds between two pulses in multiple shot mode");
       client.println("x = Set length for handshake (no change suggested)"); 
-      client.println("dc = Start DC mode");     
+      client.println("dc {off|on} = Stop|Start DC mode");     
       client.println("sh = Single shot (pew)");
       client.println("mu = multiple shots (pew,pew,pew)");
       client.println("list = a list of current values");
-      
       client.println("-----");
   } 
   
   //===== IP =====
-  else if(cmdstr.equals("ip?")) {
-      Serial.println(Ethernet.localIP());    
+  else if(cmdstr.equals("ip?")) { 
       client.println(Ethernet.localIP());
       client.println("-----");
   }
@@ -250,7 +248,7 @@ void parseCommand(EthernetClient &client) {
     client.print("Requested value = ");
     client.println(value);
     client.println("-----");
-  }         
+  }
 
   //===== Set-delay =====
   else if(cmdstr.equals("x")) {
@@ -295,10 +293,9 @@ void parseCommand(EthernetClient &client) {
     client.println("-----");
   }            
 
-  //===== DC =====
-  else if(cmdstr.equals("dc")) {
-    client.println("Set request for dc value:");   
-    client.println(amplitude);
+  //===== DC on =====
+  else if(cmdstr.equals("dc on")) {
+    client.println("Set request for dc on");   
     client.println("-----");
     for (int n=0; n <16; n++){
       digitalWrite(shiftPin, LOW);
@@ -307,15 +304,34 @@ void parseCommand(EthernetClient &client) {
       }
     digitalWrite(storePin, HIGH);
     digitalWrite(storePin, LOW);    
-    digitalWrite(DCPin,LOW);
+    digitalWrite(HandshakePin,LOW);
     delay(10);
-    digitalWrite(DCPin,HIGH);
+    digitalWrite(HandshakePin,HIGH);
     while (TestVariable == 0);
     TestVariable = 1;
     client.println("fertig!");
     client.println("-----");
   }  
-
+  
+  //===== DC off =====
+  else if(cmdstr.equals("dc off")) {
+    client.println("Set request for dc off");   
+    client.println("-----");
+    for (int n=0; n <16; n++){
+      digitalWrite(shiftPin, LOW);
+      digitalWrite(dataPin, LOW);
+      digitalWrite(shiftPin, HIGH);
+      }
+    digitalWrite(storePin, HIGH);
+    digitalWrite(storePin, LOW);    
+    digitalWrite(HandshakePin,LOW);
+    delay(10);
+    digitalWrite(HandshakePin,HIGH);
+    while (TestVariable == 0);
+    TestVariable = 1;
+    client.println("fertig!");
+    client.println("-----");
+  }  
   //===== Single shot =====
   else if(cmdstr.equals("sh")) {
     // message:
@@ -336,9 +352,9 @@ void parseCommand(EthernetClient &client) {
     digitalWriteFast(storePin, LOW);
     delayMicroseconds(1);
     // Set-Pin:
-    digitalWriteFast(DCPin,LOW);
+    digitalWriteFast(HandshakePin,LOW);
     delayMicroseconds(D1);
-    digitalWriteFast(DCPin,HIGH);
+    digitalWriteFast(HandshakePin,HIGH);
     // Pulse length:
       if(D2<16383){
       delayMicroseconds(D2);};
@@ -358,9 +374,9 @@ void parseCommand(EthernetClient &client) {
     digitalWriteFast(storePin, LOW);
     delayMicroseconds(1);
     // Set-Pin:
-    digitalWriteFast(DCPin,LOW);
+    digitalWriteFast(HandshakePin,LOW);
     delayMicroseconds(D1);
-    digitalWriteFast(DCPin,HIGH);
+    digitalWriteFast(HandshakePin,HIGH);
     delayMicroseconds(1);
     //Handshake   
     while (TestVariable == 0);
@@ -398,9 +414,9 @@ void parseCommand(EthernetClient &client) {
       digitalWriteFast(storePin, LOW);
       delayMicroseconds(1);
       // Set-Pin:
-      digitalWriteFast(DCPin,LOW);
+      digitalWriteFast(HandshakePin,LOW);
       delayMicroseconds(D1);
-      digitalWriteFast(DCPin,HIGH);
+      digitalWriteFast(HandshakePin,HIGH);
       delayMicroseconds(1);
       // Pulse length:
       if(D2<16383){
@@ -421,9 +437,9 @@ void parseCommand(EthernetClient &client) {
       digitalWriteFast(storePin, LOW);
       delayMicroseconds(1);
       // Set-Pin:
-      digitalWriteFast(DCPin,LOW);
+      digitalWriteFast(HandshakePin,LOW);
       delayMicroseconds(D1);
-      digitalWriteFast(DCPin,HIGH);
+      digitalWriteFast(HandshakePin,HIGH);
       // Distance between two positive flanks:
       if(Tshot<16383){
       delayMicroseconds(Tshot);};
