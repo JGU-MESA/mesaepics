@@ -1,0 +1,12 @@
+record(bo, "$(P)$(R)on_set")
+{
+    field(DISP, "1") # Disable putFields	
+	#If this field is set to TRUE, then all dbPutFields 
+	#(normally issued by channel access) directed to 
+	# this record are ignored except to the field DISP itself.
+    field(DESC, "Set output relay state")
+    field(DTYP, "stream")
+    field(OUT, "@devpnc.proto setOutputState $(PORT)")
+    field(ZNAM, "Off")
+    field(ONAM, "On")
+}
