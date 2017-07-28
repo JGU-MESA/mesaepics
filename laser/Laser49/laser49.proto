@@ -1,0 +1,100 @@
+Terminator = CR LF;
+replytimeout = 1000;
+Extrainput = ignore;
+
+debug{
+    out "%s";
+    in "%39c";
+}
+
+#===== Infos =====
+info_amplitude{
+    out "list";
+    in "amplitude: %u";
+}
+
+info_pulselength{
+    in "amplitude: %*u";
+    in "pulse length: %u microseconds";
+}
+
+info_numberofshots{
+    in "amplitude: %*u";
+    in "pulse length: %*u microseconds";
+    in "Number of shots: %u";
+}
+
+info_cycletime{
+    in "amplitude: %*u";
+    in "pulse length: %*u microseconds";
+    in "Number of shots: %*u";
+    in "Cycle time: %u microseconds";
+}
+
+info_handshake{
+    in "amplitude: %*u";
+    in "pulse length: %*u microseconds";
+    in "Number of shots: %*u";
+    in "Cycle time: %*u microseconds";
+    in "Handshake length: %u microseconds";
+    in "-----"
+}
+
+#===== /Infos =====
+
+on_set{
+    out "%{off|on}";
+    in  "power %{off|on}";
+    in  "-----";
+}
+
+pl_set{
+    out "%u";
+    in  "Requested value = %u";
+    in  "-----";
+    out "p";
+    in  "Pulse length is set to:";
+    in  "%u microseconds";
+    in  "-----";
+}
+
+a_set{
+    out "%u";
+    in  "Requested value = %u";
+    in  "-----";
+    out "a";
+    in  "Amplitude is set to:";
+    in  "%u";
+    in  "-----";
+}
+
+nos_set{
+    out "%u";
+    in  "Requested value = %u";
+    in  "-----";
+    out "a";
+    in  "Number of shots is set to:";
+    in  "%u";
+    in  "-----";
+}
+
+dt_set{
+    out "%u";
+    in  "Requested value = %u";
+    in  "-----";
+    out "a";
+    in  "Cycle time is set to:";
+    in  "%u microseconds";
+    in  "-----";
+}
+
+handshake_set{
+    out "%u";
+    in  "Requested value = %u";
+    in  "-----";
+    out "a";
+    in  "Set-delay is set to:";
+    in  "%u microseconds";
+    in  "-----";
+}
+
