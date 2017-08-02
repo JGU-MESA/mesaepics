@@ -249,7 +249,7 @@ void parseCommand(EthernetClient &client) {
   //===== Set set-delay (handshake) =====
   else if (cmdstr.startsWith("x ")) {
     value = cmdstr.substring(1).toInt();
-    if (value > 0 && value < 65536) {
+    if (value >= 0 && value < 65536) {
       D1 = value;
     }
   }
@@ -264,7 +264,7 @@ void parseCommand(EthernetClient &client) {
   //===== Set pulse length =====
   else if (cmdstr.startsWith("p ")) {
     value = cmdstr.substring(1).toInt();
-    if (value > 0 && value < 65536) {
+    if (value >= 0 && value < 65536) {
       D2 = value;
     }
   }
@@ -279,7 +279,7 @@ void parseCommand(EthernetClient &client) {
   //===== Set amplitude =====
   else if (cmdstr.startsWith("a ")) {
     value = cmdstr.substring(1).toInt();
-    if (value > 0 && value < 65536) {
+    if (value >= 0 && value < 65536) {
       amplitude = value;
     }
   }
@@ -294,7 +294,7 @@ void parseCommand(EthernetClient &client) {
   //===== Set cycle time =====
   else if (cmdstr.startsWith("t ")) {
     value = cmdstr.substring(1).toInt();
-    if (value > 0 && value < 65536) {
+    if (value >= 0 && value < 65536) {
       Tshot = value;
     }
   }
@@ -309,7 +309,7 @@ void parseCommand(EthernetClient &client) {
   //===== Set number of shots =====
   else if (cmdstr.startsWith("n ")) {
     value = cmdstr.substring(1).toInt();
-    if (value > 0 && value < 65536) {
+    if (value >= 0 && value < 65536) {
       Nshot = value;
     }
   }
