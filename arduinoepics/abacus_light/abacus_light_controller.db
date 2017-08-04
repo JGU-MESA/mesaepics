@@ -1,0 +1,32 @@
+record(stringout, "$(P)$(R)debug")
+{
+    field (DTYP, "stream")
+    field (OUT, "@abacus_light.proto debug $(PORT)")
+}
+
+record(bo, "$(P)$(R)testled_set")
+{
+    field (DTYP, "stream")
+    field (OUT, "@abacus_light.proto testled_set $(PORT)")
+    field (ZNAM, "Off")
+    field (ONAM, "On")
+    field (FLNK, "$(P)$(R)testled_get")
+}
+
+record(bi, "$(P)$(R)testled_get")
+{
+    field (DTYP, "stream")
+    field (INP, "@abacus_light.proto testled_get $(PORT)")
+    field (ZNAM, "Off")
+    field (ONAM, "On")
+    field (PINI, "YES")
+}
+
+record (bo, "$(P)$(R)off_set_all")
+{
+    field (DTYP, "stream")
+    field (OUT, "@abacus_light.proto all_channel_off $(PORT)")
+    field (ZNAM, "Off")
+}
+
+
