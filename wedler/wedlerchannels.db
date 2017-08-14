@@ -1,0 +1,214 @@
+
+#Load DAC register values into DAC
+record(stringout, "$(WEDLKI)load_dac")
+{
+    field (DESC, "Load DAC register values into DAC")
+    field (DTYP, "stream")
+    #field (PINI, "YES")
+    field (OUT,  "@wedlkiste.proto loaddac $(PORT)")
+}
+
+# on/off state of a channel
+record(bi, "$(ELMNT)on_get")
+{
+    field(DESC, "ON/Off state of selected channel")
+    field(DTYP, "stream")
+    field(INP,  "@wedlkiste.proto statechanonoff($(CHAN)) $(PORT)")
+    field(SCAN, "5 second")
+    field(ZNAM, "OFF")
+    field(ONAM, "ON")
+}
+
+# error state of a channel
+record(mbbi, "$(ELMNT)stat_get")
+{
+    field(DESC, "Error state of selected channel")
+    field(DTYP, "stream")
+    field(INP,  "@wedlkiste.proto statechanerror($(CHAN)) $(PORT)")
+    field(SCAN, "5 second")
+    #field(ZRST, "NOERROR")
+    field(ZRST, "")        #damit im css nichts angezeigt wird, liegt ja kein Fehler vor
+    field(ONST, "FUSE ERR")
+    field(TWST, "THERM ERR")
+    field(THST, "FUSE+THERM ERR")
+    field(NIST, "UNDEF")
+}
+
+###################################
+
+record(ao, "$(WEDLKI)reset_Erroreg")
+{
+    field(DESC, "Reset Error Register of Wedler PS")
+    field(DTYP, "stream")
+    field(OUT,  "@wedlkiste.proto resetstatposu  $(PORT)")
+    #info(autosaveFields_pass0,"VAL")
+    #info(autosaveFields, "VAL")
+}
+
+record(ao, "$(WEDLKI)reset_Therm")   
+{
+    field(DESC, "Reset Thermal-Shutdown-Register")
+    field(DTYP, "stream")
+    field(OUT,  "@wedlkiste.proto resettherm $(PORT)")
+}
+
+### Da beim Einschalten der Wedlerkiste ein reset_Therm und reset_Erroreg gemacht werden muss
+### und diese aber auch für das Einschalten eines Kanals benötigt werden, muss der Rekord für das
+### Einschalten der Kiste auch hier definiert werden und nicht in wedlkiste.db
+record(bo, "$(WEDLKI)on_set")
+{
+    field(DESC, "Switch on/off Wedler Power Supply")
+    field(DTYP, "stream")
+    field(OUT,  "@wedlkiste.proto switch $(PORT)")
+    field(FLNK, "$(WEDLKI)reset_Therm")
+    field(ZNAM, "OFF")
+    field(ONAM, "ON")
+    info (autosaveFields_pass0, "VAL")
+}
+
+record(bo, "$(ELMNT)on_set")
+{
+    field(DESC, "Switch on/off one channel")
+    field(DTYP, "stream")
+    field(OUT,  "@wedlkiste.proto switchchan($(CHAN)) $(PORT)")
+    field(ZNAM, "OFF")
+    field(ONAM, "ON")
+}
+
+record(ao, "$(ELMNT)i_set") 
+{
+    #field(DESC, "Set value")
+    field(DESC, "Set DAC value of a channel")
+    field(OROC, "0")
+    field(DTYP, "stream")
+    field(OUT,  "@wedlkiste.proto setdacval($(CHAN)) $(PORT)")
+    field(FLNK, "$(WEDLKI)load_dac")        #nach jedem Setzen eines DAC Wertes, wird er in das DAC-Register geladen
+    field(SCAN, "Passive")
+    field(LINR, "LINEAR")
+    field(EGUL, "0")                         # Engineering Units Low
+    field(EGUF, "$(CRDTP)")    # highest eng. value # Engineering Units Full  
+    field(EGU,  "A")
+    field(PREC, "6")
+    field(DRVL, "-$(CRDTP)")   # max value
+    field(DRVH, "$(CRDTP)")    # min value
+    field(LOPR, "-$(CRDTP)")   # min display
+    field(HOPR, "$(CRDTP)")    # max display
+    info(autosaveFields_pass0,"VAL")
+}
+
+record(calcout, "calc") {
+  field(INPA, "$(ELMNT)i_set CP")
+  field(INPB, "$(ELMNT)i_set.OVAL CP")
+  field(CALC, "A!=B?6:0")
+  field(OOPT, "On Change")
+  field(OUT,  "$(ELMNT)i_set.SCAN")
+}
+
+record(ai, "$(ELMNT)inom_get")
+{
+    field(DESC, "Read DAC register value of a channel")
+    field(DTYP, "stream")
+    field(INP,  "@wedlkiste.proto getdacval($(CHAN)) $(PORT)")
+    field(SCAN, "10 second")
+    field(LINR, "LINEAR")
+    field(EGUL, "0")
+    field(EGUF, "$(CRDTP)")
+    field(EGU,  "A")
+    field(PREC, "6")
+    field(HOPR, "$(CRDTP)")                # max display
+    field(LOPR, "-$(CRDTP)")               # min display
+    field(FLNK, "$(ELMNT)devi")  # process devi after read
+}
+
+record(ai, "$(ELMNT)i_get")
+{
+    field(DESC, "Read measured current of a channel")
+    field(DTYP, "stream")
+    field(INP, "@wedlkiste.proto getact($(CHAN),$(ELMNT)vrdy) $(PORT)")
+    field(SCAN, "10 second")
+    field(LINR, "LINEAR")
+    field(EGUL, "0")
+    field(EGUF, "$(CRDTP)")
+    field(EGU,  "A")
+    field(PREC, "6")
+    field(HOPR, "$(CRDTP)")
+    field(LOPR, "-$(CRDTP)")
+    field(FLNK, "$(ELMNT)devi")  # process devi after read
+}
+
+record(ai, "$(ELMNT)u_get")
+{
+    field(DESC, "Read measured voltage of a channel")
+    field(DTYP, "stream")
+    field(INP,  "@wedlkiste.proto getvolt($(CHAN),$(ELMNT)vrdy) $(PORT)")
+    field(SCAN, "10 second")
+    field(LINR, "LINEAR")
+    field(EGUL, "0")
+    field(EGUF, "$(CRDTP)")
+    field(EGU,  "V")
+    field(PREC, "6")
+    field(HOPR, "$(CRDTP)")
+    field(LOPR, "-$(CRDTP)")
+}
+
+record(calc, "$(ELMNT)devi")
+{
+    field(DESC, "Diff nominal-actual")
+    #field(INPA, "$(ELMNT)inom_get")    # Hajo 29.06.17
+    field(INPA, "$(ELMNT)i_set")
+    field(INPB, "$(ELMNT)i_get")
+    field(INPC, "$(ELMNT)vrdy")
+    field(INPD, "1000")
+    field(CALC, "(A - B) * C * D")
+    field(EGU,  "mA")
+    #field(PREC, "6")
+    field(HOPR, "1000")      #all settings from Hajo
+    field(LOPR, "-1000")
+    field(HIHI, "500")   
+    field(LOLO, "-500")
+    field(HIGH, "100")
+    field(LOW,  "-100")
+    #field(HOPR, "1100")     
+    #field(LOPR, "-1100")
+    #field(HIHI, "1000")
+    #field(LOLO, "-1000")
+    #field(HIGH, "900")
+    #field(LOW,  "-900")
+    field(LLSV, "MAJOR")
+    field(LSV,  "MINOR")
+    field(HSV,  "MINOR")
+    field(HHSV, "MAJOR")
+}
+
+# Messwert aktuell
+record(bi, "$(ELMNT)vrdy") {
+    field(ZNAM, "UNREADY")
+    field(ONAM, "READY")
+}
+
+#####################################################################
+# on/off state of a channel Petra  {2, 1, 0} 2=Anzahl der Felder, 1=an, 2=noerror
+##### wird nicht benutzt #####
+record(mbbi, "$(ELMNT)onoff_pe")
+{
+    field(DESC, "ON/Off state of selected channel")
+    field(DTYP, "stream")
+    field(INP,  "@wedlkiste.proto onoff($(CHAN)) $(PORT)")
+    #field(SCAN, "5 second")
+    field(ZRST, "OFF")
+    field(ONST, "ON")
+    field(NIST, "UNDEF")
+}
+
+# on/off and error states of a channel
+##### wird nicht benutzt #####
+record(aai, "$(ELMNT)stats-Chan")
+{
+    field(DESC, "State of selected channel")
+    field(DTYP, "stream")
+    field(INP,  "@wedlkiste.proto stateschan($(CHAN)) $(PORT)")
+    #field(SCAN, "5 second")
+    field(FTVL, "USHORT")
+    field(NELM, "2")
+}
+

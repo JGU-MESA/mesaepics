@@ -1,0 +1,250 @@
+
+# Im folgenden sind verschiedene Darstellungen des 16-Bit Status #
+
+##### Status Bits of Wedler PS #####
+# 16-Bitmaske als string #
+record (stringout, "$(WEDLKI)stat_get_stro")
+{
+    field (DESC, "Check status of Wedler PS")
+    field (SCAN, "10 second")
+    field (DTYP, "stream")
+    field (OUT,  "@wedlkiste.proto states.posu $(PORT)")
+}
+
+##### Status Bits of Wedler PS #####
+# 16-Bitmaske in %16b fuer Byte-Monitor-Widget #
+record (ai, "$(WEDLKI)stat_get")
+{
+    field (DESC, "Check status of Wedler PS")
+    field (SCAN, "10 second")
+    field (DTYP, "stream")
+    field (INP,  "@wedlkiste.proto state.posu $(PORT)")
+}
+
+##### On/Off Status of Wedler PS #####
+# alle 16 Status-Bits werden erhalten #
+# im proto wird nur das 15. Bit betrachtet #
+# ist auch notwendig fuer alle nun folgenden Status-Bits #
+record (bi, "$(WEDLKI)on_get")
+{
+    field (DESC, "Check power ON/OFF")
+    field (SCAN, "10 second")
+    field (DTYP, "stream")
+    field (INP,  "@wedlkiste.proto state.power $(PORT)")
+    field (ZNAM, "ON")
+    field (ONAM, "OFF")
+    field (PRIO, "HIGH")
+}
+
+# 14. Bit #
+record (bi, "$(WEDLKI)stat_appr_get")
+{
+    field (DESC, "Enable(1)/Disable(0)")
+    field (SCAN, "I/O Intr")
+    field (DTYP, "stream")
+    field (INP,  "@wedlkiste.proto state.approve $(PORT)")
+    field (ZNAM, "DISABLE")
+    field (ONAM, "ENABALE")
+    field (PRIO, "HIGH")
+}
+
+# 13. Bit #
+record (bi, "$(WEDLKI)stat_groundl_get")
+{
+    field (DESC, "Enable(1)/Disable(0)")
+    field (SCAN, "I/O Intr")
+    field (DTYP, "stream")
+    field (INP,  "@wedlkiste.proto state.groundleak $(PORT)")
+    field (ZNAM, "NOERROR")
+    field (ONAM, "ERROR")
+    field (PRIO, "HIGH")
+}
+
+# 12. Bit #
+record (bi, "$(WEDLKI)stat_overvolt_get")
+{
+    field (DESC, "Overvoltage")
+    field (SCAN, "I/O Intr")
+    field (DTYP, "stream")
+    field (INP,  "@wedlkiste.proto state.overvolt $(PORT)")
+    field (ZNAM, "NOERROR")
+    field (ONAM, "ERROR")
+    field (PRIO, "HIGH")
+}
+
+# 11. Bit #
+record (bi, "$(WEDLKI)stat_overcurr_get")
+{
+    field (DESC, "Overcurrent")
+    field (SCAN, "I/O Intr")
+    field (DTYP, "stream")
+    field (INP,  "@wedlkiste.proto state.overcurr $(PORT)")
+    field (ZNAM, "NOERROR")
+    field (ONAM, "ERROR")
+    field (PRIO, "HIGH")
+}
+
+# 10. Bit #
+record (bi, "$(WEDLKI)stat_fan_get")
+{
+    field (DESC, "Status fan")
+    field (SCAN, "I/O Intr")
+    field (DTYP, "stream")
+    field (INP,  "@wedlkiste.proto state.fan $(PORT)")
+    field (ZNAM, "NOERROR")
+    field (ONAM, "ERROR")
+    field (PRIO, "HIGH")
+}
+
+# 9. Bit #
+record (bi, "$(WEDLKI)stat--30vsup")
+{
+    field (DESC, "-30V supply")
+    field (SCAN, "I/O Intr")
+    field (DTYP, "stream")
+    field (INP,  "@wedlkiste.proto state.-30vsupply $(PORT)")
+    field (ZNAM, "NOERROR")
+    field (ONAM, "ERROR")
+    field (PRIO, "HIGH")
+}
+
+# 8. Bit #
+record (bi, "$(WEDLKI)stat_+30vsup_get")
+{
+    field (DESC, "+30V supply")
+    field (SCAN, "I/O Intr")
+    field (DTYP, "stream")
+    field (INP,  "@wedlkiste.proto state.+30vsupply $(PORT)")
+    field (ZNAM, "NOERROR")
+    field (ONAM, "ERROR")
+    field (PRIO, "HIGH")
+}
+
+# 7. Bit #
+record (bi, "$(WEDLKI)stat_-5vsup_get")
+{
+    field (DESC, "-5V supply")
+    field (SCAN, "I/O Intr")
+    field (DTYP, "stream")
+    field (INP,  "@wedlkiste.proto state.-5vsupply $(PORT)")
+    field (ZNAM, "NOERROR")
+    field (ONAM, "ERROR")
+    field (PRIO, "HIGH")
+}
+
+# 6. Bit #
+record (bi, "$(WEDLKI)stat_+5vsup_get")
+{
+    field (DESC, "+5V supply")
+    field (SCAN, "I/O Intr")
+    field (DTYP, "stream")
+    field (INP,  "@wedlkiste.proto state.+5vsupply $(PORT)")
+    field (ZNAM, "NOERROR")
+    field (ONAM, "ERROR")
+    field (PRIO, "HIGH")
+}
+
+# 5. Bit #
+record (bi, "$(WEDLKI)stat-phasemoni")
+{
+    field (DESC, "Status phase monitor")
+    field (SCAN, "I/O Intr")
+    field (DTYP, "stream")
+    field (INP,  "@wedlkiste.proto state.phasemoni $(PORT)")
+    field (ZNAM, "NOERROR")
+    field (ONAM, "ERROR")
+    field (PRIO, "HIGH")
+}
+
+# 4. Bit #
+record (bi, "$(WEDLKI)stat_tempzdio_get")
+{
+    field (DESC, "Temperature z-diode")
+    field (SCAN, "I/O Intr")
+    field (DTYP, "stream")
+    field (INP,  "@wedlkiste.proto state.tempzdio $(PORT)")
+    field (ZNAM, "ERROR")
+    field (ONAM, "NOERROR")
+    field (PRIO, "HIGH")
+}
+
+# 3. Bit #
+record (bi, "$(WEDLKI)stat_temprecti_get")
+{
+    field (DESC, "Temperature rectifier")
+    field (SCAN, "I/O Intr")
+    field (DTYP, "stream")
+    field (INP,  "@wedlkiste.proto state.temprecti $(PORT)")
+    field (ZNAM, "NOERROR")
+    field (ONAM, "ERROR")
+    field (PRIO, "HIGH")
+}
+
+# 2. Bit #
+record (bi, "$(WEDLKI)stat_watercool_get")
+{
+    field (DESC, "Watercooling")
+    field (SCAN, "I/O Intr")
+    field (DTYP, "stream")
+    field (INP,  "@wedlkiste.proto state.watercool $(PORT)")
+    field (ZNAM, "NOERROR")
+    field (ONAM, "ERROR")
+    field (PRIO, "HIGH")
+}
+
+# 1. Bit #
+record (bi, "$(WEDLKI)stat_tempowcard_get")
+{
+    field (DESC, "Temperature powercard")
+    field (SCAN, "I/O Intr")
+    field (DTYP, "stream")
+    field (INP,  "@wedlkiste.proto state.tempowcard $(PORT)")
+    field (ZNAM, "NOERROR")
+    field (ONAM, "ERROR")
+    field (PRIO, "HIGH")
+}
+
+# 0. Bit #
+record (bi, "$(WEDLKI)stat_fusepowcard_get")
+{
+    field (DESC, "Fuses powercard")
+    field (SCAN, "I/O Intr")
+    field (DTYP, "stream")
+    field (INP,  "@wedlkiste.proto state.fusepowcard $(PORT)")
+    field (ZNAM, "NOERROR")
+    field (ONAM, "ERROR")
+    field (PRIO, "HIGH")
+}
+
+#record(bo, "$(WEDLKI)on_set")
+#{
+#    field(DESC, "Switch on/off Wedler Power Supply")
+#    field(DTYP, "stream")
+#    field(OUT,  "@wedlkiste.proto switch $(PORT)")
+#    #field(FLNK, "$(WEDLKI)reset_Erroreg")
+#    field(ZNAM, "OFF")
+#    field(ONAM, "ON")
+#    info (autosaveFields_pass0,"VAL")
+#}
+
+#record(ao, "$(WEDLKI)reset_Erroreg")
+#{
+#    field(DESC, "Reset Error Register of Wedler PS")
+#    field(DTYP, "stream")
+#    field(OUT,  "@wedlkiste.proto resetstatposu  $(PORT)")
+#    #field(FLNK, "$(WEDLKI)reset_Therm")
+#}
+
+#record(ao, "$(WEDLKI)reset_Therm")
+#{
+#    field(DESC, "Reset Thermal-Shutdown-Register")
+#    field(DTYP, "stream")
+#    field(OUT,  "@wedlkiste.proto resettherm $(PORT)")
+#}
+
+record(ao, "$(WEDLKI)reset_Posu")
+{
+    field(DESC, "Reset Power Supply")
+    field(DTYP, "stream")
+    field(OUT,  "@wedlkiste.proto resetposu $(PORT)")
+}
