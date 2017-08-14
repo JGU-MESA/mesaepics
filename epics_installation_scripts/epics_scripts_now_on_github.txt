@@ -1,0 +1,3 @@
+New updated epics_scripts can now be downloaded via git from github:
+
+git clone http://github.com/sifriede/epics
