@@ -1,27 +1,18 @@
-record (bi, "$(P)$(R)on_set_read")
+record (bi, "$(P)$(R)on_get")
 {
     field (DTYP, "stream")
-    field (INP, "@abacus_valve.proto channel_set_read($(CH)) $(PORT)")
-    field (SCAN, ".5 second")
+    field (INP, "@abacus_light.proto channel_set_read($(CH)) $(PORT)")
     field (ZNAM, "Off")
     field (ONAM, "On")
+    field (PINI, "YES")
 }
 
 record (bo, "$(P)$(R)on_set")
 {
     field (DTYP, "stream")
-    field (OUT, "@abacus_valve.proto channel_set($(CH)) $(PORT)")
+    field (OUT, "@abacus_light.proto channel_set($(CH)) $(PORT)")
     field (ZNAM, "Off")
     field (ONAM, "On")
+    field (FLNK, "$(P)$(R)on_get.PROC")
 }
 
-record (mbbi, "$(P)$(R)on_get")
-{
-    field (DTYP, "stream")
-    field (INP, "@abacus_valve.proto channel_get($(CH)) $(PORT)")
-    field (SCAN, ".2 second")
-    field (SHFT, 3)
-    field (ZRST, "Closed")
-    field (ONST, "Open")
-    field (TWST, "Undefined")
-}

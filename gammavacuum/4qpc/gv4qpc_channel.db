@@ -3,7 +3,6 @@ record(bi, "$(P)$(R)on_get") {
     field(DTYP, "stream")
     field(INP, "@gv4qpc.proto getHVStatus($(Ch)) $(PORT)")
     field(SCAN, "2 second") 
-    #field(PINI, "YES")
     field(ZNAM, "OFF")
     field(ONAM, "ON")
     field(FLNK, "$(P)$(R)p_get")
@@ -22,7 +21,6 @@ record(ai, "$(P)$(R)i_get_raw") {
     field(DTYP, "stream")
     field(INP, "@gv4qpc.proto rdCurrent($(Ch)) $(PORT)")
     field(SCAN, "1 second")
-    #field(PINI, "YES")
     field(EGU, "A")
     field(PREC, 2)
     field(FLNK, "$(P)$(R)i_get")
@@ -43,8 +41,7 @@ record(ai, "$(P)$(R)p_get_raw") {
     field(DTYP, "stream")
     field(INP, "@gv4qpc.proto rdPressure($(Ch)) $(PORT)")
     field(SCAN, "1 second")
-    #field(PINI, "YES")
-    field(EGU, "MBAR")
+    field(EGU, "mbar")
     field(PREC, 2)
     field(FLNK, "$(P)$(R)p_get")
 }
@@ -53,9 +50,9 @@ record(calc, "$(P)$(R)p_get") {
     field(INPA, "$(P)$(R)on_get")
     field(INPB, "$(P)$(R)p_get_raw")
     field(CALC, "A==1?B:0")
-    field(EGU, "MBAR")
-    field(HOPR, 1e-5)
-    field(LOPR, 1e-10)
+    field(EGU, "mbar")
+    field(HOPR, 1e-3)
+    field(LOPR, 1e-12)
     field(PREC, 2)
 }
 
@@ -64,13 +61,15 @@ record(ai, "$(P)$(R)u_get") {
     field(INP, "@gv4qpc.proto rdVoltage($(Ch)) $(PORT)")
     field(SCAN, "2 second")
     field(EGU, "V")
+    field(LOPR, "0")
+    field(HOPR, "7000")
     field(PREC, 0)
 }
 
-record(stringin, "$(P)$(R)supplystatus_get") {
+record(stringin, "$(P)$(R)stat_get") {
+    field(DESC, "Read Ch$(Ch) status")
     field(DTYP, "stream")
     field(INP, "@gv4qpc.proto rdSupplyStatus($(Ch)) $(PORT)")
-    #field(SCAN, "5 second")
-    #field(PINI, "YES")
+    field(SCAN, "5 second")
 }
 
