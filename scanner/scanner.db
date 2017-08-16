@@ -1,94 +1,208 @@
-
-record(bo, "$(P)$(R)Start")
+record(waveform,"$(P)$(R)DevIdent")
 {
-    field(DTYP, "stream")
-    field(OUT, "@scanner.proto scanstart($(N)) $(DEVICE)")
-    field(HIGH, 0)
-    field(ONAM, "START")
-    field(ZNAM, "STANDBY")
-    field(FLNK, "$(P)$(R)RData")    # triggers data-read first
+field(DESC,"Get device idenfication of scanner")
+field(DTYP,"stream")
+field(INP,"@scanner.proto getDevIdent $(PORT)")
+#field(PINI,"YES")
+field(FTVL,"CHAR")
+field(NELM,"40")
 }
 
-record(waveform, "$(P)$(R)RPos")
+record(ai,"$(P)$(R)pos_get")
 {
-    field(DTYP, "stream")
-    field(INP, "@scanner.proto getpos($(N)) $(DEVICE)")
-    field(FTVL, "USHORT")
-#    field(FTVL, "DOUBLE")  # works also, but has more bytes to trasnfer
-    field(NELM, "$(N)")
-    field(LOPR,"0")
-    field(HOPR, "65535")
-    field(FLNK, "$(P)$(R)PNord")    #trigger size eval
-    field(SCAN, "Passive")
+field(DESC,"Get current position of scanner")
+field(DTYP,"stream")
+field(INP,"@scanner.proto getPos $(PORT)")
+field(SCAN,".1 second")
+field(EGU,"mm")
+field(PREC,"4")
+field(HOPR,"3")
+field(LOPR,"0")
 }
 
-record(waveform, "$(P)$(R)RData")
+record(ai,"$(P)$(R)stoppos_get")
 {
-    field(DTYP, "stream")
-    field(INP, "@scanner.proto makescan($(N)) $(DEVICE)")
-    field(FTVL, "SHORT")
-    field(NELM, "$(N)")
-    field(LOPR,"-32767")
-    field(HOPR, "+32767")
-#    field(SCAN, "10 second")
-    field(SCAN, "Passive")
-    field(FLNK, "$(P)$(R)RPos")     #triggers position read after data
+field(DESC,"Get current stopposition of scanner")
+field(DTYP,"stream")
+field(INP,"@scanner.proto getStopPos $(PORT)")
+field(SCAN,".1 second")
+field(EGU,"mm")
+field(PREC,"4")
+field(HOPR,"3")
+field(LOPR,"0")
 }
 
-record(calcout, "$(P)$(R)PNord")
+record(ai,"$(P)$(R)startpos_get")
 {
-    field(DTYP, "Soft Channel")
-    field(INPA, "$(P)$(R)RPos.NORD")
-    field(OUT, "$(P)$(R)Position.NUSE PP")
-    field(CALC, "A")
-    field(SCAN, "Passive")
-    field(FLNK, "$(P)$(R)Position")  #triggers calc. of position array
+field(DESC,"Get current startposition of scanner")
+field(DTYP,"stream")
+field(INP,"@scanner.proto getStartPos $(PORT)")
+field(SCAN,".1 second")
+field(EGU,"mm")
+field(PREC,"4")
+field(HOPR,"3")
+field(LOPR,"0")
 }
 
-record(calcout, "$(P)$(R)DNord")
+record(ao,"$(P)$(R)stoppos_set")
 {
-    field(DTYP, "Soft Channel")
-    field(INPA, "$(P)$(R)RData.NORD")
-    field(OUT, "$(P)$(R)Data.NUSE PP")
-    field(CALC, "A")
-    field(SCAN, "Passive")
-    field(FLNK, "$(P)$(R)Data")   # triggers calc. of data array
+field(DESC,"Set absolute endposition of scanner")
+field(DTYP,"stream")
+field(OUT,"@scanner.proto setStopPos $(PORT)")
+field(EGU,"mm")
+field(PREC,"4")
+field(HOPR,"3")
+field(LOPR,"0")
 }
 
-record(acalcout, "$(P)$(R)Position")
+record(ao,"$(P)$(R)startpos_set")
 {
-    field(DTYP, "Soft Channel")
-    field(INAA, "$(P)$(R)RPos")
-    field(INPA, 32768)
-#    field(OUT, "$(P)$(R)Position CA NMS")
-    field(DOPT, "Use CALC")
-#    field(OOPT, "Every Time")
-    field(CALC, "AA / A")
-#    filed(OCALC, "AMIN(AA)")
-    field(NELM, "$(N)")
-    field(SIZE, "NUSE")
-#    field(NUSE, 1)
-    field(EGU, "mm")
-    field(HOPR, 2)
-    field(LOPR, 0)
-    field(FLNK, "$(P)$(R)DNord")   # triggers size val for Data-array
-    field(SCAN, "Passive")
+field(DESC,"Set absolute startposition of scanner")
+field(DTYP,"stream")
+field(OUT,"@scanner.proto setStartPos $(PORT)")
+field(EGU,"mm")
+field(PREC,"4")
+field(HOPR,"3")
+field(LOPR,"0")
 }
 
-record(acalcout, "$(P)$(R)Data")
+record(bo,"$(P)$(R)start")
 {
-    field(DTYP, "Soft Channel")
-    field(INAA, "$(P)$(R)RData")
-    field(INPA, "32768")
-    field(DOPT, "Use CALC")
-#    field(OOPT, "Every Time")
-    field(CALC, "AA / A")
-    field(NELM, "$(N)")
-    field(SIZE, "NUSE")
-#    field(NUSE, 1)
-    field(EGU, "mm")
-    field(HOPR, 2)
-    field(LOPR, 0)
-    field(SCAN, "Passive")
+field(DESC,"Start moving of scanner")
+field(DTYP,"stream")
+field(OUT,"@scanner.proto start $(PORT)")
+#field(HIGH,"1")
 }
 
+record(ai, "$(P)$(R)run_get")
+{
+field(DESC,"Is scanner moving?")
+field(DTYP, "stream")
+field(INP,"@scanner.proto running $(PORT)")
+field(SCAN,".1 second")
+}
+
+record(bo, "$(P)$(R)scan_set")
+{
+field(DESC,"Set scanmode")
+field(DTYP,"stream")
+field(OUT,"@scanner.proto scanmode $(PORT)")
+#field(HIGH,"1")
+}
+
+record(bo, "$(P)$(R)single_set")
+{
+field(DESC,"Set singlemode")
+field(DTYP,"stream")
+field(OUT,"@scanner.proto singlemode $(PORT)")
+#field(HIGH,"1")
+}
+
+record(stringin, "$(P)$(R)mode_get")
+{
+field(DESC, "Get current mode")
+field(DTYP,"stream")
+field(INP,"@scanner.proto getMode $(PORT)")
+field(SCAN,"2 second")
+}
+
+record(ao,"$(P)$(R)repeat_set")
+{
+field(DESC,"Set number of repeats for scanmode")
+field(DTYP,"stream")
+field(OUT,"@scanner.proto setRepeat $(PORT)")
+field(PREC,"0")
+field(HOPR,"3")
+field(LOPR,"0")
+}
+
+record(ai,"$(P)$(R)repeat_get")
+{
+field(DESC,"Get number of completed scans")
+field(DTYP,"stream")
+field(INP,"@scanner.proto getRepeat $(PORT)")
+field(SCAN,".5 second")
+field(PREC,"0")
+field(HOPR,"3")
+field(LOPR,"0")
+}
+
+record(ao, "$(P)$(R)minvel_set")
+{
+field(DESC,"Set minimum velocity")
+field(DTYP,"stream")
+field(OUT,"@scanner.proto setMinVel $(PORT)")
+field(PREC,"2")
+field(HOPR,"3")
+field(LOPR,"0")
+}
+
+record(ai, "$(P)$(R)minvel_get")
+{
+field(DESC,"Get minimum velocity")
+field(DTYP,"stream")
+field(INP,"@scanner.proto getMinVel $(PORT)")
+field(PREC,"2")
+}
+
+record(ao, "$(P)$(R)maxvel_set")
+{
+field(DESC,"Set maximum velocity")
+field(DTYP,"stream")
+field(OUT,"@scanner.proto setMaxVel $(PORT)")
+field(PREC,"2")
+field(HOPR,"3")
+field(LOPR,"0")
+}
+
+record(ai, "$(P)$(R)maxvel_get")
+{
+field(DESC,"Get maximum velocity")
+field(DTYP,"stream")
+field(INP,"@scanner.proto getMaxVel $(PORT)")
+field(PREC,"2")
+}
+
+record(ai, "$(P)$(R)acc_get")
+{
+field(DESC,"Get current acceleration")
+field(DTYP,"stream")
+field(INP,"@scanner.proto getAcc $(PORT)")
+field(PREC,"2")
+}
+
+record(ai, "$(P)$(R)ai0_get")
+{
+field(DESC,"Get signal at analog input 0")
+field(DTYP,"stream")
+field(INP,"@scanner.proto getAI0 $(PORT)")
+field(SCAN,".1 second")
+field(PREC,"3")
+}
+
+record(ai, "$(P)$(R)ai1_get")
+{
+field(DESC,"Get signal at analog input 1")
+field(DTYP,"stream")
+field(INP,"@scanner.proto getAI1 $(PORT)")
+field(SCAN,".1 second")
+field(PREC,"3")
+}
+
+record(ai, "$(P)$(R)ai2_get")
+{
+field(DESC,"Get signal at analog input 2")
+field(DTYP,"stream")
+field(INP,"@scanner.proto getAI2 $(PORT)")
+#field(SCAN,".1 second")
+field(PREC,"3")
+}
+
+record(ai, "$(P)$(R)ai3_get")
+{
+field(DESC,"Get signal at analog input 3")
+field(DTYP,"stream")
+field(INP,"@scanner.proto getAI3 $(PORT)")
+#field(SCAN,".1 second")
+field(PREC,"3")
+}

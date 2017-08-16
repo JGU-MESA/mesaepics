@@ -1,21 +1,137 @@
-
 Terminator = CR LF;
 
-Separator = " ";
-
-makescan {
-   out "DATA \$1";
-   in "Data:%x";
+getDevIdent{
+out "*IDN?";
+in "%40c";
 }
 
-getpos {
-   out"GETPOS";
-   in "Posi:%x";
+getPos{
+out "SCAN:POSI?";
+in "%f";
 }
 
-ReplyTimeout = 5000;
-scanstart {
-   out "SCAN \$1";
-   in "Done";
+getStopPos{
+out "SCAN:STOP?";
+in "%f";
 }
 
+getStartPos{
+out "SCAN:STAR?";
+in "%f";
+}
+
+getMaxVel{
+out "SCAN:MAXI?";
+in "%f";
+@init {out "SCAN:MAXI?";
+       in "%f";}
+}
+
+getMinVel{
+out "SCAN:MINI?";
+in "%f";
+@init {out "SCAN:MINI?";
+       in "%f";}
+}
+
+getAcc{
+out "SCAN:ACCE?";
+in "%f";
+@init { out "SCAN:ACCE?";
+        in "%f";}
+}
+
+getRepeat{
+out "SCAN:PASS?";
+in "%i";
+@init { out "SCAN:PASS?";
+        in "%i";}
+}
+
+getAI0{
+out "SCAN:AIN0:VALU?";
+in "%f";
+@init { out "SCAN:AIN0:VALU?";
+        in "%f";}
+}
+
+getAI1{
+out "SCAN:AIN1:VALU?";
+in "%i";
+@init { out "SCAN:AIN1:VALU?";
+        in "%i";}
+}
+
+getAI2{
+out "SCAN:AIN2:VALU?";
+in "%i";
+@init { out "SCAN:AIN2:VALU?";
+        in "%i";}
+}
+
+getAI3{
+out "SCAN:AIN3:VALU?";
+in "%i";
+@init { out "SCAN:AIN3:VALU?";
+        in "%i";}
+}
+
+setStopPos{
+out "SCAN:STOP %f";
+in "OK";
+@init { getStopPos; }
+}
+
+setStartPos{
+out "SCAN:STAR %f";
+in "OK";
+@init { getStartPos; }
+}
+
+start{
+out "SCAN:COMM start";
+in "OK";
+}
+
+running{
+out "SCAN:ISRU?";
+in "%i";
+}
+
+singlemode{
+out "SCAN:MODE single";
+in "OK";
+@init { out "SCAN:MODE single";
+        in "OK"; }
+}
+
+scanmode{
+out "SCAN:MODE scan";
+in "OK";
+}
+
+getMode{
+out "SCAN:MODE?";
+in "%s";
+@init { out "SCAN:MODE?";
+        in "%s";}
+}
+	
+setRepeat{
+out "SCAN:REPE %i";
+in "OK";
+@init { out "SCAN:REPE 0";
+        in "OK";}
+}
+
+setMinVel{
+out "SCAN:MINI %f";
+in "OK";
+@init {getMinVel;}
+}
+
+setMaxVel{
+out "SCAN:MAXI %f";
+in "OK";
+@init {getMaxVel;}
+}
