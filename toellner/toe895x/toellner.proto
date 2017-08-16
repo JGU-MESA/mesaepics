@@ -46,8 +46,8 @@ getPower {
 }
 
 setPower {
-   out "POW %f";
-   in "%f";
+   out "POW %.4f";
+   @init { out "POW?"; in "%g"; }
 }
 
 getMaxVoltage {
