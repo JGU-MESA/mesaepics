@@ -12,45 +12,38 @@ GetPressure {
 }
 
 SetSensorOn {
-        out "SHV\$1,%i";
-        in "OK";
-}
-
-SetDegasOn {
-        out "SDG\$1,%i";
-        in "OK";
-}
-
-ReadVersion {
-        out "RVN";
-        in "%s";
-        @init {
-                out "RVN";
-                in "%s";
-        }
-}
-
-ReadSensorID1 {
-        out "RID1";
-        in "%i";
-        @init {
-                out "RID1";
-                in "%i";
-        }
-}
-
-SetSetPoint1 {
-    separator = ", ";
-    out "SSP1, (%6.4E)";
+    out "SHV\$1,%i";
     in "OK";
 }
 
-ReadSetPoint1_LOW {
-    out "RSP1";
-    in "%e,\t%*e,\t1";
+SetDegasOn {
+    out "SDG\$1,%i";
+    in "OK";
 }
 
-ReadSetPoint1_HIGH {
-    out "RSP1";
-    in "%*e,\t%e,\t1";
+ReadVersion {
+    out "RVN";
+    in "%s";
+    @init {
+            out "RVN";
+            in "%s";
+    }
 }
+
+ReadSensorID1 {
+    out "RID1";
+    in "%i";
+    @init {
+            out "RID1";
+            in "%i";
+        }
+}
+
+ssp {
+    out "SSP\$1,%(A)6.4E,%(B)6.4E,\t1";
+    in "OK";
+    @init{
+        out "RSP\$1";
+        in "%(\$2sp1_low_set)e,\t%(\$2sp1_high_set)e,\t1";
+    }
+} 
