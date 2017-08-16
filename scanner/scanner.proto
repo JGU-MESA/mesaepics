@@ -135,3 +135,15 @@ out "SCAN:MAXI %f";
 in "OK";
 @init {getMaxVel;}
 }
+
+setPMGain{
+out "SCAN:DOUT %i";
+in "OK";
+@init {out "SCAN:DOUT %i";
+       in "OK";}
+}
+
+getPMGain{
+out "SCAN:DOUT?";
+in "OK";
+}

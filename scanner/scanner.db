@@ -206,3 +206,18 @@ field(INP,"@scanner.proto getAI3 $(PORT)")
 #field(SCAN,".1 second")
 field(PREC,"3")
 }
+
+record(ao, "$(P)$(R)pmg_set")
+{
+field(DESC,"Set gain of photomultiplier input")
+field(DTYP,"stream")
+field(OUT,"@scanner.proto setPMGain $(PORT)")
+}
+
+record(ai, "$(P)$(R)pmg_get")
+{
+field(DESC,"Get gain of photomultiplier input")
+field(DTYP,"stream")
+field(INP,"@scanner.proto getPMGain $(PORT)")
+}
+
