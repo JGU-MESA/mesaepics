@@ -1,15 +1,3 @@
-##Needed for TOE 8872
-record(stringout, "$(P)$(R)remote_set"){
-	field(DTYP, "stream")
-	field(OUT, "@toellner.proto enable_remote $(PORT)")
-}
-
-
-record(stringout, "$(P)$(R)debug") {
-   field(DTYP, "stream")
-   field(OUT, "@toellner.proto debug $(PORT)")
-  }
-
 record(waveform, "$(P)$(R)id_get")
 {
     field(DESC, "Get device identification of Toellner")
@@ -19,21 +7,6 @@ record(waveform, "$(P)$(R)id_get")
 #If this field is set to YES during database configuration, then the record is processed once at IOC initialization (before the normal scan tasks are started). 
     field(FTVL, "CHAR") 
     field(NELM, "40") 
-    info(autosaveFields_pass0, "VAL")
-}
-
-record(ai, "$(P)$(R)i_get")
-{
-    field(DESC, "Get Current of Toellner")
-    field(DTYP, "stream")
-    field(INP, "@toellner.proto getCurrent $(PORT)")
-    field(SCAN, "1 second")
-    field(EGU,  "A")
-    field(PREC, "4")
-    field(HOPR, "10")
-    field(LOPR, "0")
-    info(autosaveFields, "DESC EGU PREC HOPR LOPR")
-    info(autosaveFields_pass0,"VAL")
 }
 
 record(ao, "$(P)$(R)i_set") 
@@ -44,9 +17,9 @@ record(ao, "$(P)$(R)i_set")
     field(EGU,  "A")
     field(PREC, "3")   #The VAL field's value will be clipped within limits specified in the fields DRVH and DRVL
     field(DRVL, "0")
-    field(DRVH, "10")   #Drive High
+    field(DRVH, "2")   #Drive High
     field(LOPR, "0")   #The HOPR and LOPR fields set the upper and lower display limits for the VAL, HIHI, HIGH, LOW, and LOLO fields
-    field(HOPR, "10")   #High operating range
+    field(HOPR, "2")   #High operating range
     field(HIHI, "1.9")
     field(HIGH, "1.8")
     field(LOLO, "0.2")
@@ -55,8 +28,31 @@ record(ao, "$(P)$(R)i_set")
     field(HSV,  "MINOR")
     field(LSV,  "MINOR")
     field(LLSV, "MAJOR")
-    info(autosaveFields, "DESC EGU PREC HOPR LOPR")
     info(autosaveFields_pass0, "VAL")
+}
+
+record(ao, "$(P)$(R)u_set")
+{
+   field(DESC, "Set Voltage")
+   field(EGU, "V")
+   field(LOPR, 0)
+   field(HOPR, 50)
+   field(PREC, 2)
+   field(DTYP, "stream")
+   field(OUT, "@toellner.proto setVolt $(PORT)")
+   info(autosaveFields_pass0, "VAL")
+}
+
+record(ai, "$(P)$(R)i_get")
+{
+    field(DESC, "Get Current of Toellner")
+    field(DTYP, "stream")
+    field(INP, "@toellner.proto getCurrent $(PORT)")
+    field(SCAN, "1 second")
+    field(EGU,  "A")
+    field(PREC, "4")
+    field(HOPR, "2")
+    field(LOPR, "0")
 }
 
 record(ai, "$(P)$(R)u_get")
@@ -69,48 +65,17 @@ record(ai, "$(P)$(R)u_get")
     field(PREC, "4")
     #field(HOPR,"2")
     #field(LOPR,"0")
-    info(autosaveFields, "DESC EGU PREC")
-    info(autosaveFields_pass0,"VAL")
-}
-
-
-record(ao, "$(P)$(R)u_set")
-{
-	field(DESC, "Set Voltage")
-	field(EGU, "V")
-	field(LOPR, 0)
-	field(HOPR, 50)
-	field(PREC, 2)
-	field(DTYP, "stream")
-	field(OUT, "@toellner.proto setVolt $(PORT)")
 }
 
 record(ai, "$(P)$(R)pow_get")
 {
-    field(DESC, "Get Power of Toellner")
+    field(DESC, "Get output power of Toellner")
     field(DTYP, "stream")
     field(INP,  "@toellner.proto getPower $(PORT)")
-    field(SCAN, "1 second")
+    field(SCAN, "10 second")
     field(EGU,  "W")
-    field(PREC, "4")
-    #field(HOPR,"2")
-    #field(LOPR,"0")
-    info(autosaveFields, "DESC EGU PREC")
-    info(autosaveFields_pass0,"VAL")
+    field(PREC, "5")
 }
-
-
-record(ao, "$(P)$(R)pow_set")
-{
-	field(DESC, "Set Power")
-	field(EGU, "W")
-	field(LOPR, 0)
-	field(HOPR, 200)
-	field(PREC, 2)
-	field(DTYP, "stream")
-	field(OUT, "@toellner.proto setPower $(PORT)")
-}
-
 
 record(ai, "$(P)$(R)imax_get")
 {
@@ -119,7 +84,6 @@ record(ai, "$(P)$(R)imax_get")
     field(INP,  "@toellner.proto getMaxCurrent $(PORT)")
     field(EGU,  "A")
     field(PREC, "4")
-    info(autosaveFields_pass0,"DESC VAL")
 }
 
 record(ai, "$(P)$(R)umax_get")
@@ -129,7 +93,7 @@ record(ai, "$(P)$(R)umax_get")
     field(INP,  "@toellner.proto getMaxVoltage $(PORT)")
     field(EGU,  "V")
     field(PREC, "4")
-    info(autosaveFields_pass0,"DESC VAL")
+#    info(autosaveFields_pass0,"DESC VAL")
 }
 
 record(bo, "$(P)$(R)on_set")
@@ -139,9 +103,10 @@ record(bo, "$(P)$(R)on_set")
     field(OUT,  "@toellner.proto setSwitch $(PORT)")
     field(ZNAM, "OFF")
     field(ONAM, "ON")
+    info(autosaveFields_pass0,"VAL")
 }
 
-record(bi, "$(P)$(R)stat_get")
+record(bi, "$(P)$(R)on_get")
 {
     field(DESC, "deliver On/Off state of Toellner")
     field(DTYP, "stream")
@@ -149,18 +114,47 @@ record(bi, "$(P)$(R)stat_get")
     field(ZNAM, "Off")
     field(ONAM, "On")
     field(SCAN, "5 second")
-    field(ZSV,  "MAJOR")
-    #field(COSV, "MINOR")
-    info(autosaveFields, "DESC")
+}
+
+record(ao, "$(P)$(R)pow_set")
+{
+    field(DESC, "Set Power of Toellner-Netzgert")
+    field(DTYP, "stream")
+    field(OUT,  "@toellner.proto setPower $(PORT)")
+    field(EGU,  "W")
+    field(PREC, "3")   #The VAL field's value will be clipped within limits specified in the fields DRVH and DRVL
+    field(DRVL, "0")
+    field(DRVH, "200")   #Drive High
+    field(LOPR, "0")   #The HOPR and LOPR fields set the upper and lower display limits for the VAL, HIHI, HIGH, LOW, and LOLO fields
+    field(HOPR, "200")   #High operating range
+    field(HIHI, "1.9")
+    field(HIGH, "1.8")
+    field(LOLO, "0.2")
+    field(LOW,  "0.1")
+    field(HHSV, "MAJOR")
+    field(HSV,  "MINOR")
+    field(LSV,  "MINOR")
+    field(LLSV, "MAJOR")
+    info(autosaveFields, "DESC EGU PREC HOPR LOPR")
     info(autosaveFields_pass0, "VAL")
 }
 
-record(ai, "$(P)$(R)StatQuesCond")
+record(ai, "$(P)$(R)stat_get")
 {
-    field(DESC, "Get maximum voltage of Toellner")
+    field(DESC, "Read Questionable-Condition-Register")
     field(DTYP, "stream")
     field(INP,  "@toellner.proto getStatQuesCond $(PORT)")
-    field(SCAN, "1 second")
+    field(SCAN, "5 second")
+}
+
+record(waveform, "$(P)$(R)sys_err")
+{
+    field(DESC, "Read error messages")
+    field(DTYP, "stream")
+    field(INP,  "@toellner.proto getSysErr $(PORT)")
+    field(SCAN, "5 second")
+    field(FTVL, "CHAR") 
+    field(NELM, "100") 
 }
 
 #Record Reference Manual    

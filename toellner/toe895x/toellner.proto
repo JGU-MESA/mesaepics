@@ -1,5 +1,6 @@
 Terminator = CR LF;
 
+
 getDevIdent {
    out "*IDN?";
    in "%40c";
@@ -13,7 +14,7 @@ getCurrent {
 setCurrent {
    out "CURR %.4f";
    #@init { getCurrent; }
-   @init { out "CURR?"; in "%g" }
+   @init { out "CURR %.4f"; }
 }
 
 getVolt {
@@ -22,12 +23,21 @@ getVolt {
 }
 
 setVolt {
-	out "VOLT %g";
-	wait 100;
-	@init {
-		out "VOLT?";
-		in "%g";
-	}
+   out "VOLT %g";
+#   wait 100;
+   @init { out "VOLT %g";  }
+}
+
+getMaxCurrent {
+   out "CURR? MAX";
+   in "%f";
+   @init { 
+     out "SYST:REM";
+     out "SYST:LANG CIIL";
+     out "VOLT MAX";   #Setze maximale Spannungsbegrenzung
+     out "CURR? MAX";
+     in "%f";  
+   }
 }
 
 getPower {
@@ -36,26 +46,16 @@ getPower {
 }
 
 setPower {
-   out "POW %.4f";
-    @init { out "POW?"; in "%g" }
-}
-
-
-getMaxCurrent {
-   out "CURR? MAX";
+   out "POW %f";
    in "%f";
-   @init { 
-       out "CURR? MAX";
-       in "%f";  
-   }
 }
 
 getMaxVoltage {
    out "VOLT? MAX";
    in "%f";
    @init { 
-       out "VOLT? MAX";
-       in "%f";
+      out "VOLT? MAX";
+      in "%f";
    }
 }
 
@@ -66,8 +66,8 @@ getSwitch {
 
 setSwitch {
    out "OUTP %{0|1}";
-   @init { getswitch; }
-   #@init { out "OUTP %{0|1}"; }
+   #@init { getswitch; }
+   @init { out "OUTP %{0|1}"; }
 }
 
 getStatQuesCond {
@@ -75,6 +75,12 @@ getStatQuesCond {
    in "%d";
 }
 
+getSysErr {
+   out "SYST:ERR?";
+   in "%100c";
+}
+
 #frequently changing potocol files can be reloaded; without record argument all records
 #epics> streamReload()
+
 #http://epics.web.psi.ch/software/streamdevice/doc/protocol.html
