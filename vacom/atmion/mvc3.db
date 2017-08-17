@@ -3,7 +3,8 @@ record (stringout, "$(P)$(R)debug"){
     field(OUT, "@mvc3.proto debug $(PORT)")
 }
 
-record (ai, "$(P)$(R)sp1_low_set"){
+##===== Set Points =====
+record (ao, "$(P)$(R)sp1_low_set"){
     field(LOPR, "1e-11")
     field(DRVL, "1e-11")
     field(HOPR, "1e-5")
@@ -11,7 +12,7 @@ record (ai, "$(P)$(R)sp1_low_set"){
     field(FLNK, "$(P)$(R)sp1_set.PROC")
 }
 
-record (ai, "$(P)$(R)sp1_high_set"){
+record (ao, "$(P)$(R)sp1_high_set"){
     field(LOPR, "1e-11")
     field(DRVL, "1e-11")
     field(HOPR, "1e-5")
@@ -27,6 +28,31 @@ record (calcout, "$(P)$(R)sp1_set"){
     field(OUT, "@mvc3.proto ssp(1,$(P)$(R)) $(PORT)")
 }
 
+record (ao, "$(P)$(R)sp2_low_set"){
+    field(LOPR, "1e-11")
+    field(DRVL, "1e-11")
+    field(HOPR, "1e-5")
+    field(DRVH, "1e-5")
+    field(FLNK, "$(P)$(R)sp2_set.PROC")
+}
+
+record (ao, "$(P)$(R)sp2_high_set"){
+    field(LOPR, "1e-11")
+    field(DRVL, "1e-11")
+    field(HOPR, "1e-5")
+    field(DRVH, "1e-5")
+    field(FLNK, "$(P)$(R)sp2_set.PROC")
+}
+
+record (calcout, "$(P)$(R)sp2_set"){
+    field(DTYP, "stream")
+    field(INPA, "$(P)$(R)sp2_low_set")
+    field(INPB, "$(P)$(R)sp2_high_set")
+    field(CALC, "0")
+    field(OUT, "@mvc3.proto ssp(2,$(P)$(R)) $(PORT)")
+}
+
+##===== Pressure measurement =====
 record (ai, "$(P)$(R)ReadPressure")
 {
     field(SCAN, ".1 second")

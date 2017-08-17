@@ -44,6 +44,6 @@ ssp {
     in "OK";
     @init{
         out "RSP\$1";
-        in "%(\$2sp1_low_set)e,\t%(\$2sp1_high_set)e,\t1";
+        in "%(\$2sp\$1_low_set)e,\t%(\$2sp\$1_high_set)e,\t1";
     }
 } 
