@@ -24,4 +24,16 @@ record (mbbi, "$(P)$(R)on_get")
     field (ZRST, "Closed")
     field (ONST, "Open")
     field (TWST, "Undefined")
+    field (FLNK, "$(P)$(R)ack_state.PROC")
+}
+
+record (calcout, "$(P)$(R)ack_state")
+{
+    field (DTYP, "stream")
+    field (INPA, "$(P)$(R)on_get")
+    field (OOPT, "Transition To Zero") 
+	#Transition to Zero
+    field (CALC, "A=0?0:1")
+    field (ODLY, ".1")
+    field (OUT, "@abacus_valve.proto channel_set_ack($(CH)) $(PORT)")
 }

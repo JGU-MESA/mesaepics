@@ -26,6 +26,10 @@ channel_set{
     @init{channel_set_read;}
 }
 
+channel_set_ack{
+    out "ch \$1 off";
+}
+
 channel_get{
     out "meas:ch \$1";
     in "actual state: ch \$1 %{0|1|undefined}";
