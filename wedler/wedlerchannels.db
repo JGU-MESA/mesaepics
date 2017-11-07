@@ -34,8 +34,6 @@ record(mbbi, "$(ELMNT)stat_get")
     field(NIST, "UNDEF")
 }
 
-###################################
-
 record(ao, "$(WEDLKI)reset_Erroreg")
 {
     field(DESC, "Reset Error Register of Wedler PS")
@@ -73,11 +71,79 @@ record(bo, "$(ELMNT)on_set")
     field(OUT,  "@wedlkiste.proto switchchan($(CHAN)) $(PORT)")
     field(ZNAM, "OFF")
     field(ONAM, "ON")
+    #field(TIME, "")
+    field(TPRO, "1")
+    
+}
+
+#Timestamp
+record(stringin, "$(ELMNT)on_set:T") {
+  field(DTYP, "Soft Timestamp")
+  field(TSEL, "$(ELMNT)on_set.TIME CP")
+  field(INP, "@%b %d %Y %H:%M:%S")
+  #field(INP, "@%b %d, %Y %H:%M:%S.%09f")
+}
+
+record(ai, "$(ELMNT)imax_get")  #to determine the cardtype
+{
+    field(DESC, "Read maximal current of a channel")
+    field(DTYP, "stream")
+    field(INP,  "@wedlkiste.proto getmaxcurr($(CHAN)) $(PORT)")
+    field(PINI, "YES")
+    field(EGU,  "A")
+    field(PREC, "1")
+    field(FLNK, "$(ELMNT)limits1_seq")
+}
+
+record(calc, "$(ELMNT)calc-imax") {
+  field(PINI, "YES")
+  field(INPA, "$(ELMNT)imax_get")
+  field(CALC, "-A")
+}
+
+record(seq, "$(ELMNT)limits1_seq")
+{
+    field(DESC, "Distribute card current limit")
+    field(SELM, "All")
+    field(DOL1, "$(ELMNT)imax_get")
+    field(DOL2, "$(ELMNT)calc-imax")
+    field(DOL3, "$(ELMNT)imax_get")
+    field(DOL4, "$(ELMNT)calc-imax")
+    field(DOL5, "$(ELMNT)imax_get")
+    field(DOL6, "$(ELMNT)imax_get")
+    field(DOL7, "$(ELMNT)imax_get")
+    field(DOL8, "$(ELMNT)calc-imax")
+    field(DOL9, "$(ELMNT)imax_get")
+    field(DOLA, "$(ELMNT)imax_get")
+    field(LNK1, "$(ELMNT)i_set.EGUF")
+    field(LNK2, "$(ELMNT)i_set.DRVL")
+    field(LNK3, "$(ELMNT)i_set.DRVH")
+    field(LNK4, "$(ELMNT)i_set.LOPR")
+    field(LNK5, "$(ELMNT)i_set.HOPR")
+    field(LNK6, "$(ELMNT)inom_get.EGUF")
+    field(LNK7, "$(ELMNT)inom_get.HOPR")
+    field(LNK8, "$(ELMNT)inom_get.LOPR")
+    field(LNK9, "$(ELMNT)i_get.EGUF")
+    field(LNKA, "$(ELMNT)i_get.HOPR")
+    field(FLNK, "$(ELMNT)limits2_seq")
+}
+
+record(seq, "$(ELMNT)limits2_seq")
+{
+    field(DESC, "Distribute card current limit")
+    field(SELM, "All")
+    field(DOL1, "$(ELMNT)calc-imax")
+    field(DOL2, "$(ELMNT)imax_get")
+    field(DOL3, "$(ELMNT)imax_get")
+    field(DOL4, "$(ELMNT)calc-imax")
+    field(LNK1, "$(ELMNT)i_get.LOPR")
+    field(LNK2, "$(ELMNT)u_get.EGUF")
+    field(LNK3, "$(ELMNT)u_get.HOPR")
+    field(LNK4, "$(ELMNT)u_get.LOPR")
 }
 
 record(ao, "$(ELMNT)i_set") 
 {
-    #field(DESC, "Set value")
     field(DESC, "Set DAC value of a channel")
     field(OROC, "0")
     field(DTYP, "stream")
@@ -85,23 +151,60 @@ record(ao, "$(ELMNT)i_set")
     field(FLNK, "$(WEDLKI)load_dac")        #nach jedem Setzen eines DAC Wertes, wird er in das DAC-Register geladen
     field(SCAN, "Passive")
     field(LINR, "LINEAR")
-    field(EGUL, "0")                         # Engineering Units Low
-    field(EGUF, "$(CRDTP)")    # highest eng. value # Engineering Units Full  
+    field(EGUL, "0")    # Engineering Units Low
+    #field(EGUF, ""$(ELMNT)imax_get")    # highest eng. value # Engineering Units Full
     field(EGU,  "A")
     field(PREC, "6")
-    field(DRVL, "-$(CRDTP)")   # max value
-    field(DRVH, "$(CRDTP)")    # min value
-    field(LOPR, "-$(CRDTP)")   # min display
-    field(HOPR, "$(CRDTP)")    # max display
+    #field(DRVL, "$(ELMNT)imax_get")    # max value
+    #field(DRVH, "$(ELMNT)imax_get")    # min value
+    #field(LOPR, "$(ELMNT)imax_get")    # min display
+    #field(HOPR, "$(ELMNT)imax_get")    # max display
     info(autosaveFields_pass0,"VAL")
 }
 
-record(calcout, "calc") {
+record(calcout, "calc_ramp") {
   field(INPA, "$(ELMNT)i_set CP")
   field(INPB, "$(ELMNT)i_set.OVAL CP")
   field(CALC, "A!=B?6:0")
   field(OOPT, "On Change")
   field(OUT,  "$(ELMNT)i_set.SCAN")
+}
+
+record(ao, "$(ELMNT)iwobblemin_set")
+{
+    field(DESC, "Set wobbel min value of a channel")
+    field(DTYP, "Soft Channel")
+    #field(EGU,  "A")
+    field(PREC, "0")
+    field(LOPR, "50")    # min value
+    field(HOPR, "99")    # max value
+}
+
+record(ao, "$(ELMNT)iwobblemax_set")
+{
+    field(DESC, "Set wobble max value of a channel")
+    field(DTYP, "Soft Channel")
+    #field(EGU,  "A")
+    field(PREC, "0")
+    field(LOPR, "101")    # min value
+    field(HOPR, "150")    # max value
+}
+
+record(ao, "$(ELMNT)iwobble_set") 
+{
+    field(DESC, "Set DAC wobble value of a channel")
+    field(DTYP, "Soft Channel")
+    field(SCAN, ".1 second")
+    field(EGU,  "A")
+    field(PREC, "6")
+}
+
+record(calcout, "calc_wobble") {
+  field(INPA, "$(ELMNT)iwobble_set CP")
+  field(INPB, "$(ELMNT)iwobble_set.OVAL CP")    
+  field(CALC,  "A<B?6:5")      #6=1sec, 5=2sec, 4=5sec, siehe Mamiwiki Doku ramp, soll nie aufhören
+  field(OOPT, "On Change")
+  field(OUT,  "$(ELMNT)iwobble_set.SCAN")
 }
 
 record(ai, "$(ELMNT)inom_get")
@@ -112,11 +215,11 @@ record(ai, "$(ELMNT)inom_get")
     field(SCAN, "10 second")
     field(LINR, "LINEAR")
     field(EGUL, "0")
-    field(EGUF, "$(CRDTP)")
+    #field(EGUF, "$(ELMNT)imax_get")
     field(EGU,  "A")
     field(PREC, "6")
-    field(HOPR, "$(CRDTP)")                # max display
-    field(LOPR, "-$(CRDTP)")               # min display
+    #field(HOPR, "$(ELMNT)imax_get")                # max display
+    #field(LOPR, "-$(ELMNT)imax_get")               # min display
     field(FLNK, "$(ELMNT)devi")  # process devi after read
 }
 
@@ -124,15 +227,15 @@ record(ai, "$(ELMNT)i_get")
 {
     field(DESC, "Read measured current of a channel")
     field(DTYP, "stream")
-    field(INP, "@wedlkiste.proto getact($(CHAN),$(ELMNT)vrdy) $(PORT)")
+    field(INP,  "@wedlkiste.proto getact($(CHAN),$(ELMNT)vrdy) $(PORT)")
     field(SCAN, "10 second")
     field(LINR, "LINEAR")
     field(EGUL, "0")
-    field(EGUF, "$(CRDTP)")
+    #field(EGUF, "$(ELMNT)imax_get")
     field(EGU,  "A")
     field(PREC, "6")
-    field(HOPR, "$(CRDTP)")
-    field(LOPR, "-$(CRDTP)")
+    #field(HOPR, "$(ELMNT)imax_get")
+    #field(LOPR, "-$(ELMNT)imax_get")
     field(FLNK, "$(ELMNT)devi")  # process devi after read
 }
 
@@ -144,11 +247,11 @@ record(ai, "$(ELMNT)u_get")
     field(SCAN, "10 second")
     field(LINR, "LINEAR")
     field(EGUL, "0")
-    field(EGUF, "$(CRDTP)")
+    #field(EGUF, "$(ELMNT)imax_get")
     field(EGU,  "V")
     field(PREC, "6")
-    field(HOPR, "$(CRDTP)")
-    field(LOPR, "-$(CRDTP)")
+    #field(HOPR, "$(ELMNT)imax_get")
+    #field(LOPR, "-$(ELMNT)imax_get")
 }
 
 record(calc, "$(ELMNT)devi")
