@@ -1,0 +1,99 @@
+replytimeout = 1000;
+readtimeout = 5000;
+writetimeout = 3000;
+# define the record waiting time in the queue to be processed
+locktimeout = 9000;
+#In & out terminator must be defined, otherwise the readTimeout & replyTimeout will be used
+outterminator = CR;
+interminator = CR;
+
+clear_set {
+  extraInput = ignore;
+  out "CL \$1";
+  in "CL";
+  in "AL\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u";
+}
+
+status_get {
+  # Parameters: 1 = P 2 = R 3 = CHAN
+  out "ST \$3";
+  in "ST\_\$3\_%(\$1\$2flow_get.VAL)u\_"
+            "%(\$1\$2min_get.VAL)d\_"
+            "%(\$1\$2max_get.VAL)d\_"
+            "%(\$1\$2Qn_get.VAL)#{1.5N=2|2.5=1|1.5=0|10.N=3|10.0}\_"
+            "%(\$1\$2kubic_get.VAL)u\_"
+            "%u\_"; # last is Liter
+}
+
+# alarm 
+alarm_get {
+  out "IN";
+  in "IN %(alarm1.VAL)#{ 1 =1|=0}"
+       "%(alarm2.VAL)#{ 2 =1|=0}"
+       "%(alarm3.VAL)#{ 3 =1|=0}"
+       "%(alarm4.VAL)#{ 4 =1|=0}"
+       "%(alarm5.VAL)#{ 5 =1|=0}"
+       "%(alarm6.VAL)#{ 6 =1|=0}"
+       "%(alarm7.VAL)#{ 7 =1|=0}"
+       "%(alarm8.VAL)#{ 8 =1|=0}"
+       "%(alarm9.VAL)#{ 9 =1|=0}"
+       "%(alarm10.VAL)#{10 =1|=0}"
+       "%(alarm11.VAL)#{11 =1|=0}"
+       "%(alarm12.VAL)#{12 =1|=0}"
+       "%(alarm13.VAL)#{13 =1|=0}"
+       "%(alarm14.VAL)#{14 =1|=0}"
+       "%#{15 =1|=0}";
+}
+
+min_set {
+  %extraInput = ignore;
+  out "SE \$1 %u";
+  in "SE\_\$1\_%*u\_%*u\_%*u\_%*s\_%*u\_%*u ";
+  in "AL\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u";
+  #@mismatch{in "SE\_\$1\_%*u\_%*u\_%*u\_%*s\_%*u\_%*u "};
+  @init  {
+	out "SE \$1 %u";
+	in "SE\_\$1\_%*u\_%*u\_%*u\_%*s\_%*u\_%*u ";
+   	in "AL\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u";
+  }
+}
+
+max_set {
+  extraInput = ignore;
+  out "SE \$1 * %u";
+  in "SE\_\$1\_%*u\_%*u\_%*u\_%*s\_%*u\_%*u ";
+  in "AL\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\%_*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u";
+  @mismatch{in "SE\_\$1\_%*u\_%*u\_%*u\_%*s\_%*u\_%*u "};
+}
+
+Qn_set {
+  extraInput = ignore;
+  out "SE \$1 * * %#{1.5|2.5|3.5|6|10}";
+  in "SE\_\$1\_%*u\_%*u\_%*u\_%*s\_%*u\_%*u";
+  @init{
+  	out "SE \$1 * * %#{1.5|2.5|3.5|6|10}";
+  	in "SE\_\$1\_%*u\_%*u\_%*u\_%*s\_%*u\_%*u";}
+}
+
+kubic_set {
+  extraInput = ignore;
+  out "SE \$1 *** %u";
+  in "SE\_\$1\_%*u\_%*u\_%*u\_%*s\_%*u\_%*u"
+}
+
+liter_set {
+  extraInput = ignore;
+  out "SE \$3 **** %u";
+  in "SE\_\$3\_%*u\_%*u\_%*u\_%*s\_%*u\_%*u";
+
+  @init{
+   out "SE \$3";
+   in "SE\_\$3\_%*u\_"
+              "%*u\_"
+              "%(\$1\$2max_set.VAL)u\_"
+              "%*s\_"
+              "%u\_"
+              "%u "; # last is Liter
+  }
+}
+

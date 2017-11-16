@@ -1,0 +1,86 @@
+# autosave R5.3	Automatically generated - DO NOT MODIFY - 171110-094735
+
+mexh3:wm_wedlposu01:min_set.VAL 300
+steam:wm_laser:min_set.VAL 180
+melba_060:wm_beamdump:min_set.VAL 180
+pos4:res4:min_set.VAL 200
+pos5:res5:min_set.VAL 200
+pos6:res6:min_set.VAL 200
+pos7:res7:min_set.VAL 200
+pos8:res8:min_set.VAL 200
+pos9:res9:min_set.VAL 200
+pos10:res10:min_set.VAL 200
+pos11:res11:min_set.VAL 200
+pos12:res12:min_set.VAL 200
+pos13:res13:min_set.VAL 200
+pos14:res14:min_set.VAL 200
+pos15:res15:min_set.VAL 200
+
+#LOLO=VAL
+mexh3:wm_wedlposu01:min_set.LOLO 300
+steam:wm_laser:min_set.LOLO 180
+melba_060:wm_beamdump:min_set.LOLO 180
+pos4:res4:min_set.LOLO 200
+pos5:res5:min_set.LOLO 200
+pos6:res6:min_set.LOLO 200
+pos7:res7:min_set.LOLO 200
+pos8:res8:min_set.LOLO 200
+pos9:res9:min_set.LOLO 200
+pos10:res10:min_set.LOLO 200
+pos11:res11:min_set.LOLO 200
+pos12:res12:min_set.LOLO 200
+pos13:res13:min_set.LOLO 200
+pos14:res14:min_set.LOLO 200
+pos15:res15:min_set.LOLO 200
+
+#Low=10%*LOLO
+mexh3:wm_wedlposu01:min_set.LOW 330
+steam:wm_laser:min_set.LOW 198
+melba_060:wm_beamdump:min_set.LOW 198
+pos4:res4:min_set.LOW 200
+pos5:res5:min_set.LOW 200
+pos6:res6:min_set.LOW 200
+pos7:res7:min_set.LOW 200
+pos8:res8:min_set.LOW 200
+pos9:res9:min_set.LOW 200
+pos10:res10:min_set.LOW 200
+pos11:res11:min_set.LOW 200
+pos12:res12:min_set.LOW 200
+pos13:res13:min_set.LOW 200
+pos14:res14:min_set.LOW 200
+pos15:res15:min_set.LOW 200
+
+mexh3:wm_wedlposu01:device_set.VAL Wedlerkiste
+steam:wm_laser:device_set.VAL Laser
+melba_060:wm_beamdump:device_set.VAL Beam dump
+pos4:res4:device_set.VAL 
+pos5:res5:device_set.VAL 
+pos6:res6:device_set.VAL 
+pos7:res7:device_set.VAL 
+pos8:res8:device_set.VAL 
+pos9:res9:device_set.VAL 
+pos10:res10:device_set.VAL 
+pos11:res11:device_set.VAL 
+pos12:res12:device_set.VAL 
+pos13:res13:device_set.VAL 
+pos14:res14:device_set.VAL 
+pos15:res15:device_set.VAL 
+
+mexh3:wm_wedlposu01:Qn_set.VAL 2
+steam:wm_laser:Qn_set.VAL 2
+melba_060:wm_beamdump:Qn_set.VAL 2
+pos4:res4:Qn_set.VAL 2
+pos5:res5:Qn_set.VAL 2
+pos6:res6:Qn_set.VAL 2
+pos7:res7:Qn_set.VAL 2
+pos8:res8:Qn_set.VAL 2
+pos9:res9:Qn_set.VAL 2
+pos10:res10:Qn_set.VAL 2
+pos11:res11:Qn_set.VAL 2
+pos12:res12:Qn_set.VAL 2
+pos13:res13:Qn_set.VAL 2
+pos14:res14:Qn_set.VAL 2
+pos15:res15:Qn_set.VAL 2
+
+
+<END>

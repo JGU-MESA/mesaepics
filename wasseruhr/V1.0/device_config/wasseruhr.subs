@@ -1,0 +1,22 @@
+file ./db/wasseruhr.db { 
+
+# P - position, R - responsibilty, CHAN - channel 1 to 15
+   pattern
+   {P,     R,  CHAN, PORT}
+   {mexh3:,	wm_wedlposu01:,	1,UHR_PORT} #water meter 1
+   {steam:,	wm_laser:,	2,UHR_PORT} #water meter 2
+   {melba_060:,	wm_beamdump:,	3,UHR_PORT} #water meter 3
+   {pos4:,res4:,4,UHR_PORT} #water meter 4
+   {pos5:,res5:,5,UHR_PORT} #water meter 5
+   {pos6:,res6:,6,UHR_PORT} #water meter 6
+   {pos7:,res7:,7,UHR_PORT} #water meter 7
+   {pos8:,res8:,8,UHR_PORT} #water meter 8
+   {pos9:,res9:,9,UHR_PORT} #water meter 9
+   {pos10:,res10:,10,UHR_PORT} #water meter 10
+   {pos11:,res11:,11,UHR_PORT} #water meter 11
+   {pos12:,res12:,12,UHR_PORT} #water meter 12
+   {pos13:,res13:,13,UHR_PORT} #water meter 13
+   {pos14:,res14:,14,UHR_PORT} #water meter 14
+   {pos15:,res15:,15,UHR_PORT} #water meter 15
+}
+
