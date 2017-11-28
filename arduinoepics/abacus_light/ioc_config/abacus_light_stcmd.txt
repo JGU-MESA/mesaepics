@@ -1,0 +1,4 @@
+#===== Arduino Light Controller =====
+drvAsynIPPortConfigure("abacus_light","10.32.240.84:23")
+dbLoadRecords("db/abacus_light_controller.db", "P=steam:,R=light:,PORT=abacus_light")
+dbLoadRecords("db/abacus_light_channel.db", "CH=1,P=steam:,R=light:,PORT=abacus_light")

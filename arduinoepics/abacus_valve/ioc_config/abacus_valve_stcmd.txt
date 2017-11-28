@@ -1,0 +1,10 @@
+##===== Abacus Valve =====
+
+drvAsynIPPortConfigure("abacus_valve","10.32.240.75:23")
+#dbLoadRecords("db/abacus_valve.db", "P=melba_010:,R=valve:,PORT=abacus_valve") #Lasershutter,testled
+dbLoadRecords("db/abacus_valve_channel.db", "P=melba_010:,R=pv:,CH=1,PORT=abacus_valve")
+dbLoadRecords("db/abacus_valve_channel.db", "P=melba_030:,R=pv:,CH=2,PORT=abacus_valve")
+dbLoadRecords("db/abacus_valve_channel.db", "P=melba_060:,R=pv:,CH=3,PORT=abacus_valve")
+
+##==== Slit connected to relais on channel 8 ====
+dbLoadRecords("db/abacus_valve_slit.db", "P=melba_020:,R=slit:,RELAIS=8,PORT=abacus_valve")

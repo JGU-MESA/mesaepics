@@ -1,0 +1,84 @@
+#
+
+#  SRRGAx00 protocol definitions
+#
+OutTerminator = CR;
+InTerminator = LF CR;
+replytimeout = 10000;
+readtimeout = 10000; # milliseconds
+writetimeout = 2000;
+#
+# status
+InTerminator = LF;
+#err_stat { out "ER?"; wait 100; in "%{COM_ERR|FIL_ERR|\
+#NA|CEM_ERR|QMF_ERR|DET_ERR|PS_ERR|NA}"; }
+InTerminator = LF CR;
+ps_err { out "EP?"; wait 100; in "%d"; }
+det_err { out "ED?"; wait 100; in "%d"; }
+qmf_err { out "EQ?"; wait 100; in "%d"; }
+cem_err { out "EM?"; wait 100; in "%d"; }
+InTerminator = LF;
+fil_err { out "EF?"; wait 100; in "%d"; }
+err_stat { out "EC?"; wait 100; in "%d"; }
+InTerminator = LF CR;
+com_err { out "EC?"; wait 100; in "%d"; }
+#
+cmd { out "%s"; wait 50; }
+resp { in "%s"; }
+id { out "ID?"; wait 100; in "%s"; }
+reset { out "IN0"; wait 100; in "%d"; }
+# ionizer
+degas { out "DG%d"; wait 100; in "%d"; }
+elctrn_egy { out "EE%d"; wait 100; in "%d"; }
+ee_rdbk { out "EE?"; wait 100; in "%d"; }
+fil_on { out "FL%d"; wait 1000; in "%d"; }
+fil_emit { out "FL%f"; wait 100; in "%d"; }
+fil_rdbk { out "FL?"; wait 100; in "%f"; }
+ion_egy { out "IE%d"; wait 100; in "%d"; }
+ion_rdbk { out "IE?"; wait 100; in "%d"; }
+focus_vlt { out "VF%d"; wait 100; in "%d"; }
+focus_rdbk { out "VF?"; wait 100; in "%d"; }
+# detector
+cal { out "CA"; wait 100; in "%d"; }
+cale { out "CL"; wait 100; in "%d"; }
+hv { out "HV%d"; wait 100; in "%d"; }
+hv_rdbk { out "HV?"; wait 100; in "%d"; }
+moq { out "MO?"; wait 100; in "%d"; }
+nfloor { out "NF%d"; wait 100; }
+nf_rdbk { out "NF?"; wait 100; in "%d"; }
+recal { out "NF0"; wait 100; out "CA"; wait 100; in "%d"; }
+# analog/ histogram scans
+hscan_pts { out "HP?"; wait 100; in "%d"; }
+ascan_pts { out "AP?"; wait 100; in "%d"; }
+mass_i { out "MI%d"; }
+mi_rdbk { out "MI?"; wait 100; in "%d"; }
+mass_f { out "MF%d"; }
+mf_rdbk { out "MF?"; wait 100; in "%d"; }
+mass_stp { out "SA%d"; }
+ms_rdbk { out "SA?"; wait 100; in "%d"; }
+m_meas { out "MR%d"; }
+rfdc_off { out "MR0"; }
+tp_enbl { out "TP%d"; }
+t_press { out "TP?"; wait 100; in "%d"; }
+ppress { out "SP?"; wait 100; in "%f"; }
+# Mass Filter
+m_fltr { out "ML%f"; }
+#InTerminator = "NC-004";
+InTerminator = "";
+MaxInput = 4;
+m_h2 { out "MR2"; wait 100; in "%#4r"; }
+m_n2 { out "MR28"; wait 100; in "%#4r"; }
+m_h2o { out "MR18"; wait 100; in "%#4r"; }
+m_he3 { out "MR3"; wait 100; in "%#4r"; }
+m_he4 { out "MR4"; wait 100; in "%#4r"; }
+m_o2  { out "MR32"; wait 100; in "%#4r"; }
+ion_cur { wait 1000; in "%#4r"; }
+m_h2_4r { out "MR2"; wait 100; in "%4r"; }
+#InTerminator = "NC-044";
+InTerminator = "";
+MaxInput = 44;
+hscan_dat { out "HS1"; wait 5000; in "%#4r"; }
+#InTerminator = "NC-368";
+InTerminator = "";
+MaxInput = 368;
+ascan_dat { out "SC1"; wait 5000; in "%#4r"; }

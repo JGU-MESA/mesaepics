@@ -1,0 +1,5 @@
+drvAsynIPPortConfigure ("agi01", "10.32.240.69:4001")
+dbLoadRecords("db/agilent_4UHV.db"   ,"P=steam:,R=pump:,CH=1,PORT=agi01")
+dbLoadRecords("db/agilent_4UHV_setpoint.db"   ,"P=steam:,R=pump:,CH=1,PORT=agi01")
+dbLoadRecords("db/agilent_4UHV_setpoint.db"   ,"P=steam:,R=pump:,CH=2,PORT=agi01")
+dbLoadRecords("db/agilent_4UHV_setpoint.db"   ,"P=steam:,R=pump:,CH=3,PORT=agi01")

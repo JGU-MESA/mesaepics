@@ -1,0 +1,5 @@
+#===== Gamma Vacuum Controller =====
+drvAsynIPPortConfigure("gv4qpc","10.32.240.70:23")
+dbLoadRecords("db/gv4qpc_controller.db", "P=melba_020:,R=pump:,PORT=gv4qpc")
+dbLoadRecords("db/gv4qpc_channel.db", "P=melba_020:,R=pump:,Ch=1,PORT=gv4qpc")
+dbLoadRecords("db/gv4qpc_channel.db", "P=melba_030:,R=pump:,Ch=2,PORT=gv4qpc")

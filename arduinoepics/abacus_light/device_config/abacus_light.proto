@@ -1,0 +1,32 @@
+Terminator = CR LF;
+replytimeout = 1000;
+@mismatch{ in "Invalid command, type help";}
+
+debug{
+    out "%s";
+    in "%39c";
+}
+
+testled_get{
+    out "tled?";
+    in "tled:%{0|1}";
+}
+
+testled_set{
+    out "%{off|on}";
+    @init{testled_get;}
+}
+
+channel_set_read{
+    out "ch \$1 ?";
+    in "current set state: ch \$1 %{0|1}";
+}
+
+channel_set{
+    out "ch \$1 %{off|on}";
+    @init{channel_set_read;}
+}
+
+all_channel_off{
+    out "all ch %{off}";
+}

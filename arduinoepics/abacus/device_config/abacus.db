@@ -1,0 +1,113 @@
+record(stringout, "$(P)$(R)debug")
+{
+    field(DTYP, "stream")
+    field(OUT, "@abacus.proto debug $(PORT)")
+}
+
+record(bo, "$(P)$(R)testled_set")
+{
+    field(DTYP, "stream")
+    field(OUT, "@abacus.proto testled_set $(PORT)")
+    field(ZNAM, "Off")
+    field(ONAM, "On")
+}
+
+record(bo, "$(P)$(R)pled_set")
+{
+    field(DTYP, "stream")
+    field(OUT, "@abacus.proto pled_set $(PORT)")
+    field(ZNAM, "Off")
+    field(ONAM, "On")
+}
+
+record (bi, "$(P)$(R)pled_get")
+{
+    field(DTYP, "stream")
+    field(INP, "@abacus.proto pled_get $(PORT)")
+    field(SCAN, "1 second")
+    field(ZNAM, "Off")
+    field(ONAM, "On")
+}
+
+record(ai, "$(P)$(R)i_get_raw")
+{
+    field(DESC, "Get Current of Channel A1")
+    field(DTYP, "stream")
+    field(INP, "@abacus.proto GetCurr $(PORT)")
+    field(SCAN, ".1 second")
+    field(EGU,  "mA")
+    field(PREC, "3")
+    field(HOPR, "20")
+    field(LOPR, "0")
+    field(FLNK, "$(P)$(R)i_get.PROC")
+}
+
+record(calc, "$(P)$(R)i_get")
+{
+    field(INPA, "$(P)$(R)on_get")
+    field(INPB, "$(P)$(R)i_get_raw")
+    field(CALC, "A==1?B:0")
+    field(PREC, "3")
+    field(EGU, "mA")
+}
+
+record(ai, "$(P)$(R)u_get_raw")
+{
+    field(DESC, "Get Voltage of Channel A0")
+    field(DTYP, "stream")
+    field(INP,  "@abacus.proto GetVolt $(PORT)")
+    field(SCAN, ".1 second")
+    field(EGU,  "V")
+    field(PREC, "3")
+    field(HOPR, "500")
+    field(LOPR, "0")
+    field(FLNK, "$(P)$(R)u_get.PROC")
+}
+
+record(calc, "$(P)$(R)u_get")
+{
+    field(INPA, "$(P)$(R)on_get")
+    field(INPB, "$(P)$(R)u_get_raw")
+    field(CALC, "A==1?B:0")
+    field(PREC, "3")
+    field(EGU, "V")
+}
+
+record (ao, "$(P)$(R)u_set")
+{
+    field(DTYP, "stream")
+    field(OUT, "@abacus.proto SetVolt $(PORT)")
+    field(EGU, "V")
+    field(DRVH, "500")
+    field(DRVL, "0")
+    field(PREC, "1")
+    field(HOPR, "500")
+    field(LOPR, "0")
+}
+
+record (ao, "$(P)$(R)i_set")
+{
+    field(DTYP, "stream")
+    field(OUT, "@abacus.proto SetCurr $(PORT)")
+    field(EGU, "mA")
+    field(PREC, "3")
+}
+
+record (bo, "$(P)$(R)on_set")
+{
+    field(DTYP, "stream")
+    field(OUT, "@abacus.proto SetOutput $(PORT)")
+    field(ZNAM, "Off")
+    field(ONAM, "On")
+}
+
+record (bi, "$(P)$(R)on_get")
+{
+    field(DTYP, "stream")
+    field(INP, "@abacus.proto GetOutput $(PORT)")
+    field(SCAN, "1 second")
+    field(ZNAM, "Off")
+    field(ONAM, "On")
+    field(FLNK, "$(P)$(R)i_get.PROC")
+    field(FLNK, "$(P)$(R)u_get.PROC")
+}

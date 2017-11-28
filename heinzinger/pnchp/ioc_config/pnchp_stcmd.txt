@@ -1,0 +1,5 @@
+##====Heinzinger PNChp20000-10====
+#Local ip address
+#drvAsynIPPortConfigure ("pnc", "10.32.240.67:7")
+drvAsynIPPortConfigure ("pnc", "192.168.1.100:7")
+dbLoadRecords("db/devpnc.db","P=steam:,R=hv:,PORT=pnc")

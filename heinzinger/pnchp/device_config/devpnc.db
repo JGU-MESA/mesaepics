@@ -1,0 +1,133 @@
+#
+# Simple database and stream protocol file for basic SCPI (IEEE488.2) commands
+#
+
+
+#
+# Short and long form of identification string
+#
+
+record(stringout, "$(P)$(R)debug")
+{
+    field(DTYP, "stream")
+    field(OUT, "@devpnc.proto debug $(PORT)")
+}
+
+record(stringin, "$(P)$(R)id_get")
+{
+    field(DESC, "SCPI identification string")
+    field(DTYP, "stream")
+    field(INP,  "@devpnc.proto getIDN(39) $(PORT)")
+    field(PINI, "YES")
+}
+
+record(bo, "$(P)$(R)rst")
+{
+    field(DESC, "SCPI Reset")
+    field(DTYP, "stream")
+    field(OUT,  "@devpnc.proto cmd(*RST) $(PORT)")
+}
+
+record(bo, "$(P)$(R)on_set")
+{
+    field(DESC, "Set output relay state")
+    field(DTYP, "stream")
+    field(OUT, "@devpnc.proto setOutputState $(PORT)")
+    field(ZNAM, "Off")
+    field(ONAM, "On")
+}
+
+
+record(bi, "$(P)$(R)on_get")
+{
+    field(DESC, "Get output relay state")
+    field(DTYP, "stream")
+    field(INP, "@devpnc.proto getOutputState $(PORT)")
+    field(ZNAM, "Off")
+    field(ONAM, "On")
+    field(SCAN, "1 second")
+    field(FLNK, "$(P)$(R)u_get.PROC")
+}
+
+
+record(ai, "$(P)$(R)u_get")
+{
+    field(DESC, "Voltage readback")
+    field(DTYP, "stream")
+    field(INP, "@devpnc.proto getVolt $(PORT)")
+    field(LINR, "LINEAR")
+    field(EGU, "kV")
+    field(LOPR, "0")
+    field(HOPR, "165")
+    field(HIHI, "200")
+    field(HIGH, "150")
+    field(LOW, "100")
+    field(PREC, "3")
+    field(FLNK, "$(P)$(R)i_get.PROC")
+}
+
+record(ai, "$(P)$(R)i_get")
+{
+    field(DESC, "Current readback")
+    field(DTYP, "stream")
+    field(INP, "@devpnc.proto getCurr $(PORT)")
+    field(EGU, "mA")
+    field(LOPR, "0")
+    field(HOPR, "10")
+    field(PREC, "4")
+}
+
+record(ao, "$(P)$(R)u_set")
+{
+    field(DESC, "Set Voltage")
+    field(EGU, "kV")
+    field(LOPR, "0")
+    field(HOPR, "200")
+    field(PREC, "3")
+    field(DTYP, "stream")
+    field(OUT, "@devpnc.proto setVolt $(PORT)")
+    field(DRVL, "0")
+    field(DRVH, "200")
+}
+
+#Record für Rampen
+record (calcout, "calc") {
+  field(INPA, "$(P)$(R)SetVolt CP")
+  field(INPB, "$(P)$(R)SetVolt.OVAL CP")
+  field(CALC, "A!=B?6:0")
+  field(OOPT, "On Change")
+  field(OUT,  "$(P)$(R)SetVolt.SCAN")
+}
+
+
+record(ao, "$(P)$(R)i_set")
+{
+    field(DESC, "Set Current")
+    field(EGU, "mA")
+    field(LOPR, "0")
+    field(HOPR, "10")
+    field(PREC, "3")
+    field(DTYP, "stream")
+    field(OUT, "@devpnc.proto setCurr $(PORT)")
+    field(DRVH, "10")
+    field(DRVL, "0")
+}
+
+record(ai, "$(P)$(R)aver_get")
+{
+    field(DESC, "Get current average for measurement:1,2,4,8,16 (default: 4)")
+    field(LOPR, "1")
+    field(HOPR, "16")
+    field(DTYP, "stream")
+    field(INP, "@devpnc.proto getAver $(PORT)")
+}
+
+record(ao, "$(P)$(R)aver_set")
+{
+    field(DESC, "Set average for measurement")
+    field(LOPR, "1")
+    field(HOPR, "16")
+    field(DTYP, "stream")
+    field(OUT, "@devpnc.proto setAver $(PORT)")
+    field(FLNK, "$(P)$(R)aver_get.PROC")
+}

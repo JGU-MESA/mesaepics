@@ -1,0 +1,3 @@
+##====PfeifferTPG361 ====
+drvAsynIPPortConfigure("pfeiffertpg361","10.32.247.53:8000")
+dbLoadRecords("db/pfeiffertpg361.db", "P=steam_prep:,R=lock_gauge:,PORT=pfeiffertpg361")

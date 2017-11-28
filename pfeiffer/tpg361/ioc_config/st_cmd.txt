@@ -1,4 +1,0 @@
-##====Pfeiffer====
-drvAsynIPPortConfigure ("pfeiffertpg361", "10.32.247.53:8000")
-dbLoadRecords("db/pfeiffertpg361.db"    ,"P=steam:,R=pfeiffertpg361:    ,PORT=pfeiffertpg361")
-
