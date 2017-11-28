@@ -1,0 +1,73 @@
+OutTerminator = LF;
+InTerminator = CR LF;
+
+replytimeout = 1000;
+readtimeout = 100;
+
+#@mismatch { out ETX; }
+
+##===== Debug =====
+##
+debug {
+    out "%s";
+    in "%39c";
+}
+
+##===== Status =====
+##
+stat_get {
+    out "STS R";
+    in "STS %8cB";
+}
+
+
+
+##===== Pressure =====
+##
+get_pressure {
+    out "MES R" ;  
+    in "MBAR %e";
+}
+
+##===== Emission =====
+##
+get_emission {
+    out "EMI R";
+    in "EMI%d";
+}
+
+set_emission {
+    out "EMI W%d";
+    @init{
+        get_emission;
+    }
+}
+
+##===== Degasing =====
+##
+get_degas {
+    out "DEG R";
+    in "DEG%d";
+    @init{
+        out "DEG R";
+        in "DEG%d";
+    }
+}
+
+set_degas {
+    out "DEG W%d";
+    @init{
+        get_degas;
+    }
+}
+
+##===== Error of device =====
+##
+error_get{
+    out "ERS R";
+    in "ERS%d";
+    @init{
+        out "ERS R";
+        in "ERS%d";
+    }
+}

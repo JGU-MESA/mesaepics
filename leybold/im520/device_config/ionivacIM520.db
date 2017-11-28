@@ -1,0 +1,87 @@
+##===== Debug =====
+##
+record(stringout, "$(P)$(R)debug") {
+    field(DTYP, "stream")
+    field(OUT, "@ionivacIM520.proto debug $(PORT)")
+}
+
+##===== Status =====
+##
+record(stringin, "$(P)$(R)stat_get") {
+    field(DESC, "Reads status bit code")
+    field(DTYP, "stream")
+    field(INP, "@ionivacIM520.proto stat_get $(PORT)")
+}
+
+
+##===== Pressure =====
+##
+record(ai, "$(P)$(R)p_get") {
+    field(DTYP, "stream")
+    field(INP, "@ionivacIM520.proto get_pressure $(PORT)")
+    field(EGU, "mbar")
+    field(PREC, "2")
+    field(HOPR, "1e-4")
+    field(HIHI, "1e-8")
+    field(HIGH, "1e-9")
+    field(LOW, "5e-12")
+    field(LOLO, "1e-12")
+    field(LOPR, "1e-13")
+    field(HHSV, "MAJOR")
+    field(HSV, "MINOR")
+    field(HYST, "1e-9")
+    field(SCAN, ".5 second")
+}
+
+
+##===== Emission =====
+##
+record(bo, "$(P)$(R)on_set") {
+    field(DESC, "Set Emission on or off")
+    field(DTYP, "stream")
+    field(OUT, "@ionivacIM520.proto set_emission $(PORT)")
+    field(ZNAM, "Off")
+    field(ONAM, "On")
+}
+
+record(bi, "$(P)$(R)on_get") {
+    field(DESC, "Read Emission status")
+    field(DTYP, "stream")
+    field(INP, "@ionivacIM520.proto get_emission $(PORT)")
+    field(ZNAM, "Off")
+    field(ONAM, "On")
+    field(SCAN, "1 second")
+}
+
+##===== Degasing =====
+##
+
+record(bo, "$(P)$(R)degas_set") {
+    field(DTYP, "stream")
+    field(OUT, "@ionivacIM520.proto set_degas $(PORT)")
+    field(ZNAM, "Off")
+    field(ONAM, "On")
+    field(DISP, "1") #Only for experts!!
+}
+
+record(bi, "$(P)$(R)degas_get") {
+    field(DTYP, "stream")
+    field(INP, "@ionivacIM520.proto get_degas $(PORT)")
+    field(ZNAM, "Off")
+    field(ONAM, "On")
+}
+
+##===== Error =====
+##
+record(mbbi, "$(P)$(R)error_get") {
+    field(DTYP, "stream")
+    field(INP, "@ionivacIM520.proto error_get $(PORT)")
+    field(ZRST, "No Error")
+    field(ONST, "No Measurement system")
+    field(TWST, "Cathode potential error")
+    field(THST, "Cathode broken")
+    field(FRST, "THERMOVAC defect")
+    field(FVST, "Pressure too high")
+    field(SXST, "Degas impossible")
+    field(SCAN, "5 second")
+}

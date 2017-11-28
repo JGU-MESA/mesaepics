@@ -1,0 +1,14 @@
+##=====Leybold Ionivac=====
+##Moxa connection
+drvAsynIPPortConfigure("ionivac_moxa","mesamoxa1:4004")
+dbLoadRecords("db/ionivacIM520.db", "P=steam:,R=gauge:,PORT=ionivac_moxa")
+
+##Serial connection
+#drvAsynSerialPortConfigure("tty_ionivac", "/dev/ttyS5")
+#asynSetOption("tty_ionivac", 0, "baud", 9600)
+#asynSetOption("tty_ionivac", 0, "bits", 8)
+#asynSetOption("tty_ionivac", 0, "parity", "none")
+#asynSetOption("tty_ionivac", 0, "stop", 1)
+#asynSetOption("tty_ionivac", 0, "clocal", "Y")
+#asynSetOption("tty_ionivac", 0, "crtscts", "N")
+#dbLoadRecords("db/ionivacIM520.db", "P=steam:,R=gauge:,PORT=tty_ionivac")
