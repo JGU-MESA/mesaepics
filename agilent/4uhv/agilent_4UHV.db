@@ -1,128 +1,322 @@
-record (ai, "$(P)$(R)stat_get")
-{
-    field(DESC, "Get status of device")
-    field(SCAN, "5 second")
-    field(DTYP, "stream")
-    field(INP, "@agilent_4UHV.proto GetStatus $(PORT)")
-}
+# agilent4uhv.template
+# Template database for the Agilent 4UHV Ion Pump Controller 
+#     This version only scan the most important parameters,
+# Pete Owens 4/6/2015
+#
+# substitutions:
+# device  - device name
+# port    - asyn port
+# chan    - channel number
+#
+################################################################################
+# Refresh the values of setup parameters
+#
+#
+#Edited by S.Friederich:
+#   $(P) Zone
+#   $(R) Subzone
+#   $(CH)
+#
+################################################################################
+# idn
+#
 
-record (bi, "$(P)$(R)on_get")
-{
-    field(SCAN, "5 second")
-    field(DTYP, "stream")
-    field(INP, "@agilent_4UHV.proto GetIonEnabled $(PORT)")
-    field(ZNAM, "Off")
-    field(ONAM, "On")
-}
-
-record (bo, "$(P)$(R)on_set")
-{
-    field(DTYP, "stream")
-    field(OUT, "@agilent_4UHV.proto SetIonEnabled $(PORT)")
-    field(ZNAM, "Off")
-    field(ONAM, "On")
-    #field(FLNK, "$(P)$(R)SetIonEnabledMessage")
-}
-
-record (ai, "$(P)$(R)u_get")
-{
-    field(DESC, "Measure voltage on channel 1")
-    field(SCAN, "1 second")
-    field(DTYP, "stream")
-    field(INP, "@agilent_4UHV.proto GetVolt $(PORT)")
-    field(EGU,  "V")
-    field(LOPR, 0)
-    field(HOPR, 7000)
-}
-
-
-record (ai, "$(P)$(R)i_get")
-{
-    field(DESC, "Measure current on channel 1")
-    field(SCAN, "1 second")
-    field(DTYP, "stream")
-    field(INP, "@agilent_4UHV.proto GetCurr $(PORT)")
-    field(EGU,  "A")
-    field(LOPR, 1e-10)
-    field(HOPR, 9e-1)
-}
-
-record (ai, "$(P)$(R)p_get")
-{
-    field(DESC, "Measure current on channel 1")
-    field(SCAN, "1 second")
-    field(DTYP, "stream")
-    field(INP, "@agilent_4UHV.proto GetPress $(PORT)")
-    field(EGU,  "MBAR")
-    field(LOPR, 1e-12)
-    field(HOPR, 1e-6)
-}
-
-#record (event, "$(P)$(R)SetIonEnabledMessage")
-#{
-#    field(SCAN, "Passive")
-#    field(INPA, "$(P)$(R)SetIonEnabled.RBV")
-#    #field(DTYP, "Soft Channel")
-#}
-
-record (waveform, "$(P)$(R)GetSerialNo")
+record (waveform, "$(P)$(R)idn_get")
 {
     field(DESC, "Get serial number of device")
     field(DTYP, "stream")
-    field(INP, "@agilent_4UHV.proto GetSerialNo $(PORT)")
-    field(SCAN, "Passive")
+    field(INP, "@agilent_4UHV.proto get_serial $(PORT)")
     field(PINI, "YES")
 }
 
-record (ai, "$(P)$(R)temp_get")
+
+################################################################################
+# State
+#
+
+record(bo, "$(P)$(R)on_set")
 {
-    field(DESC, "Get temperature of device in Degree Celsius")
-    field(SCAN, "1 second")
+    field(DESC, "State")
     field(DTYP, "stream")
-    field(INP, "@agilent_4UHV.proto GetTemp $(PORT)")
-    field(EGU, "DGC")
+    field(OUT,  "@agilent_4UHV.proto set_state($(CH)) $(PORT)")
+    field(ZNAM, "Off")
+    field(ONAM, "On")
+}
+
+record(bi, "$(P)$(R)on_get")
+{
+    field(DESC, "State")
+    field(DTYP, "stream")
+    field(INP,  "@agilent_4UHV.proto get_state($(CH)) $(PORT)")
+    field(SCAN, "1 second")
+    field(ZNAM, "Off")
+    field(ONAM, "On")
+}
+
+################################################################################
+# V target
+# 3-7 kV
+#
+
+record(ao, "$(P)$(R)u_set")
+{
+    field(DESC, "V target")
+    field(DTYP, "stream")
+    field(OUT,  "@agilent_4UHV.proto set_vtgt($(CH)) $(PORT)")
+    field(EGU,  "kV")
+    field(LOPR, "3")
+    field(HOPR, "7")
+    field(DRVL, "3")
+    field(DRVH, "7")
+    field(FLNK, "$(P)$(R)u_get")
+}
+
+################################################################################
+# V measured
+# 0-10000 V
+#
+
+record(ai, "$(P)$(R)u_get")
+{
+    field(DESC, "V measured")
+    field(DTYP, "stream")
+    field(INP,  "@agilent_4UHV.proto get_volt($(CH)) $(PORT)")
+    field(SCAN, "1 second")
+    field(EGU,  "kV")
+    field(PREC, "1")
+    field(LINR, "LINEAR")
+    field(ESLO, "0.001")
+    field(LOPR, "0")
+    field(HOPR, "10")
+    field(LOW,  "0")
+    field(HIGH, "10000")
+    field(LOLO, "-1")
+    field(HIHI, "10001")
+    field(LSV,  "MINOR")
+    field(HSV,  "MINOR")
+    field(LLSV, "MAJOR")
+    field(HHSV, "MAJOR")
+}
+
+################################################################################
+# Temperature HV
+# 0-200 C
+#
+
+record(longin, "$(P)$(R)t_get")
+{
+    field(DESC, "Temperature HV")
+    field(DTYP, "stream")
+    field(INP,  "@agilent_4UHV.proto get_temp$(CH) $(PORT)")
+    field(SCAN, "10 second")
+    field(EGU,  "C")
     field(LOPR, "0")
     field(HOPR, "200")
+    field(LOW,  "0")
+    field(HIGH, "200")
+    field(LOLO, "-1")
+    field(HIHI, "201")
+    field(LSV,  "MINOR")
+    field(HSV,  "MINOR")
+    field(LLSV, "MAJOR")
+    field(HHSV, "MAJOR")
 }
 
-record (ai, "$(P)$(R)interlock_get")
-{
-        field(DESC, "Get status of the interlock")
-#       field(SCAN, "1 second")
-        field(DTYP, "stream")
-        field(INP, "@agilent_4UHV.proto GetInterlock $(PORT)")
-}
+################################################################################
+# I measured
+# 1E-10-9E-1A
+#
 
-record (ai, "$(P)$(R)GetErrorMessage")
+record(ai, "$(P)$(R)i_get")
 {
-        field(DESC, "Get error message from channel 1")
-#       field(SCAN, "1 second")
-        field(DTYP, "stream")
-        field(INP, "@agilent_4UHV.proto GetErrorMessage $(PORT)")
-}
-
-record (ao, "$(P)$(R)u_set")
-{
-    field(DESC, "Set voltage on channel 1 (def=7kV)")
-#    field(SCAN, "1 second")
+    field(DESC, "I measured")
     field(DTYP, "stream")
-    field(OUT, "@agilent_4UHV.proto SetVolt $(PORT)")
-    field(EGU,  "V")
-    field(LOPR, 3000)
-    field(HOPR, 7000)
+    field(INP,  "@agilent_4UHV.proto get_curr($(CH)) $(PORT)")
+    field(SCAN, "1 second")
+    field(EGU,  "A")
+    field(PREC, "10")
+    field(LOPR, "0")
+    field(HOPR, "1")
+    field(LOW,  "0")
+    field(HIGH, "1.0")
+    field(LOLO, "-0.1")
+    field(HIHI, "1.1")
+#    field(LSV,  "MINOR")
+    field(HSV,  "MINOR")
+    field(LLSV, "MAJOR")
+    field(HHSV, "MAJOR")
+}
+################################################################################
+# Pressure
+#
+
+record(ai, "$(P)$(R)p_get")
+{
+    field(DESC, "Pressure")
+    field(DTYP, "stream")
+    field(INP,  "@agilent_4UHV.proto get_press($(CH)) $(PORT)")
+    field(SCAN, "1 second")
+    field(EGU,  "mbar")
+    field(PREC, "9")
+    field(LOPR, "0")
+    field(HOPR, "1000")
+    field(LOW,  "0")
+    field(HIGH, "1")
+    field(LOLO, "-0.1")
+    field(HIHI, "1000")
+#    field(LSV,  "MINOR")
+    field(HSV,  "MINOR")
+    field(LLSV, "MAJOR")
+    field(HHSV, "MAJOR")
 }
 
-#record (ai, "$(P)$(R)ch1_u_get")
+################################################################################
+# Error code
+#
+
+record(mbbiDirect, "$(P)$(R)error_get")
+{
+    field(DESC, "Error code")
+    field(DTYP, "stream")
+    field(INP,  "@agilent_4UHV.proto get_error($(CH)) $(PORT)")
+    field(SCAN, "1 second")
+}
+################################################################################
+
+# Set point status (all channels)
+#
+
+record(stringin, "$(P)$(R)sp_all_get")
+{
+    field(DESC, "Set point status of all channels")
+    field(DTYP, "stream")
+    field(INP,  "@agilent_4UHV.proto get_setptstatus $(PORT)")
+     # field(PREC, "9")
+     # field(DRVL, "0.000000001")
+     # field(EGU,  "mbar")
+     # field(DRVH, "0.001")
+}
+
+################################################################################
+# Device Number
+#
+#
+#record(longout, "$(P)$(R)DEVNUM_SP")
 #{
-#    field(DESC, "Get voltage set on channel 1 (def=7kV)")
-##    field(SCAN, "1 second")
+#    field(DESC, "Device Number")
 #    field(DTYP, "stream")
-#    field(INP, "@agilent_4UHV.proto GetCH1Volt $(PORT)")
-#    field(EGU,  "V")
-#    field(LOPR, 3000)
-#    field(HOPR, 7000)
-#    #field(PINI, "YES")
+#    field(OUT,  "@agilent_4UHV.proto set_devnum($(CH)) $(PORT)")
+#    field(FLNK, "$(P)$(R)DEVNUM_RB")
+#}
+#
+#record(longin, "$(P)$(R)DEVNUM_RB")
+#{
+#    field(DESC, "Device Number")
+#    field(DTYP, "stream")
+#    field(INP,  "@agilent_4UHV.proto get_devnum($(CH)) $(PORT)")
+#    field(SCAN, "10 second")
+#}
+################################################################################
+# Power max
+# 20-80 W (step 10W)
+#
+
+#record(ao, "$(P)$(R)set_max_power")
+#{
+#    field(DESC, "Power max")
+#    field(DTYP, "stream")
+#    field(OUT,  "@agilent_4UHV.proto set_pwrmax($(CH)) $(PORT)")
+#    field(LINR, "LINEAR")
+#    field(ESLO, "10")
+#    field(EGU,  "W")
+#    field(LOPR, "20")
+#    field(HOPR, "80")
+#    field(DRVL, "20")
+#    field(DRVH, "80")
+#    field(FLNK, "$(P)$(R)get_max_power")
+#}
+#
+#record(longin, "$(P)$(R)get_max_power")
+#{
+#    field(DESC, "Power max")
+#    field(DTYP, "stream")
+#    field(INP,  "@agilent_4UHV.proto get_pwrmax($(CH)) $(PORT)")
+##    field(SCAN, "10 second")
+#    field(EGU,  "W")
+#    field(LOPR, "20")
+#    field(HOPR, "80")
+#    field(LOW,  "19")
+#    field(HIGH, "81")
+#    field(LOLO, "0")
+#    field(HIHI, "1000")
+#    field(LSV,  "MINOR")
+#    field(HSV,  "MINOR")
+#    field(LLSV, "MAJOR")
+#    field(HHSV, "MAJOR")
 #}
 
 
+
+################################################################################
+# I protect
+# 1-100 mA
+#
+
+#record(longout, "$(P)$(R)IPROT_SP")
+#{
+#    field(DESC, "I protect")
+#    field(DTYP, "stream")
+#    field(OUT,  "@agilent_4UHV.proto set_iprot($(CH)) $(PORT)")
+#    field(EGU,  "mA")
+#    field(LOPR, "0")
+#    field(HOPR, "100")
+#    field(DRVL, "1")
+#    field(DRVH, "100")
+#    field(FLNK, "$(P)$(R)IPROT_RB")
+#}
+#
+#record(longin, "$(P)$(R)IPROT_RB")
+#{
+#    field(DESC, "I protect")
+#    field(DTYP, "stream")
+#    field(INP,  "@agilent_4UHV.proto get_iprot($(CH)) $(PORT)")
+##    field(SCAN, "10 second")
+#    field(EGU,  "mA")
+#    field(LOPR, "0")
+#    field(HOPR, "100")
+#    field(LOW,  "0")
+#    field(HIGH, "101")
+#    field(LOLO, "-1")
+#    field(HIHI, "110")
+#    field(LSV,  "MINOR")
+#    field(HSV,  "MINOR")
+#    field(LLSV, "MAJOR")
+#    field(HHSV, "MAJOR")
+#}
+################################################################################
+# Set point
+#
+
+################################################################################
+# Temperature FAN
+# 0-200 C
+#
+#record(longin, "$(P)$(R)TEMPFAN")
+#{
+#    field(DESC, "Temperature FAN")
+#    field(DTYP, "stream")
+#    field(INP,  "@agilent_4UHV.proto get_tempf $(PORT)")
+#    field(SCAN, "10 second")
+#    field(EGU,  "C")
+#    field(LOPR, "0")
+#    field(HOPR, "200")
+#    field(LOW,  "0")
+#    field(HIGH, "200")
+#    field(LOLO, "-1")
+#    field(HIHI, "201")
+#    field(LSV,  "MINOR")
+#    field(HSV,  "MINOR")
+#    field(LLSV, "MAJOR")
+#    field(HHSV, "MAJOR")
+#}
 

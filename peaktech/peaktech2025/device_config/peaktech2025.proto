@@ -1,0 +1,27 @@
+InTerminator = "\x80\x89\x0d\x0a";
+
+ReplyTimeout = 100;
+
+ExtraInput = Ignore;
+MaxInput = 14;
+
+#Manual: "+0284 4<11>..."
+#Auto range: "+0284 41..."
+#Auto range, millivolt: "+0284 41\000@..."
+
+readraw{
+        in "%5d";
+}
+
+readds{
+        in "%*5d %1u";
+}
+
+readorder{
+	in "%*5d %*1u%*2c%1c";
+}
+
+readdimension{
+	in "%*5d %*1u1",NUL,"%{\x00|@}";
+
+}

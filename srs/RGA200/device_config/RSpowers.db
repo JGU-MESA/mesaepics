@@ -1,0 +1,77 @@
+
+record(ao, "$(P)$(R)f-set") 
+{
+    field(DESC, "Set frequency of Powermeter")
+    field(DTYP, "stream")
+    field(OUT,  "@RSpowerm.proto setFreq($(CHAN)) $(PORT)")
+    field(EGU,  "GHz")
+    field(ASLO, "1.0e-9")
+    field(PREC, "8")   #The VAL field's value will be clipped within limits specified in the fields DRVH and DRVL
+    field(DRVL, "0.01")
+    field(DRVH, "5")   #Drive High
+    field(LOPR, "0.01")  #The HOPR and LOPR fields set the upper and lower display limits for the VAL, HIHI, HIGH, LOW, and LOLO fields
+    field(HOPR, "5")   #High operating range
+    field(HIHI, "5")
+    field(HIGH, "4")
+    field(LOLO, "0.01")
+    field(LOW,  "0.05")
+    field(HHSV, "MAJOR")
+    field(HSV,  "MINOR")
+    field(LSV,  "MINOR")
+    field(LLSV, "MAJOR")
+    info(autosaveFields, "DESC EGU PREC HOPR LOPR")
+    info(autosaveFields_pass0, "VAL")
+}
+
+record(ai, "$(P)$(R)f-get")
+{
+    field(DESC, "Get frequency setting of Powermeter")
+    field(DTYP, "stream")
+    field(INP, "@RSpowerm.proto getFreq($(CHAN)) $(PORT)")
+    field(SCAN, "10 second")
+    field(PINI, "YES")
+    field(EGU,  "GHz")
+    field(ASLO, "1.0e-9")
+    field(PREC, "8")
+    field(HOPR, "5")   #High operating range
+    field(HIHI, "5")
+    field(HIGH, "4")
+    field(LOLO, "0.01")
+    field(LOW,  "0.05")
+    field(HHSV, "MAJOR")
+    field(HSV,  "MINOR")
+    field(LSV,  "MINOR")
+    field(LLSV, "MAJOR")
+    info(autosaveFields, "DESC EGU PREC HOPR LOPR")
+    info(autosaveFields_pass0,"VAL")
+}
+
+record(ai, "$(P)$(R)pwr-get")
+{
+    field(DESC, "Get rf-power measured by RSpowerm")
+    field(DTYP, "stream")
+    field(INP,  "@RSpowerm.proto getPower($(CHAN)) $(PORT)")
+    field(SCAN, "2 second")
+    field(EGU,  "dBm")
+    field(PREC, "4")
+    field(HOPR,"40")
+    field(LOPR,"-80")
+    field(HIHI, "39")
+    field(HIGH, "30")
+    field(LOLO, "-60")
+    field(LOW,  "-70")
+    field(HHSV, "MAJOR")
+    field(HSV,  "MINOR")
+    field(LSV,  "MINOR")
+    field(LLSV, "MAJOR")
+    info(autosaveFields, "DESC EGU PREC")
+    info(autosaveFields_pass0,"VAL")
+}
+
+
+#Record Reference Manual    
+#https://wiki-ext.aps.anl.gov/epics/index.php/RRM_3-14
+
+#Reload dbrecord in epics
+#it's not necessary to restart the IOC
+#epcis>dbLoadRecords("/home/epics/serialTest/db/toellner.db", "P=$(P), R=$(R), PORT=L0")

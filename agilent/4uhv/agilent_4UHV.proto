@@ -1,96 +1,252 @@
-# Agilent 4UHV-Controller
-# Terminator = CR;
-# SEND:     MESSAGE + CRC
-# MESSAGE =    <STX>     =0x02 or STX (Start of transmission)
-#         +<ADDR>    =0x80
-#        +<WIN>    (see table in documentation, can be written as "DEC" )
-#        +<COM>    =0x30 or "0" to read the window, 0x31 or "1" to write in the window
-#        +<DATA>    (alphanumeric ASCII, if only "read" then <DATA> is empty)
-#        +<ETX>    =0x03 or ETX (End of transmission)
-# RESPOND:     ANSWER + CRC
-# ANSWER depends on MESSAGE type, see manual.
-# ANSWER-<ADDR>: "%*1c" expect one char, but ignore it!
+# Stream Device Protocol for the Agilent 4UHV Ion Pump Controller Window Protocol
+# Pete Owens 4/6/2015
 #
-# CRC = XOR of all characters following <STX> and including the <ETX> terminator. 
-# The value is hexadecimal coded and represented by two ASCII characters
-# Streamdevice: "%01<xor>": 
-# XOR all elements, 
-# change checksum representation from binary to hexadecimal ASCII (2 bytes per checksum byte) (0), 
-# starting from the second (1) digit (counting starts at 0,1,2...)
+# Message format is:
+#      <STX><ADR><WIN><COM><DATA><ETX><CRC>
+# where
+#      <STX>   : Start of transmission (1 byte) = 0x02
+#      <ADR>   : Unit Address (1 byte) = 0x80 for RS232
+#      <WIN>   : Window number (3 bytes)
+#      <COM>   : Command (1 bytes): Read = '0'(0x30), Write = '1'(0x31)
+#      <DATA>  : Optional - depends on <WIN>
+#      <ETX>   : End of transmission (1 byte) = 0x03
+#      <CRC>   : Checksum (2 bytes) - XOR of all characters following <STX>
 #
-# StreamDevice already knows the ASCII-symbols STX,ETX,... by heart
+# Arguments:
+# $1 = channel: 1 digit - 1-4
 
-GetStatus {
-    out    STX,0x80,    "205","0",        ETX,"%01<xor>";
-    in    STX,"%*1c",    "205","0","%6f",    ETX,"%01<xor>";
-    @init{
-        out    STX,0x80,    "205","0",        ETX,"%01<xor>";
-        in    STX,"%*1c",    "205","0","%6f",    ETX,"%01<xor>";
-    }
+addr = 0x80; # address
+rd   = 0x30; # read
+wr   = 0x31; # write
+
+replytimeout = 1000;
+readtimeout  = 20;
+
+#
+# Controller Parameters
+#
+
+get_model { 
+    MaxInput = 19;
+	out STX $addr "319" $rd         ETX "%01<xor>"; 
+	in  STX "\?"  "319" $rd "%10c"  ETX "%01<xor>";
 }
 
-GetIonEnabled {
-    out    STX,0x80,    "011","0",        ETX,"%01<xor>";
-    in    STX,"%*1c",    "011","0","%1i",    ETX,"%01<xor>";
+get_serial { 
+    MaxInput = 19; 
+    out STX $addr "323" $rd         ETX "%01<xor>";
+    in  STX "\?"  "323" $rd "%10c"  ETX "%01<xor>"; 
 }
 
-SetIonEnabled {
-    out    STX,0x80,    "011","1","%1i",    ETX,"%01<xor>";
-    in    STX,"%*1c",    "%r",            ETX,"%01<xor>";    #Answer: 0x6=6=ACK, 0x15=21=NACK
-    @init{ GetIonEnabled ;}
+set_unit   { 
+    MaxInput =  6; 
+    out STX $addr "600" $wr "%06d"  ETX "%01<xor>"; 
+    in  STX "\?"        ACK         ETX "%01<xor>"; 
 }
 
-GetSerialNo {
-    out    STX,0x80,    "323","0",        ETX,"%01<xor>";
-    in    STX,"%*1c",    "323","0","%10c",    ETX,"%01<xor>";    
-    @init{
-        out    STX,0x80,    "323","0",        ETX,"%01<xor>";
-        in    STX,"%*1c",    "323","0","%10c",    ETX,"%01<xor>";    
-    }    
+get_unit   { 
+    MaxInput = 15; 
+    out STX $addr "600" $rd         ETX "%01<xor>";
+    in  STX "\?"  "600" $rd "%6d"   ETX "%01<xor>"; 
 }
 
-GetTemp {
-        out     STX,0x80,    "801","0",        ETX,"%01<xor>";
-        in      STX,"%*1c",    "801","0","%6f",    ETX,"%01<xor>";
+set_mode
+{ 
+    MaxInput =  6;
+    out STX $addr "601" $wr "%010d" ETX "%01<xor>";
+    in  STX "\?"        ACK         ETX "%01<xor>"; 
 }
 
-GetInterlock {
-       out     STX,0x80,       "803","0",        ETX,"%01<xor>";
-       in      STX,"%*1c",     "803","0","%x",        ETX,"%01<xor>";
+get_mode
+{ 
+    MaxInput = 19;
+    out STX $addr "601" $rd         ETX "%01<xor>";
+    in  STX "\?"  "601" $rd "%10d"  ETX "%01<xor>"; 
 }
 
-GetErrorMessage {
-#    out     STX,0x80,       "505","1",              ETX,"%01<xor>"; 
-    #Select channel number in Win 505
-    #otherwise all channel errors 
-    #will be displayed
-    out     STX,0x80,       "206","0",              ETX,"%01<xor>"; 
-    #Send Request for error code on Win 206
-    in      STX,"%*1c",     "206","0","%6f",    ETX,"%01<xor>";
+get_prot
+{
+    MaxInput = 19;
+    out STX $addr "602" $rd         ETX "%01<xor>"; 
+    in  STX "\?"  "602" $rd "%10b"  ETX "%01<xor>";
 }
 
-GetVolt{
-       out     STX,0x80,       "810","0",        ETX,"%01<xor>"; #Measure voltage on CH1
-       in      STX,"%*1c",     "810","0","%6u",        ETX,"%01<xor>";
+get_step {
+    MaxInput = 19;
+    out STX $addr "603" $rd         ETX "%01<xor>"; 
+    in  STX "\?"  "603" $rd "%10b"  ETX "%01<xor>";
 }
 
-SetVolt {
-    out     STX,0x80,       "613","1","%4i",    ETX,"%01<xor>"; #V target CH1,3000-7000,Step=1000,Def=7000
-    in      STX,"%*1c",     "%r",            ETX,"%01<xor>";
-    @init { GetVolt; }
+
+#
+# Ion Pump Parameters
+#
+
+set_state
+{
+    MaxInput =  6;
+    out STX $addr "01\$1" $wr "%1d"      ETX "%01<xor>"; 
+    in  STX "\?"          ACK            ETX "%01<xor>";
 }
 
-GetCH1Volt {
-       out     STX,0x80,       "613","0",        ETX,"%01<xor>"; #Get V that is set on CH1
-       in      STX,"%*1c",     "613","0","%6u",        ETX,"%01<xor>";
+get_state
+{
+    MaxInput = 10;
+    out STX $addr "01\$1" $rd            ETX "%01<xor>"; 
+    in  STX "\?"  "01\$1" $rd "%1d"      ETX "%01<xor>";
 }
 
-GetCurr{
-       out     STX,0x80,       "811","0",        ETX,"%01<xor>"; #Measure current on CH1
-       in      STX,"%*1c",     "811","0","%E",        ETX,"%01<xor>";
+##set_devnum 
+##{
+##    MaxInput =  6;
+##    out STX $addr "6\$10" $wr "%06d"     ETX "%01<xor>"; 
+##    in  STX "\?"          ACK            ETX "%01<xor>";
+##}
+##
+##get_devnum 
+##{
+##    MaxInput = 15;
+##    out STX $addr "6\$10" $rd            ETX "%01<xor>"; 
+##    in  STX "\?"  "6\$10" $rd "%6d"      ETX "%01<xor>";
+##}
+
+set_pwrmax {
+    MaxInput =  6;
+    out STX $addr "6\$12" $wr "%05d0"    ETX "%01<xor>"; 
+    in  STX "\?"          ACK            ETX "%01<xor>";
 }
 
-GetPress{
-       out     STX,0x80,       "812","0",        ETX,"%01<xor>"; #Measure pressure on CH1
-       in      STX,"%*1c",     "812","0","%E",        ETX,"%01<xor>";
+get_pwrmax {
+    MaxInput = 15;
+    out STX $addr "6\$12" $rd            ETX "%01<xor>"; 
+    in  STX "\?"  "6\$12" $rd "%6d"      ETX "%01<xor>";
 }
+
+set_vtgt {
+    MaxInput =  6;
+    out STX $addr "6\$13" $wr "%03d000"  ETX "%01<xor>"; 
+    in  STX "\?"          ACK            ETX "%01<xor>";
+}
+
+get_vtgt {
+    MaxInput = 15;
+    out STX $addr "6\$13" $rd            ETX "%01<xor>"; 
+    in  STX "\?"  "6\$13" $rd "%3d000"   ETX "%01<xor>";
+}
+
+set_iprot
+{
+    MaxInput =  6;
+    out STX $addr "6\$14" $wr "%06d"     ETX "%01<xor>"; 
+    in  STX "\?"          ACK            ETX "%01<xor>";
+}
+
+get_iprot
+{
+    MaxInput = 15;
+    out STX $addr "6\$14" $rd            ETX "%01<xor>"; 
+    in  STX "\?"  "6\$14" $rd "%6d"      ETX "%01<xor>";
+}
+
+#
+# Set Points
+#
+
+get_setpt
+{
+    MaxInput = 19;
+    out STX $addr "6\$15" $rd            ETX "%01<xor>"; 
+    in  STX "\?"  "6\$15" $rd "%10g"     ETX "%01<xor>";
+    @init
+    {
+        out STX $addr "6\$15" $rd            ETX "%01<xor>"; 
+        in  STX "\?"  "6\$15" $rd "%10g"     ETX "%01<xor>";
+	}
+}
+
+set_setpt
+{
+    MaxInput =  6;
+    #out STX $addr "6\$15" $wr "%5e"     ETX "%01<xor>"; 
+    out STX $addr "6\$15" $wr "1.0000E-08"     ETX "%01<xor>"; 
+    in  STX "\?"          ACK            ETX "%01<xor>";
+}
+
+get_setptstatus
+{
+    MaxInput =  6;
+    out STX $addr "804" $rd      ETX "%01<xor>"; 
+    in  STX "\?"          "%39c"            ETX "%01<xor>";
+}
+
+#
+# Temperatures
+#
+
+get_tempf
+{
+    MaxInput = 15;
+    out STX $addr "800"   $rd            ETX "%01<xor>"; 
+    in  STX "\?"  "800"   $rd "%6d"      ETX "%01<xor>";
+}
+
+get_temp1
+{
+    MaxInput = 15;
+    out STX $addr "801"   $rd            ETX "%01<xor>"; 
+    in  STX "\?"  "801"   $rd "%6d"      ETX "%01<xor>";
+}
+
+get_temp2
+{
+    MaxInput = 15;
+    out STX $addr "802"   $rd            ETX "%01<xor>"; 
+    in  STX "\?"  "802"   $rd "%6d"      ETX "%01<xor>";
+}
+
+get_temp3
+{
+    MaxInput = 15;
+    out STX $addr "808"   $rd            ETX "%01<xor>"; 
+    in  STX "\?"  "808"   $rd "%6d"      ETX "%01<xor>";
+}
+
+get_temp4
+{
+    MaxInput = 15;
+    out STX $addr "809"   $rd            ETX "%01<xor>"; 
+    in  STX "\?"  "809"   $rd "%6d"      ETX "%01<xor>";
+}
+
+#
+# Voltage, Current, Pressure and Error
+#
+
+get_volt {
+    MaxInput = 15;
+    out STX $addr "8\$10" $rd            ETX "%01<xor>"; 
+    in  STX "\?"  "8\$10" $rd "%6d"      ETX "%01<xor>";
+}
+
+get_curr {
+    MaxInput = 19;
+    out STX $addr "8\$11" $rd            ETX "%01<xor>"; 
+    in  STX "\?"  "8\$11" $rd "%10g"     ETX "%01<xor>";
+}
+
+get_press
+{
+    MaxInput = 19;
+    out STX $addr "8\$12" $rd            ETX "%01<xor>"; 
+    in  STX "\?"  "8\$12" $rd "%10g"     ETX "%01<xor>";
+}
+
+get_error
+{
+    out STX $addr "505"   $wr "00000\$1" ETX "%01<xor>";
+    in  STX "\?"          ACK            ETX "%01<xor>";
+    out STX $addr "206"   $rd            ETX "%01<xor>"; 
+    in  STX "\?"  "206"   $rd "%6d"      ETX "%01<xor>";
+}
+
+######################################################################
