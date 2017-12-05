@@ -1,0 +1,115 @@
+Terminator = CR LF;
+
+replytimeout = 500;
+WriteTimeout = 100;
+##==================== State ====================
+##############################################
+get_state{
+    out "STAT:POSU?";
+    in "%{00|10|01|11}";
+    #00 = HV off, Remote off; 10 = HV on, Remote off; 
+    #01 = HV off, Remote on; 11 = HV on, Remote on; 
+    @init{
+        out "STAT:POSU?";
+        in "%{00|10|01|11}";
+    }
+}
+
+set_state{
+    out "STAT:POSU %{0|1}";
+    in "OK";
+    wait 1000; #wait >=600ms, so that get_state gets right input
+    @init{
+        out "STAT:POSU?";
+        in "%{0|1}%*{0|1}";
+    }
+}
+
+set_remote{
+    out "STAT:REMOTE %{0|1}";
+    in "OK";
+    wait 1000; #wait >=600ms, so that get_state gets right input
+    @init{
+        out "STAT:POSU?";
+        in "%*{0|1}%{0|1}";
+    }
+}
+
+##==================== Voltage ====================
+################################################
+get_volt {
+   out "MEAS:VOLT? \$1";
+   in "U :%#10f V";
+}
+
+set_volt {
+   out "VOLT \$1 %g";
+   in "OK";
+   @init { 
+        out "VOLT? \$1"; 
+        in "%g"; 
+    }
+}
+
+##==================== Current ====================
+################################################
+get_current {
+   out "MEAS:CURR? E \$1";
+   in "CH\$1: %14e";
+}
+
+##==================== Autorange ====================
+#################################################
+
+get_autorange {
+    out "STAT:AUTORANGE? \$1";
+    in "%{False|True}";
+}
+
+set_autorange {
+    out "STAT:AUTORANGE \$1 %{0|1}";
+    in "AutoRange on Channel \$1 is %{deactivated|activated}";
+    @init{
+        out "STAT:AUTORANGE? \$1";
+        in "%{False|True}";
+    }
+}
+
+##==================== Range ====================
+#################################################
+get_range {
+    out "STAT:READRANGE? \$1";
+    in "Current Range: %{2mA|100µA|1µA}";
+}
+
+set_range {
+    out "STAT:SETRANGE \$1 %{0|1|2}";
+    in "OK";
+    @mismatch{
+        in "FAIL: AutoRange active for selected channel!";
+    }
+    @init{get_range;}
+}
+
+
+##==================== Zero ====================
+#################################################
+set_autozero{
+    out "STAT:AUTOZERO \$1";
+    in "OK";
+    @mismatch{
+        in "FAIL: AutoZero not possible for selected channel!";
+    }
+    @init{
+        out "";
+    }
+}
+
+set_resetzero{
+    out "STAT:RESETZERO \$1";
+    in "OK";
+    @mismatch{
+        in "FAIL: AutoZero not possible for selected channel!";
+    }
+}
+

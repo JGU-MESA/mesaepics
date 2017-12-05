@@ -1,0 +1,9 @@
+drvAsynIPPortConfigure("pmthvsupply1", "10.32.240.92:23")
+dbLoadRecords("db/pmthvsupply.db", "P=test:,R=,CH=0,PORT=pmthvsupply1")
+dbLoadRecords("db/pmthvsupply_channel.db", "P=test:,R=ch0:,CH=0,PORT=pmthvsupply1")
+dbLoadRecords("db/pmthvsupply_channel.db", "P=test:,R=ch1:,CH=1,PORT=pmthvsupply1")
+dbLoadRecords("db/pmthvsupply_channel.db", "P=test:,R=ch2:,CH=2,PORT=pmthvsupply1")
+dbLoadRecords("db/pmthvsupply_channel.db", "P=test:,R=ch3:,CH=3,PORT=pmthvsupply1")
+
+#asynSetTraceIOMask("pmthvsupply1",-1,0x6) 
+#asynSetTraceMask("pmthvsupply1",-1,0x9) 

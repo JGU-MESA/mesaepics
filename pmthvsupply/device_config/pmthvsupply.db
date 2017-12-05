@@ -1,0 +1,40 @@
+## Macros
+## P  = Zone
+## R = device
+## CH = Channel no 0-3
+##==================== State ====================
+##############################################
+record(mbbi, "$(P)$(R)on_get")
+{
+    field(DESC, "Deliver On/Off state of Supply")
+    field(DTYP, "stream")
+    field(INP,  "@pmthvsupply.proto get_state $(PORT)")
+    field(ZRST, "HV OFF | REMOTE OFF")
+    field(ONST, "HV ON | REMOTE OFF")
+    field(TWST, "HV OFF | REMOTE ON")
+    field(THST, "HV ON | REMOTE ON")
+    #field(SCAN, "5 second")
+}
+
+record(bo, "$(P)$(R)on_set")
+{
+    field(DESC, "Switch on/off all channels")
+    field(DTYP, "stream")
+    field(OUT,  "@pmthvsupply.proto set_state $(PORT)")
+    field(ZNAM, "OFF")
+    field(ONAM, "ON")
+    field(FLNK, "$(P)$(R)on_get.PROC")
+    #info(autosaveFields_pass0,"VAL")
+}
+
+
+record(bo, "$(P)$(R)remote_set")
+{
+    field(DESC, "Switch remote(0)/local(1) mode")
+    field(DTYP, "stream")
+    field(OUT,  "@pmthvsupply.proto set_remote $(PORT)")
+    field(ZNAM, "REMOTE OFF")
+    field(ONAM, "REMOTE ON")
+    field(FLNK, "$(P)$(R)on_get.PROC")
+    #info(autosaveFields_pass0,"VAL")
+}

@@ -15,4 +15,5 @@ record(ai,"$(P)$(R)amp_get"){
     field(LSV, "MINOR") #LOW severity
     field(LLSV, "MINOR") #LOLO severity
     field(HYST, "1000") #Alarm Deadband
+    field(SEVR, "NO_ALARM") # If you don't want "INVALID" at iocInit without processing the record
 }
