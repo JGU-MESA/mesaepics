@@ -1,0 +1,55 @@
+# agilent4uhv.template
+# Template database for the Agilent 4UHV Ion Pump Controller 
+#     This version only scan the most important parameters,
+# Pete Owens 4/6/2015
+#
+# substitutions:
+# device  - device name
+# port    - asyn port
+# chan    - channel number
+#
+################################################################################
+# Refresh the values of setup parameters
+#
+#
+#Edited by S.Friederich:
+#   $(P) Zone
+#   $(R) Subzone
+#   $(RELAY)
+#
+################################################################################
+# Set point
+#
+
+record(ao, "$(P)$(R)sp$(RELAY)_set")
+{
+    field(DESC, "Set set point")
+    field(DTYP, "stream")
+    field(OUT,  "@agilent_4UHV.proto set_setpt($(RELAY)) $(PORT)")
+    field(EGU,  "mbar")
+    field(PREC, "2")
+    field(DRVL, "1e-9")
+    field(DRVH, "1e-4")
+    field(FLNK, "$(P)$(R)sp$(RELAY)_get.PROC")
+}
+
+record(ai, "$(P)$(R)sp$(RELAY)_get")
+{
+    field(DESC, "Get set point value of ch $(RELAY)")
+    field(DTYP, "stream")
+    field(INP,  "@agilent_4UHV.proto get_setpt($(RELAY)) $(PORT)")
+#    field(SCAN, "10 second")
+    field(EGU,  "mbar")
+    field(PREC, "9")
+}
+
+record(bi, "$(P)$(R)sp$(RELAY)_state_get")
+{
+    field(DESC, "Set point status of ch $(RELAY)")
+    field(DTYP, "stream")
+    field(INP,  "@agilent_4UHV.proto get_setptstate$(RELAY) $(PORT)")
+    field(ZNAM, "Interlock OFF")
+    field(ONAM, "Interlock ON")
+    field(SCAN, "2 second")
+    field(PINI, "YES")
+}
