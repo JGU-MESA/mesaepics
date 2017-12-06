@@ -37,7 +37,7 @@ record(ai, "$(P)$(R)i_get") {
     field(DTYP, "stream")
     field(INP, "@pmthvsupply.proto get_current($(CH)) $(PORT)")
     field(SCAN, ".5 second")
-    field(ASLO, "1e-9") #Device sends amperes
+    field(ASLO, "1e9") #Device sends amperes
     field(EGU,  "nA")
     field(PREC, "2")
 }
