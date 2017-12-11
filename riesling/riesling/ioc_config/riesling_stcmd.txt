@@ -1,3 +1,5 @@
+##===== Riesling =====
+drvAsynIPPortConfigure("riesling_moxa", "10.32.240.76:4007")
 drvAsynSerialPortConfigure("TTY_RIESLING_1", "/dev/ttyS6")
 asynSetOption("TTY_RIESLING_1", 0, "baud", 9600)
 asynSetOption("TTY_RIESLING_1", 0, "bits", 8)
@@ -5,4 +7,4 @@ asynSetOption("TTY_RIESLING_1", 0, "parity", "none")
 asynSetOption("TTY_RIESLING_1", 0, "stop", 1)
 asynSetOption("TTY_RIESLING_1", 0, "clocal", "Y")
 asynSetOption("TTY_RIESLING_1", 0, "crtscts", "N")
-dbLoadRecords("${RIESLING}/db/riesling.db", "P=,R=SCRAPER1:,R1=CH1,R2=CH2,R3=CH3,R4=CH4,A=,PORT=TTY_RIESLING_1")
+dbLoadRecords("db/riesling.db", "P=melba_060:,R=bd:,PORT=TTY_RIESLING_1")
