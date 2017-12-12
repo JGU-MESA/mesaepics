@@ -1,3 +1,12 @@
+record(mbbo, "$(P)$(R)range_set")
+{
+    field (DTYP, "stream")
+    field (OUT, "@riesling_spaetlese.proto set_range $(PORT)")
+    field (ZRST, "Auto")
+    field (ONST, "Fine")
+    field (TWST, "Coarse")
+}
+
 record (ai, "$(P)$(R)i_get")
 {
     field (DTYP, "stream")
