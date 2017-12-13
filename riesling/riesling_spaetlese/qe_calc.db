@@ -1,0 +1,19 @@
+record(calc, "$(P)$(R)qe_get")
+{
+    field(DESC, "Calculates Quantum efficiency")
+    field(INPA, "$(pvA)") # rielsing_sl:i_get.EGU = Ampere; A = I[mA]
+    field(B, "1e-6") # B = P[W]
+    field(C, "635")  # C = lambda[nm]
+    field(CALC, "A*1e3/B*1.24/C") 
+    #QE[%] = I[mA]/P[W]*1.24/lambda[nm]
+    field(SCAN, ".1 second")
+    field(EGU, "%")
+    field(PREC, "2")
+    field(LOPR, "0")
+    field(HOPR, "100")
+}
+
+
+##Calc record
+##https://wiki-ext.aps.anl.gov/epics/index.php/RRM_3-14_Calculation
+
