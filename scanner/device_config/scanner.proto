@@ -73,18 +73,9 @@ setStartPos{
     }
 }
 
-getRelativePos{
-    out "SCAN:RELA?";
-    in "%f";
-    @mismatch{ in "Not a number";} #Scanner muss gefixt werden
-}
-
 setRelativePos{
     out "SCAN:RELA %f";
     in "OK";
-    @init{
-        getRelativePos;
-    }
     @mismatch{ in "Not a number";} #Scanner muss gefixt werden
 }
 

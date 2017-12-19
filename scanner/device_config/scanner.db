@@ -60,6 +60,7 @@ record(ai, "$(P)$(R)stoppos_get")
     field(PREC, "2")
     field(HOPR, "150")
     field(LOPR, "0")
+    field(FLNK, "$(P)$(R)relpos_get")
 }
 
 record(mbbo, "$(P)$(R)stopposdiscrete_set")
@@ -101,6 +102,7 @@ record(ai, "$(P)$(R)startpos_get")
     field(PREC, "2")
     field(HOPR, "150")
     field(LOPR, "0")
+    field(FLNK, "$(P)$(R)relpos_get")
 }
 
 ##==== Relativ to current pos =====
@@ -119,12 +121,13 @@ record(ao, "$(P)$(R)relpos_set")
     field(FLNK, "$(P)$(R)startpos_get.PROC")
 }
 
-record(ai, "$(P)$(R)relpos_get")
+record(calc, "$(P)$(R)relpos_get")
 {
     field(DESC, "Get current startposition of scanner")
-    field(DTYP, "stream")
-    field(INP, "@scanner.proto getRelativePos $(PORT)")
+    field(INPA, "$(P)$(R)startpos_get")
+    field(INPB, "$(P)$(R)stoppos_get")
     field(EGU, "mm")
+    field(CALC, "A-B")
     field(PREC, "2")
     field(HOPR, "150")
     field(LOPR, "-150")

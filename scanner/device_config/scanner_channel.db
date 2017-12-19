@@ -5,9 +5,9 @@ record(ai, "$(P)$(R)i_get")
     field(DESC,"Get signal at analog input $(CH)")
     field(DTYP,"stream")
     field(INP,"@scanner.proto getAI($(CH)) $(PORT)")
-    #field(SCAN,".1 second")
+    field(SCAN,".1 second")
     field(PREC,"3")
-    field(DISP, "1")
+    #field(DISP, "1")
 }
 
 record(ao, "$(P)$(R)aver_set")
@@ -28,9 +28,10 @@ record(ai, "$(P)$(R)pmg_get")
 record(ao, "$(P)$(R)pmg_set")
 {
     field(DESC,"Set gain of photomultiplier input")
-    field(FLNK, "$(P)$(R)pmg_send.PROC")
+    field(PREC, "0")
     field(DRVH, "3")
     field(DRVL, "0")
+    field(FLNK, "$(P)$(R)pmg_send.PROC")
 }
 
 record(calcout, "$(P)$(R)pmg_send")
