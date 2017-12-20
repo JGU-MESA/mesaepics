@@ -2,18 +2,33 @@
 ## P  = Zone
 ## R = device
 ## CH = Channel no 0-3
+##===============================================
 ##==================== State ====================
-##############################################
-record(mbbi, "$(P)$(R)on_get")
+record(mbbiDirect, "$(P)$(R)state_get")
 {
     field(DESC, "Deliver On/Off state of Supply")
     field(DTYP, "stream")
     field(INP,  "@pmthvsupply.proto get_state $(PORT)")
-    field(ZRST, "HV OFF | REMOTE OFF")
-    field(ONST, "HV ON | REMOTE OFF")
-    field(TWST, "HV OFF | REMOTE ON")
-    field(THST, "HV ON | REMOTE ON")
-    #field(SCAN, "5 second")
+    field(SCAN, "2 second")
+    field(FLNK, "$(P)$(R)state_send.PROC")
+}
+
+record(fanout, "$(P)$(R)state_send")
+{
+    field(DESC, "Send hv and remote state")
+    field(LNK1, "$(P)$(R)on_get")
+    field(LNK2, "$(P)$(R)remote_get")
+    field(DISP, "1")
+}
+
+##===============================================
+##==================== HV =======================
+record(bi, "$(P)$(R)on_get")
+{
+    field(DESC, "Read hv status (on|off)")
+    field(INP,  "$(P)$(R)state_get.B1")
+    field(ZNAM, "OFF")
+    field(ONAM, "ON")
 }
 
 record(bo, "$(P)$(R)on_set")
@@ -27,6 +42,15 @@ record(bo, "$(P)$(R)on_set")
     #info(autosaveFields_pass0,"VAL")
 }
 
+##===============================================
+##==================== Remote control ===========
+record(bi, "$(P)$(R)remote_get")
+{
+    field(DESC, "Read remote status (on|off)")
+    field(INP,  "$(P)$(R)state_get.B0")
+    field(ZNAM, "OFF")
+    field(ONAM, "ON")
+}
 
 record(bo, "$(P)$(R)remote_set")
 {
@@ -38,3 +62,4 @@ record(bo, "$(P)$(R)remote_set")
     field(FLNK, "$(P)$(R)on_get.PROC")
     #info(autosaveFields_pass0,"VAL")
 }
+
