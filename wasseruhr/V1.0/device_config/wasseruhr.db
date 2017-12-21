@@ -153,7 +153,7 @@ record(ao, "$(P)$(R)clear_set")
 ##############################################
 # Alarm: Al 1 - 15
  
-record(bi, "alarm1")
+record(bi, "mexh3:wm_wedlposu01:alarm")
 {
     field(DESC, "Show status of water meter 1")
     field(ZNAM, "OK")
@@ -162,7 +162,7 @@ record(bi, "alarm1")
     #field(TPRO, "1")
     field(FLNK, "trigger1-TS")
 }
-record(bi, "alarm2")
+record(bi, "steam:wm_laser:alarm")
 {
     field(DESC, "Show status of water meter 2")
     field(ZNAM, "OK")
@@ -170,7 +170,7 @@ record(bi, "alarm2")
     field(OSV,  "MAJOR")
     field(FLNK, "trigger2-TS")
 }
-record(bi, "alarm3")
+record(bi, "melba_060:wm_beamdump:alarm")
 {
     field(DESC, "Show status of water meter 3")
     field(ZNAM, "OK")

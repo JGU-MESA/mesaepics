@@ -28,9 +28,9 @@ status_get {
 # alarm 
 alarm_get {
   out "IN";
-  in "IN %(alarm1.VAL)#{ 1 =1|=0}"
-       "%(alarm2.VAL)#{ 2 =1|=0}"
-       "%(alarm3.VAL)#{ 3 =1|=0}"
+  in "IN %(mexh3:wm_wedlposu01:alarm.VAL)#{ 1 =1|=0}"
+       "%(steam:wm_laser:alarm.VAL)#{ 2 =1|=0}"
+       "%(melba_060:wm_beamdump:alarm.VAL)#{ 3 =1|=0}"
        "%(alarm4.VAL)#{ 4 =1|=0}"
        "%(alarm5.VAL)#{ 5 =1|=0}"
        "%(alarm6.VAL)#{ 6 =1|=0}"
