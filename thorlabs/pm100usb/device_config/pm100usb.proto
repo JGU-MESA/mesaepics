@@ -1,0 +1,64 @@
+Terminator = LF;
+##=====================================
+##=============== Debug ===============
+debug {
+    out "%s";
+    in "%39c";
+}
+##=====================================
+##=============== DeviceID ============
+idn {
+    out "*IDN?";
+    in "%#s";
+}
+
+##=====================================
+##=============== Wavelength ==========
+get_wavelength {
+    out "SENS:CORR:WAV?";
+    in "%f";
+    @init{
+        out "SENS:CORR:WAV?";
+        in "%f";
+    }
+}
+
+set_wavelength {
+    out "SENS:CORR:WAV %f";
+    @init{
+        get_wavelength;
+    }
+}
+
+##=====================================
+##=============== Power ===============
+get_power {
+    out "MEAS:POW?";
+    in "%f";
+}
+
+get_power_unit {
+    out "SENS:POW:UNIT?";
+    in "%{W|dBm}";
+}
+
+##=====================================
+##=============== Current =============
+get_curr {
+    out "MEAS:CURR?";
+    in "%f";
+}
+
+##=====================================
+##=============== Voltage =============
+get_volt {
+    out "MEAS:VOLT?";
+    in "%f";
+}
+
+##=====================================
+##=============== Power Density =======
+get_pdens {
+    out "MEAS:PDEN?";
+    in "%f";
+}

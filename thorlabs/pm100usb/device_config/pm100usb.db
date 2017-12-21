@@ -1,0 +1,96 @@
+##=====================================
+##=============== Debug ===============
+record(stringout, "$(P)$(R)debug")
+{
+    field(DTYP, "stream")
+    field(OUT, "@pm100usb.proto debug $(PORT)")
+}
+
+##=====================================
+##=============== DeviceID ============
+record(stringin, "$(P)$(R)idn")
+{
+    field(DTYP, "stream")
+    field(INP, "@pm100usb.proto idn $(PORT)")
+}
+
+##=====================================
+##=============== Wavelength ==========
+record(ao, "$(P)$(R)wavelength_set")
+{
+    field(DTYP, "stream")
+    field(OUT, "@pm100usb.proto set_wavelength $(PORT)")
+    field(EGU, "nm")
+    field(LOPR, "350")
+    field(HOPR, "1100")
+    field(DRVL, "350")
+    field(DRVH, "1100")
+    field(FLNK, "$(P)$(R)wavelength_get.PROC")
+}
+
+record(ai, "$(P)$(R)wavelength_get")
+{
+    field(DTYP, "stream")
+    field(INP, "@pm100usb.proto get_wavelength $(PORT)")
+    field(EGU, "nm")
+    field(LOPR, "350")
+    field(HOPR, "1100")
+    field(SCAN, "2 second")
+}
+
+##=====================================
+##=============== Power ===============
+record(ai, "$(P)$(R)pow_get")
+{
+    field(DTYP, "stream")
+    field(INP, "@pm100usb.proto get_power $(PORT)")
+    field(EGU, "W")
+    field(SCAN, ".1 second")
+    field(PREC, "3")
+}
+
+record(bi, "$(P)$(R)pow_unit_get")
+{
+    field(DTYP, "stream")
+    field(INP, "@pm100usb.proto get_power_unit $(PORT)")
+    field(EGU, "W")
+    field(PINI, "YES")
+    field(ZNAM, "W")
+    field(ONAM, "DBM")
+}
+
+##=====================================
+##=============== Current =============
+record(ai, "$(P)$(R)i_get")
+{
+    field(DTYP, "stream")
+    field(INP, "@pm100usb.proto get_curr $(PORT)")
+    field(EGU, "A")
+    field(LOPR, "50e-9")
+    field(HOPR, "5e-3")
+    field(SCAN, "1 second")
+}
+
+##=====================================
+##=============== Voltage =============
+record(ai, "$(P)$(R)u_get")
+{
+    field(DTYP, "stream")
+    field(INP, "@pm100usb.proto get_volt $(PORT)")
+    field(EGU, "V")
+    field(LOPR, "1e-3")
+    field(HOPR, "1")
+    field(SCAN, "1 second")
+}
+
+##=====================================
+##=============== Power Density =======
+record(ai, "$(P)$(R)powdens_get")
+{
+    field(DTYP, "stream")
+    field(INP, "@pm100usb.proto get_pdens $(PORT)")
+    field(EGU, "W/cm^2")
+    field(LOPR, "1e-3")
+    field(HOPR, "1")
+    field(SCAN, "1 second")
+}
