@@ -1,5 +1,11 @@
+##====Agilent====
 drvAsynIPPortConfigure ("agi01", "10.32.240.69:4001")
 dbLoadRecords("db/agilent_4UHV.db"   ,"P=steam:,R=pump:,CH=1,PORT=agi01")
-dbLoadRecords("db/agilent_4UHV_setpoint.db"   ,"P=steam:,R=pump:,CH=1,PORT=agi01")
-dbLoadRecords("db/agilent_4UHV_setpoint.db"   ,"P=steam:,R=pump:,CH=2,PORT=agi01")
-dbLoadRecords("db/agilent_4UHV_setpoint.db"   ,"P=steam:,R=pump:,CH=3,PORT=agi01")
+dbLoadRecords("db/agilent_4UHV_setpoint.db"   ,"P=steam:,R=pump:,RELAY=1,PORT=agi01")
+dbLoadRecords("db/agilent_4UHV_setpoint.db"   ,"P=steam:,R=pump:,RELAY=2,PORT=agi01")
+dbLoadRecords("db/agilent_4UHV_setpoint.db"   ,"P=steam:,R=pump:,RELAY=3,PORT=agi01")
+dbLoadRecords("db/agilent_4UHV_setpoint.db"   ,"P=steam:,R=pump:,RELAY=4,PORT=agi01")
+
+
+#asynSetTraceIOMask("agi01",-1,0x6) 
+#asynSetTraceMask("agi01",-1,0x9)

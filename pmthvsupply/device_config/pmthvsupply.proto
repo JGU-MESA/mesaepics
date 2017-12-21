@@ -6,12 +6,12 @@ WriteTimeout = 100;
 ##############################################
 get_state{
     out "STAT:POSU?";
-    in "%{00|10|01|11}";
+    in "%2b";
     #00 = HV off, Remote off; 10 = HV on, Remote off; 
     #01 = HV off, Remote on; 11 = HV on, Remote on; 
     @init{
         out "STAT:POSU?";
-        in "%{00|10|01|11}";
+        in "%2b";
     }
 }
 

@@ -21,8 +21,7 @@
 # idn
 #
 
-record (waveform, "$(P)$(R)idn_get")
-{
+record (waveform, "$(P)$(R)idn_get") {
     field(DESC, "Get serial number of device")
     field(DTYP, "stream")
     field(INP, "@agilent_4UHV.proto get_serial $(PORT)")
@@ -34,8 +33,7 @@ record (waveform, "$(P)$(R)idn_get")
 # State
 #
 
-record(bo, "$(P)$(R)on_set")
-{
+record(bo, "$(P)$(R)on_set") {
     field(DESC, "State")
     field(DTYP, "stream")
     field(OUT,  "@agilent_4UHV.proto set_state($(CH)) $(PORT)")
@@ -43,8 +41,7 @@ record(bo, "$(P)$(R)on_set")
     field(ONAM, "On")
 }
 
-record(bi, "$(P)$(R)on_get")
-{
+record(bi, "$(P)$(R)on_get") {
     field(DESC, "State")
     field(DTYP, "stream")
     field(INP,  "@agilent_4UHV.proto get_state($(CH)) $(PORT)")
@@ -58,8 +55,7 @@ record(bi, "$(P)$(R)on_get")
 # 3-7 kV
 #
 
-record(ao, "$(P)$(R)u_set")
-{
+record(ao, "$(P)$(R)u_set") {
     field(DESC, "V target")
     field(DTYP, "stream")
     field(OUT,  "@agilent_4UHV.proto set_vtgt($(CH)) $(PORT)")
@@ -76,8 +72,7 @@ record(ao, "$(P)$(R)u_set")
 # 0-10000 V
 #
 
-record(ai, "$(P)$(R)u_get")
-{
+record(ai, "$(P)$(R)u_get") {
     field(DESC, "V measured")
     field(DTYP, "stream")
     field(INP,  "@agilent_4UHV.proto get_volt($(CH)) $(PORT)")
@@ -103,8 +98,7 @@ record(ai, "$(P)$(R)u_get")
 # 0-200 C
 #
 
-record(longin, "$(P)$(R)t_get")
-{
+record(longin, "$(P)$(R)t_get") {
     field(DESC, "Temperature HV")
     field(DTYP, "stream")
     field(INP,  "@agilent_4UHV.proto get_temp$(CH) $(PORT)")
@@ -127,38 +121,42 @@ record(longin, "$(P)$(R)t_get")
 # 1E-10-9E-1A
 #
 
-record(ai, "$(P)$(R)i_get")
-{
+record(ai, "$(P)$(R)i_get_raw") {
     field(DESC, "I measured")
     field(DTYP, "stream")
     field(INP,  "@agilent_4UHV.proto get_curr($(CH)) $(PORT)")
     field(SCAN, "1 second")
     field(EGU,  "A")
     field(PREC, "10")
-    field(LOPR, "0")
+    field(FLNK, "$(P)$(R)i_get")
+}
+
+record (calc, "$(P)$(R)i_get")
+{
+    field(SCAN, "Passive")
+    field(INPA, "$(P)$(R)i_get_raw")
+    field(CALC, "A=0? 1e-10: A")
+    field(EGU, "A")
+    field(LOPR, "1e-10")
     field(HOPR, "1")
-    field(LOW,  "0")
-    field(HIGH, "1.0")
-    field(LOLO, "-0.1")
-    field(HIHI, "1.1")
-#    field(LSV,  "MINOR")
+    field(HIGH, "1e-9")
+    field(HIHI, "1e-7")
     field(HSV,  "MINOR")
-    field(LLSV, "MAJOR")
     field(HHSV, "MAJOR")
 }
+
 ################################################################################
 # Pressure
 #
 
-record(ai, "$(P)$(R)p_get")
-{
+record(ai, "$(P)$(R)p_get_raw") {
     field(DESC, "Pressure")
     field(DTYP, "stream")
     field(INP,  "@agilent_4UHV.proto get_press($(CH)) $(PORT)")
     field(SCAN, "1 second")
     field(EGU,  "mbar")
     field(PREC, "9")
-    field(LOPR, "0")
+    field(LOPR, "1e-11")
     field(HOPR, "1000")
     field(LOW,  "0")
     field(HIGH, "1")
@@ -168,14 +166,25 @@ record(ai, "$(P)$(R)p_get")
     field(HSV,  "MINOR")
     field(LLSV, "MAJOR")
     field(HHSV, "MAJOR")
+    field(FLNK, "$(P)$(R)p_get")
+}
+
+record(calc, "$(P)$(R)p_get")
+{
+        field(SCAN, "Passive")
+        field(INPA, "$(P)$(R)p_get_raw")
+        field(CALC, "A =0 ? 1e-11 : A")
+        field(EGU, "mbar")
+        field(LOPR, "1e-11")
+        field(HOPR, "1000")
+        field(PREC, 2)
 }
 
 ################################################################################
 # Error code
 #
 
-record(mbbiDirect, "$(P)$(R)error_get")
-{
+record(mbbiDirect, "$(P)$(R)error_get") {
     field(DESC, "Error code")
     field(DTYP, "stream")
     field(INP,  "@agilent_4UHV.proto get_error($(CH)) $(PORT)")
@@ -186,76 +195,25 @@ record(mbbiDirect, "$(P)$(R)error_get")
 # Set point status (all channels)
 #
 
-record(stringin, "$(P)$(R)sp_all_get")
-{
+record(waveform, "$(P)$(R)sp_all_get") {
     field(DESC, "Set point status of all channels")
     field(DTYP, "stream")
     field(INP,  "@agilent_4UHV.proto get_setptstatus $(PORT)")
-     # field(PREC, "9")
-     # field(DRVL, "0.000000001")
-     # field(EGU,  "mbar")
-     # field(DRVH, "0.001")
+    field(NELM, "4")
+    field(FTVL, "USHORT")
+    #field(PINI, "YES")
 }
 
 ################################################################################
-# Device Number
-#
-#
-#record(longout, "$(P)$(R)DEVNUM_SP")
-#{
-#    field(DESC, "Device Number")
-#    field(DTYP, "stream")
-#    field(OUT,  "@agilent_4UHV.proto set_devnum($(CH)) $(PORT)")
-#    field(FLNK, "$(P)$(R)DEVNUM_RB")
-#}
-#
-#record(longin, "$(P)$(R)DEVNUM_RB")
-#{
-#    field(DESC, "Device Number")
-#    field(DTYP, "stream")
-#    field(INP,  "@agilent_4UHV.proto get_devnum($(CH)) $(PORT)")
-#    field(SCAN, "10 second")
-#}
-################################################################################
-# Power max
-# 20-80 W (step 10W)
+
+# Get interlock status (all channels; HV Interlock; Not the relais for set points!)
 #
 
-#record(ao, "$(P)$(R)set_max_power")
-#{
-#    field(DESC, "Power max")
-#    field(DTYP, "stream")
-#    field(OUT,  "@agilent_4UHV.proto set_pwrmax($(CH)) $(PORT)")
-#    field(LINR, "LINEAR")
-#    field(ESLO, "10")
-#    field(EGU,  "W")
-#    field(LOPR, "20")
-#    field(HOPR, "80")
-#    field(DRVL, "20")
-#    field(DRVH, "80")
-#    field(FLNK, "$(P)$(R)get_max_power")
-#}
-#
-#record(longin, "$(P)$(R)get_max_power")
-#{
-#    field(DESC, "Power max")
-#    field(DTYP, "stream")
-#    field(INP,  "@agilent_4UHV.proto get_pwrmax($(CH)) $(PORT)")
-##    field(SCAN, "10 second")
-#    field(EGU,  "W")
-#    field(LOPR, "20")
-#    field(HOPR, "80")
-#    field(LOW,  "19")
-#    field(HIGH, "81")
-#    field(LOLO, "0")
-#    field(HIHI, "1000")
-#    field(LSV,  "MINOR")
-#    field(HSV,  "MINOR")
-#    field(LLSV, "MAJOR")
-#    field(HHSV, "MAJOR")
-#}
-
-
+record(mbbi, "$(P)$(R)interlock_get") {
+    field(DESC, "Set point status of all channels")
+    field(DTYP, "stream")
+    field(INP,  "@agilent_4UHV.proto get_interlock $(PORT)")
+}
 
 ################################################################################
 # I protect
