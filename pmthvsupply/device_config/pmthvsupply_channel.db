@@ -1,0 +1,102 @@
+## Macros
+## P  = Zone
+## R = device
+## CH = Channel no 0-3
+##==================== Voltage ====================
+################################################
+
+record(ao, "$(P)$(R)u_set") {
+    field(DESC, "Set absolute voltage of PMT CH $(CH)")
+    field(DTYP, "stream")
+    field(OUT, "@pmthvsupply.proto set_volt($(CH)) $(PORT)")
+    field(EGU, "V")
+    field(HOPR, "2000")
+    field(LOPR, "0")
+    field(PREC, "2")
+    field(DRVH, "2000")
+    field(DRVL, "0")
+    #info(autosaveFields_pass0, "VAL")
+}
+
+record(ai, "$(P)$(R)u_get") {
+    field(DESC, "Get voltage of PMT supply")
+    field(DTYP, "stream")
+    field(INP,  "@pmthvsupply.proto get_volt($(CH)) $(PORT)")
+    field(SCAN, "1 second")
+    field(EGU,  "V")
+    field(PREC, "2")
+    field(HOPR, "2000")
+    field(LOPR, "-2000")
+}
+
+##==================== Current ====================
+################################################
+
+record(ai, "$(P)$(R)i_get") {
+    field(DESC, "Get current of PMT supply")
+    field(DTYP, "stream")
+    field(INP, "@pmthvsupply.proto get_current($(CH)) $(PORT)")
+    field(SCAN, ".5 second")
+    field(ASLO, "1e9") #Device sends amperes
+    field(EGU,  "nA")
+    field(PREC, "2")
+}
+
+##==================== Autorange ====================
+#################################################
+record(bi, "$(P)$(R)autorange_get") {
+    field(DESC, "Autorange status of channel $(CH)")
+    field(DTYP, "stream")
+    field(INP,  "@pmthvsupply.proto get_autorange($(CH)) $(PORT)")
+    field(ZNAM, "AUTORANGE OFF")
+    field(ONAM, "AUTORANGE ON")
+    field(PINI, "YES")
+    field(SCAN, "Passive")
+}
+
+record(bo, "$(P)$(R)autorange_set") {
+    field(DESC, "Autorange status of channel $(CH)")
+    field(DTYP, "stream")
+    field(OUT,  "@pmthvsupply.proto set_autorange($(CH)) $(PORT)")
+    field(ZNAM, "AUTORANGE OFF")
+    field(ONAM, "AUTORANGE ON")
+    field(DOL, "$(P)$(R)autorange_get.RVAL")
+    field(FLNK, "$(P)$(R)autorange_get.PROC")
+}
+
+##==================== Range ====================
+#################################################
+record(mbbi, "$(P)$(R)range_get") {
+    field(DESC, "Get range of channel $(CH)")
+    field(DTYP, "stream")
+    field(INP,  "@pmthvsupply.proto get_range($(CH)) $(PORT)")
+    field(ZRST, "2mA")
+    field(ONST, "100µA")
+    field(TWST, "1µA")
+}
+
+record(mbbo, "$(P)$(R)range_set") {
+    field(DESC, "Set range of channel $(CH)")
+    field(DTYP, "stream")
+    field(OUT,  "@pmthvsupply.proto set_range($(CH)) $(PORT)")
+    field(ZRST, "2mA")
+    field(ONST, "100µA")
+    field(TWST, "1µA")
+    field(FLNK, "$(P)$(R)range_get.PROC")
+}
+
+##==================== Zero ====================
+#################################################
+record(bo, "$(P)$(R)zero_set") {
+    field(DESC, "Set channel offset to 0")
+    field(DTYP, "stream")
+    field(OUT,  "@pmthvsupply.proto set_autozero($(CH)) $(PORT)")
+    field(SEVR, "NO_ALARM")
+}
+
+record(bo, "$(P)$(R)zero_reset") {
+    field(DESC, "Reset channel offset")
+    field(DTYP, "stream")
+    field(OUT,  "@pmthvsupply.proto set_resetzero($(CH)) $(PORT)")
+    field(SEVR, "NO_ALARM")
+}

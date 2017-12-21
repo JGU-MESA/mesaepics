@@ -1,0 +1,16 @@
+ HELP                           : Hilfe
+ MEAS?                          : Liest Spannung und Strom aller Kanäle
+ MEAS:VOLT? [CH]                : Liest Spannung des Kanals [CH]
+ MEAS:CURR? [E|F|D] [CH]        : Liest Strom des Kanals [CH]
+ VOLT [CH] [VALUE]              : Setzt Spannungswerte am Kanal [CH]
+ VOLT? [CH]                     : Liest den Soll-Spannungswert am Kanal [CH]
+ STAT:POSU [0|1]                : Schaltet HV an oder aus
+ STAT:REMOTE [0|1]              : Schaltet zwichen Remotesteuerung (Display, Web, Telnet) und lokaler Steuerung (Potis) um
+ STAT:POSU?                     : Liefert den Status zurück (HV ON|OFF; Remote ON|OFF)
+ STAT:CONF?                     : Liefert die maximale Spannung der verbauten HV-Module
+ STAT:AUTORANGE? [CH]           : Zeigt an, ob Auto Range bei Strommessung eines Kanals aktiviert ist oder nicht
+ STAT:AUTORANGE [CH] [0|1]      : Aktiviert/Deaktiviert Auto Range der Strommessung eines Kanals
+ STAT:READRANGE? [CH]           : Zeigt den aktuellen Messbereich der Strommessung eines Kanals an
+ STAT:SETRANGE [CH] [0|1|2]     : Setzt den Messbereich der Strommessung eines Kanals(0: 2mA, 1: 100µA, 2: 1µA )
+ STAT:AUTOZERO [CH]             : Setzt den Offset für den aktuellen Messbereich der Strommessung eines Kanals auf 0
+ STAT:RESETZERO [CH] {[0|1|2]}  : Setzt den Offset für einen wählbaren oder den aktuellen Messbereich der Strommessung eines Kanals zurück

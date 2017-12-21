@@ -57,6 +57,7 @@ set_mode
     in  STX "\?"        ACK         ETX "%01<xor>"; 
 }
 
+#Autostart On/OFF
 get_mode
 { 
     MaxInput = 19;
@@ -84,9 +85,13 @@ get_step {
 
 set_state
 {
-    MaxInput =  6;
+    MaxInput =  10;
     out STX $addr "01\$1" $wr "%1d"      ETX "%01<xor>"; 
     in  STX "\?"          ACK            ETX "%01<xor>";
+    @init{
+        out STX $addr "01\$1" $rd            ETX "%01<xor>"; 
+        in  STX "\?"  "01\$1" $rd "%1d"      ETX "%01<xor>";
+    }
 }
 
 get_state
@@ -95,20 +100,6 @@ get_state
     out STX $addr "01\$1" $rd            ETX "%01<xor>"; 
     in  STX "\?"  "01\$1" $rd "%1d"      ETX "%01<xor>";
 }
-
-##set_devnum 
-##{
-##    MaxInput =  6;
-##    out STX $addr "6\$10" $wr "%06d"     ETX "%01<xor>"; 
-##    in  STX "\?"          ACK            ETX "%01<xor>";
-##}
-##
-##get_devnum 
-##{
-##    MaxInput = 15;
-##    out STX $addr "6\$10" $rd            ETX "%01<xor>"; 
-##    in  STX "\?"  "6\$10" $rd "%6d"      ETX "%01<xor>";
-##}
 
 set_pwrmax {
     MaxInput =  6;
@@ -155,7 +146,7 @@ get_iprot
 get_setpt
 {
     MaxInput = 19;
-    out STX $addr "6\$15" $rd            ETX "%01<xor>"; 
+    out STX $addr "6\$15" $rd            ETX "%01<xor>";  #Read set value
     in  STX "\?"  "6\$15" $rd "%10g"     ETX "%01<xor>";
     @init
     {
@@ -172,11 +163,54 @@ set_setpt
     in  STX "\?"          ACK            ETX "%01<xor>";
 }
 
+get_setptstate1
+{
+    #MaxInput =  10;
+    separator="";
+    out STX $addr "804" $rd      ETX "%01<xor>"; #Read relais status
+    in  STX $addr "804" $rd "%*6b%{0|1}%*{0|1}%*{0|1}%*{0|1}"  ETX "%01<xor>";
+}
+
+get_setptstate2
+{
+    #MaxInput =  10;
+    separator="";
+    out STX $addr "804" $rd      ETX "%01<xor>"; #Read relais status
+    in  STX $addr "804" $rd "%*6b%*{0|1}%{0|1}%*{0|1}%*{0|1}"  ETX "%01<xor>";
+}
+
+get_setptstate3
+{
+    #MaxInput =  10;
+    separator="";
+    out STX $addr "804" $rd      ETX "%01<xor>"; #Read relais status
+    in  STX $addr "804" $rd "%*6b%*{0|1}%*{0|1}%{0|1}%*{0|1}"  ETX "%01<xor>";
+}
+
+get_setptstate4
+{
+    #MaxInput =  10;
+    separator="";
+    out STX $addr "804" $rd      ETX "%01<xor>"; #Read relais status
+    in  STX $addr "804" $rd "%*6b%*{0|1}%*{0|1}%*{0|1}%{0|1}"  ETX "%01<xor>";
+}
+
 get_setptstatus
 {
-    MaxInput =  6;
-    out STX $addr "804" $rd      ETX "%01<xor>"; 
-    in  STX "\?"          "%39c"            ETX "%01<xor>";
+    #MaxInput =  10;
+    separator="";
+    out STX $addr "804" $rd      ETX "%01<xor>"; #Read relais status
+    in  STX $addr "804" $rd "%*6b%{0|1}"  ETX "%01<xor>";
+}
+
+
+#
+# Interlocks
+#
+
+get_interlock{
+    out STX $addr "803" $rd            ETX "%01<xor>"; 
+    #in STX $addr "803" $rd            ETX "%01<xor>"; 
 }
 
 #

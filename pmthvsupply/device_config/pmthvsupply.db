@@ -1,0 +1,65 @@
+## Macros
+## P  = Zone
+## R = device
+## CH = Channel no 0-3
+##===============================================
+##==================== State ====================
+record(mbbiDirect, "$(P)$(R)state_get")
+{
+    field(DESC, "Deliver On/Off state of Supply")
+    field(DTYP, "stream")
+    field(INP,  "@pmthvsupply.proto get_state $(PORT)")
+    field(SCAN, "2 second")
+    field(FLNK, "$(P)$(R)state_send.PROC")
+}
+
+record(fanout, "$(P)$(R)state_send")
+{
+    field(DESC, "Send hv and remote state")
+    field(LNK1, "$(P)$(R)on_get")
+    field(LNK2, "$(P)$(R)remote_get")
+    field(DISP, "1")
+}
+
+##===============================================
+##==================== HV =======================
+record(bi, "$(P)$(R)on_get")
+{
+    field(DESC, "Read hv status (on|off)")
+    field(INP,  "$(P)$(R)state_get.B1")
+    field(ZNAM, "OFF")
+    field(ONAM, "ON")
+}
+
+record(bo, "$(P)$(R)on_set")
+{
+    field(DESC, "Switch on/off all channels")
+    field(DTYP, "stream")
+    field(OUT,  "@pmthvsupply.proto set_state $(PORT)")
+    field(ZNAM, "OFF")
+    field(ONAM, "ON")
+    field(FLNK, "$(P)$(R)on_get.PROC")
+    #info(autosaveFields_pass0,"VAL")
+}
+
+##===============================================
+##==================== Remote control ===========
+record(bi, "$(P)$(R)remote_get")
+{
+    field(DESC, "Read remote status (on|off)")
+    field(INP,  "$(P)$(R)state_get.B0")
+    field(ZNAM, "OFF")
+    field(ONAM, "ON")
+}
+
+record(bo, "$(P)$(R)remote_set")
+{
+    field(DESC, "Switch remote(0)/local(1) mode")
+    field(DTYP, "stream")
+    field(OUT,  "@pmthvsupply.proto set_remote $(PORT)")
+    field(ZNAM, "REMOTE OFF")
+    field(ONAM, "REMOTE ON")
+    field(FLNK, "$(P)$(R)on_get.PROC")
+    #info(autosaveFields_pass0,"VAL")
+}
+
