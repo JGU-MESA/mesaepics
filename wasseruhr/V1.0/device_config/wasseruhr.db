@@ -6,7 +6,7 @@
 # 	param4 - Qn 1, 2, 3, 6 und 10 ~ 1.5, 2.5, 1.5N, 10N und 10
 # 	param5 - Kubikmeter
 # 	param6 - Liter, 1000 liter => 1 Kubikmeter
- 
+` 
 record(longout, "$(P)$(R)min_set")
 {
     field(DESC, "Set minimal water flow rate (Liter/hour)")
@@ -86,7 +86,6 @@ record(longout, "$(P)$(R)liter_set")
 # 	param6 - Kubikmeter
 # 	param7 - Liter, 1000 liter => 1 Kubikmeter
 
-
 record(longin, "$(P)$(R)flow_get")
 {
     field(DESC, "Show current water flow rate")
@@ -133,7 +132,7 @@ record(longin, "$(P)$(R)liter_get")
     field(INP,  "@wasseruhr.proto status_get($(P),$(R),$(CHAN)) $(PORT)")
     field(EGU,  "l")
     field(PINI, "YES")
-    field(SCAN, "1 second")
+    field(SCAN, "5 second")
     #field(TPRO, "1")
 }
 #############################################

@@ -1,5 +1,5 @@
-replytimeout = 1000;
-readtimeout = 5000;
+replytimeout = 3000;
+readtimeout = 8000;
 writetimeout = 3000;
 # define the record waiting time in the queue to be processed
 locktimeout = 9000;
@@ -17,16 +17,25 @@ clear_set {
 status_get {
   # Parameters: 1 = P 2 = R 3 = CHAN
   out "ST \$3";
+  in "AL\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u";
   in "ST\_\$3\_%(\$1\$2flow_get.VAL)u\_"
             "%(\$1\$2min_get.VAL)d\_"
             "%(\$1\$2max_get.VAL)d\_"
             "%(\$1\$2Qn_get.VAL)#{1.5N=2|2.5=1|1.5=0|10.N=3|10.0}\_"
             "%(\$1\$2kubic_get.VAL)u\_"
             "%u\_"; # last is Liter
+  @mismatch{
+  in "ST\_\$3\_%(\$1\$2flow_get.VAL)u\_"
+            "%(\$1\$2min_get.VAL)d\_"
+            "%(\$1\$2max_get.VAL)d\_"
+            "%(\$1\$2Qn_get.VAL)#{1.5N=2|2.5=1|1.5=0|10.N=3|10.0}\_"
+            "%(\$1\$2kubic_get.VAL)u\_"
+            "%u\_"} # last is Liter
 }
 
 # alarm 
 alarm_get {
+  extraInput = ignore;
   out "IN";
   in "IN %(mexh3:wm_wedlposu01:alarm.VAL)#{ 1 =1|=0}"
        "%(steam:wm_laser:alarm.VAL)#{ 2 =1|=0}"
@@ -45,8 +54,9 @@ alarm_get {
        "%#{15 =1|=0}";
 }
 
+
 min_set {
-  %extraInput = ignore;
+  extraInput = ignore;
   out "SE \$1 %u";
   in "SE\_\$1\_%*u\_%*u\_%*u\_%*s\_%*u\_%*u ";
   in "AL\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u\_%*u";
