@@ -7,7 +7,8 @@ debug {
 
 GetPressure {
     out "RPV\$2";
-    in "%(\$1Status)i,\t%e";
+    #in "%(\$1Status)i,\t%e";
+    in "%(\$1stat_get)i,\t%e";
     @replytimeout { wait 10000; }
 }
 
@@ -39,11 +40,24 @@ ReadSensorID1 {
         }
 }
 
+##===== Set Points =====
 ssp {
     out "SSP\$1,%(A)6.4E,%(B)6.4E,\t1";
     in "OK";
     @init{
         out "RSP\$1";
         in "%(\$2sp\$1_low_set)e,\t%(\$2sp\$1_high_set)e,\t1";
+    }
+} 
+
+##===== Read Set Points =====
+rsp {
+    #\$1 = Set Point Number
+    #\$2 = $(P)$(R)spx_low_get
+    out "RSP\$1";   
+    in "%(\$2)e,\t%e,\t1";
+    @init{
+        out "RSP\$1";   
+        in "%(\$2)e,\t%e,\t1";
     }
 } 

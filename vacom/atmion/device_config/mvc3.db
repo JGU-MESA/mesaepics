@@ -3,7 +3,7 @@ record (stringout, "$(P)$(R)debug"){
     field(OUT, "@mvc3.proto debug $(PORT)")
 }
 
-##===== Set Points =====
+##===== Set Set Points =====
 record (ao, "$(P)$(R)sp1_low_set"){
     field(LOPR, "1e-11")
     field(DRVL, "1e-11")
@@ -26,6 +26,7 @@ record (calcout, "$(P)$(R)sp1_set"){
     field(INPB, "$(P)$(R)sp1_high_set")
     field(CALC, "0")
     field(OUT, "@mvc3.proto ssp(1,$(P)$(R)) $(PORT)")
+    field(FLNK, "$(P)$(R)sp1_high_get.PROC")
 }
 
 record (ao, "$(P)$(R)sp2_low_set"){
@@ -50,6 +51,34 @@ record (calcout, "$(P)$(R)sp2_set"){
     field(INPB, "$(P)$(R)sp2_high_set")
     field(CALC, "0")
     field(OUT, "@mvc3.proto ssp(2,$(P)$(R)) $(PORT)")
+    field(FLNK, "$(P)$(R)sp2_high_get.PROC")
+}
+
+##===== Read Set Points =====
+record (ai, "$(P)$(R)sp1_high_get"){
+    field(DTYP, "stream")
+    field(INP, "@mvc3.proto rsp(1,$(P)$(R)sp1_low_get) $(PORT)")
+    field(LOPR, "1e-11")
+    field(HOPR, "1e-5")
+    field(SCAN, "2 second")
+}
+
+record (ai, "$(P)$(R)sp1_low_get"){
+    field(LOPR, "1e-11")
+    field(HOPR, "1e-5")
+}
+
+record (ai, "$(P)$(R)sp2_high_get"){
+    field(DTYP, "stream")
+    field(INP, "@mvc3.proto rsp(2,$(P)$(R)sp2_low_get) $(PORT)")
+    field(LOPR, "1e-11")
+    field(HOPR, "1e-5")
+    field(SCAN, "5 second")
+}
+
+record (ai, "$(P)$(R)sp2_low_get"){
+    field(LOPR, "1e-11")
+    field(HOPR, "1e-5")
 }
 
 ##===== Pressure measurement =====
@@ -61,7 +90,7 @@ record (ai, "$(P)$(R)ReadPressure")
     field(FLNK, "$(P)$(R)p_get.PROC")
 }
 
-record (mbbi, "$(P)$(R)Status")
+record (mbbi, "$(P)$(R)stat_get")
 {
     field(SCAN, "Passive")
     field(DTYP, "Soft Channel")
@@ -103,7 +132,7 @@ record (mbbi, "$(P)$(R)Status")
     field(TVSV, MAJOR)
     field(TTSV, MAJOR)
     field(FTSV, MAJOR)
-    field(FLNK, "$(P)$(R)ReadSensorOn.PROC")
+    field(FLNK, "$(P)$(R)on_get.PROC")
 }
 record (calc, "$(P)$(R)p_get")
 {
@@ -113,18 +142,19 @@ record (calc, "$(P)$(R)p_get")
     field(HOPR, 1e-5)
     field(PREC, 2)
     field(INPA, "$(P)$(R)ReadPressure")
-    field(INPB, "$(P)$(R)Status")
+    field(INPB, "$(P)$(R)stat_get")
     field(CALC, "B==0?A:0")
 }
 
-record (calc, "$(P)$(R)ReadSensorOn")
+record (calc, "$(P)$(R)on_get")
 {
     field(SCAN, "Passive")
-    field(INPA, "$(P)$(R)CH1:Status")
-    field(CALC, "(A <= 4)?1:0")
+    field(INPA, "$(P)$(R)CH1:stat_get")
+    #field(CALC, "(A <= 4)?1:0")
+    field(CALC, "(A <= 4)?0:1")
 }
 
-record (bo, "$(P)$(R)SetSensorOn")
+record (bo, "$(P)$(R)on_set")
 {
     field(SCAN, "Passive")
     field(DTYP, "stream")
