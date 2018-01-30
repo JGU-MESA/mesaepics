@@ -1,47 +1,51 @@
 
-file ./db/wedlerchannels.db {
+file ./db/wedlerchannels.db
+{
  
  #card 5
-  { ELMNT = melba_050:trip_sh1:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 80, CRDTP = 1.4 }
-  { ELMNT = melba_050:trip_sv1:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 81, CRDTP = 1.4 }
-  { ELMNT = melba_050:trip_sh2:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 82, CRDTP = 1.4 }
-  { ELMNT = melba_050:trip_sv2:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 83, CRDTP = 1.4 }
-  { ELMNT = melba_050:trip_q3:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 84, CRDTP = 1.4 }
+  { P = melba_050: R = trip_sh1:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 80 }
+  { P = melba_050: R = trip_sv1:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 81 }
+  { P = melba_050: R = trip_sh2:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 82 }
+  { P = melba_050: R = trip_sv2:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 83 }
+  { P = melba_050: R = trip_q3:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 84 }
+  { P = melba_060: R = sh:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 86 }
+  { P = melba_060: R = sv:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 87 }
+  { P = ruckel: R = test:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 95 }
   
  #card 6
-  { ELMNT = melba_030:sh:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 96, CRDTP = 1.4 }
-  { ELMNT = melba_030:sv:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 97, CRDTP = 1.4 }
-  { ELMNT = melba_030:trip_q1:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 98, CRDTP = 1.4 }
-  { ELMNT = melba_030:trip_q2:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 99, CRDTP = 1.4 }
-  { ELMNT = melba_030:trip_sh1:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 100, CRDTP = 1.4 }
-  { ELMNT = melba_030:trip_sv1:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 101, CRDTP = 1.4 }
-  { ELMNT = melba_030:trip_sh2:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 102, CRDTP = 1.4 }
-  { ELMNT = melba_030:trip_sv2:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 103, CRDTP = 1.4 }
-  { ELMNT = melba_030:trip_q3:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 104, CRDTP = 1.4 }
-  #{ ELMNT = , WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 105, CRDTP = 1.4 }
-  { ELMNT = melba_040:sh:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 106, CRDTP = 1.4 }
-  { ELMNT = melba_040:sv:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 107, CRDTP = 1.4 }
-  { ELMNT = melba_050:sh:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 108, CRDTP = 1.4 }
-  { ELMNT = melba_050:sv:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 109, CRDTP = 1.4 }
-  { ELMNT = melba_050:trip_q1:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 110, CRDTP = 1.4 }
-  { ELMNT = melba_050:trip_q2:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 111, CRDTP = 1.4 }
+  { P = melba_030: R = sh:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 96 }
+  { P = melba_030: R = sv:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 97 }
+  { P = melba_030: R = trip_q1:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 98 }
+  { P = melba_030: R = trip_q2:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 99 }
+  { P = melba_030: R = trip_sh1:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 100 }
+  { P = melba_030: R = trip_sv1:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 101 }
+  { P = melba_030: R = trip_sh2:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 102 }
+  { P = melba_030: R = trip_sv2:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 103 }
+  { P = melba_030: R = trip_q3:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 104 }
+  #{ P = , WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 105 }
+  { P = melba_040: R = sh:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 106 }
+  { P = melba_040: R = sv:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 107 }
+  { P = melba_050: R = sh:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 108 }
+  { P = melba_050: R = sv:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 109 }
+  { P = melba_050: R = trip_q1:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 110 }
+  { P = melba_050: R = trip_q2:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 111 }
  
  #card 7
-  { ELMNT = steam:sh:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 112, CRDTP = 1.4 }
-  { ELMNT = steam:sv:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 113, CRDTP = 1.4 }
-  { ELMNT = melba_010:so:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 114, CRDTP = 1.4 }
-  #{ ELMNT = , WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 115, CRDTP = 1.4 }
-  { ELMNT = melba_010:sh:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 116, CRDTP = 1.4 }
-  { ELMNT = melba_010:sv:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 117, CRDTP = 1.4 }
-  { ELMNT = melba_020:sh:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 118, CRDTP = 1.4 }
-  { ELMNT = melba_020:sv:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 119, CRDTP = 1.4 }
-  { ELMNT = melba_020:trip_q1:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 120, CRDTP = 1.4 }
-  { ELMNT = melba_020:trip_q2:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 121, CRDTP = 1.4 }   
-  { ELMNT = melba_020:trip_sh1:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 122, CRDTP = 1.4 }
-  { ELMNT = melba_020:trip_sv1:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 123, CRDTP = 1.4 }
-  { ELMNT = melba_020:trip_sh2:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 124, CRDTP = 1.4 }
-  { ELMNT = melba_020:trip_sv2:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 125, CRDTP = 1.4 }
-  { ELMNT = melba_020:trip_q3:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 126, CRDTP = 1.4 }
-  #{ ELMNT = , WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 127, CRDTP = 1.4 }
+  { P = steam: R = sh:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 112 }
+  { P = steam: R = sv:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 113 }
+  { P = melba_010:s R = o:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 114 }
+  #{ P = , WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 115 }
+  { P = melba_010: R = sh:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 116 }
+  { P = melba_010: R = sv:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 117 }
+  { P = melba_020: R = sh:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 118 }
+  { P = melba_020: R = sv:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 119 }
+  { P = melba_020: R = trip_q1:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 120 }
+  { P = melba_020: R = trip_q2:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 121 }   
+  { P = melba_020: R = trip_sh1:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 122 }
+  { P = melba_020: R = trip_sv1:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 123 }
+  { P = melba_020: R = trip_sh2:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 124 }
+  { P = melba_020: R = trip_sv2:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 125 }
+  { P = melba_020: R = trip_q3:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 126 }
+  #{ P = , WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 127 }
   
 }

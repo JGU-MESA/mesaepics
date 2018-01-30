@@ -43,8 +43,8 @@ record (bi, "$(WEDLKI)stat_appr_get")
     field (SCAN, "I/O Intr")
     field (DTYP, "stream")
     field (INP,  "@wedlkiste.proto state.approve $(PORT)")
-    field (ZNAM, "DISABLE")
-    field (ONAM, "ENABALE")
+    field (ZNAM, "ENABLE")
+    field (ONAM, "DISABALE")
     field (PRIO, "HIGH")
 }
 
@@ -97,7 +97,7 @@ record (bi, "$(WEDLKI)stat_fan_get")
 }
 
 # 9. Bit #
-record (bi, "$(WEDLKI)stat--30vsup")
+record (bi, "$(WEDLKI)stat_-30vsup_get")
 {
     field (DESC, "-30V supply")
     field (SCAN, "I/O Intr")
@@ -145,7 +145,7 @@ record (bi, "$(WEDLKI)stat_+5vsup_get")
 }
 
 # 5. Bit #
-record (bi, "$(WEDLKI)stat-phasemoni")
+record (bi, "$(WEDLKI)stat_phasemoni_get")
 {
     field (DESC, "Status phase monitor")
     field (SCAN, "I/O Intr")
@@ -163,8 +163,8 @@ record (bi, "$(WEDLKI)stat_tempzdio_get")
     field (SCAN, "I/O Intr")
     field (DTYP, "stream")
     field (INP,  "@wedlkiste.proto state.tempzdio $(PORT)")
-    field (ZNAM, "ERROR")
-    field (ONAM, "NOERROR")
+    field (ZNAM, "NOERROR")
+    field (ONAM, "ERROR")
     field (PRIO, "HIGH")
 }
 

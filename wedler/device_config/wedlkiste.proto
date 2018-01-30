@@ -5,9 +5,8 @@ Terminator = CR LF;
 #Load DAC register values into DAC
 loaddac {
   out "LOAD";
+  wait 20;
   in "%s";
-  #@init { out "LOAD"; }
-  #wait 6;
 }
 
 state.posu {
@@ -106,33 +105,49 @@ state.fusepowcard {
 #Switch on/off Wedler Power Supply
 switch {
   out "STAT:POSU %{0|1}";
-  in "OKAY";            
+  out "STAT:RESET:STATUS";
+  in "OKAY";
+  in "OKAY";                        
   @mismatch {in "NOP";}   #keine Auswirkungen, was da drin steht?
   @init { out "STAT:POSU %{0|1}"; } 
   #wait 30;   #??? msec nach dem Ausschalten, bleibt das Geraet noch 30 sec an
 }
 
-#State of selected channel
-statechanonoff {
-  separator = " ";
+#States of selected channel
+#(0/1) (0/1/2/3)
+#0 = ausgeschaltet
+#1 = eingeschaltet
+       #0 = weder Fuse noch Therm hat angesprochen
+       #1 = Fuse hat angesprochen
+       #2 = Therm hat angesprochen
+       #3 = Fuse und Therm haben angesprochen
+       
+stateschan {
   out "STAT:CHAN? \$1";
-  in "%{0|1} %*i";
-  @mismatch {in "9 9";}
+  #separator = " ";
+  in "%i %(\$2)i";
 }
 
-statechanerror {
-  out "STAT:CHAN? \$1";
-  in "%*i %i";
-  @mismatch {in "OKAY";}
-}
+##### old method #####
+#State of selected channel
+#statechanonoff {
+#  separator = " ";
+#  out "STAT:CHAN? \$1";
+#  in "%{0|1} %*i";
+#  @mismatch {in "9 9";}
+#}
+
+#statechanerror {
+#  out "STAT:CHAN? \$1";
+#  in "%*i %i";
+#  @mismatch {in "OKAY";}
+#}
 
 #Switch on/off one channel
 switchchan {
   out "STAT:CHAN \$1 %{0|1}"; 
   in "OKAY";
   @mismatch {in "HW ERROR";}
-  #wait 3;
-  #@init { out "STAT:CHAN \$1 %{0|1}"; } #durch PINI ersetzt
 }
 
 #Reset Error Register (Status) of Wedler Power Supply
@@ -147,9 +162,8 @@ resettherm {
   out "STAT:RESET:THERM";
   in "OKAY";
   @mismatch {in "HW ERROR";}
-  wait 450;
+  #wait 450;
   #msec diesen zeitl. Abstand benötigt man zum STAT:RESET:POSU, sonst gibt der Befehl einen HW ERROR zurueck
-  #die Zeit kann aber auch vom allgemeinen Traffic abhaengen
 }
 
 #Reset Power Supply
@@ -163,9 +177,10 @@ resetposu {
 setdacval {
   out "CURR \$1 %f";
   in "OKAY";
-  #@init { out "CURR \$1 %f"; in "OKAY"; out "LOAD"; in "OKAY"; }
+  out "LOAD";
+  wait 20;
+  in "OKAY";
   @init { out "CURR \$1 %f"; in "OKAY"; out "LOAD"; }
-  #@init { out "CURR \$1 %f"; } 
 }
 
 #Read DAC register value of a channel
@@ -182,32 +197,18 @@ getact {
    #@init {getdacval;}
 }
 
+#Read maximal current of a channel
+getmaxcurr {
+   out "MAX:CURR? \$1";
+   in "%f";
+   @mismatch {in "HW ERROR";}
+   @init  {out "MAX:CURR? \$1"; in "%f"; }
+}
+
 #Read measured voltage of a channel
 getvolt {
    out "MEAS:VOLT? \$1";
    in "%f %(\$2)d";
    @mismatch {in "HW ERROR";}
-}
-
-###################################################
-#State of selected channel Petra
-##### wird nicht benutzt #####
-onoff {
-  out "STAT:CHAN? \$1";
-  in "%i %*i";
-}
-
-#States of selected channel
-##### wird nicht benutzt #####
-#(0/1) (0/1/2/3)
-#0 = ausgeschaltet
-#1 = eingeschaltet
-       #0 = weder Fuse noch Therm hat angesprochen
-       #1 = Fuse hat angesprochen
-       #2 = Therm hat angesprochen
-       #3 = Fuse und Therm haben angesprochen
-stateschan {
-  out "STAT:CHAN? \$1";
-  in "%i";
 }
 

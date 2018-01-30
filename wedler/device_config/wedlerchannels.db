@@ -4,35 +4,58 @@ record(stringout, "$(WEDLKI)load_dac")
 {
     field (DESC, "Load DAC register values into DAC")
     field (DTYP, "stream")
-    #field (PINI, "YES")
     field (OUT,  "@wedlkiste.proto loaddac $(PORT)")
 }
 
 # on/off state of a channel
-record(bi, "$(ELMNT)on_get")
+record(bi, "$(P)$(R)on_get")
 {
     field(DESC, "ON/Off state of selected channel")
     field(DTYP, "stream")
-    field(INP,  "@wedlkiste.proto statechanonoff($(CHAN)) $(PORT)")
     field(SCAN, "5 second")
+    field(INP,  "@wedlkiste.proto stateschan($(CHAN),$(P)$(R)stat_get) $(PORT)")
     field(ZNAM, "OFF")
     field(ONAM, "ON")
+    field(FLNK, "$(P)$(R)stat_get.PROC")
 }
 
 # error state of a channel
-record(mbbi, "$(ELMNT)stat_get")
+record(mbbi, "$(P)$(R)stat_get")
 {
     field(DESC, "Error state of selected channel")
-    field(DTYP, "stream")
-    field(INP,  "@wedlkiste.proto statechanerror($(CHAN)) $(PORT)")
-    field(SCAN, "5 second")
-    #field(ZRST, "NOERROR")
-    field(ZRST, "")        #damit im css nichts angezeigt wird, liegt ja kein Fehler vor
-    field(ONST, "FUSE ERR")
-    field(TWST, "THERM ERR")
-    field(THST, "FUSE+THERM ERR")
+    field(ZRST, "NOERROR")
+    field(ONST, "FUSE")    #ERRORS
+    field(TWST, "THERM")
+    field(THST, "FUSE+THERM")
     field(NIST, "UNDEF")
 }
+
+##### old method #####
+# on/off state of a channel
+#record(bi, "$(P)$(R)on_get")
+#{
+ #   field(DESC, "ON/Off state of selected channel")
+ #   field(DTYP, "stream")
+ #   field(INP,  "@wedlkiste.proto statechanonoff($(CHAN)) $(PORT)")
+ #   field(SCAN, "5 second")
+ #   field(ZNAM, "OFF")
+ #   field(ONAM, "ON")
+#}
+
+# error state of a channel
+#record(mbbi, "$(P)$(R)stat_get")
+#{
+#    field(DESC, "Error state of selected channel")
+#    field(DTYP, "stream")
+#    field(INP,  "@wedlkiste.proto statechanerror($(CHAN)) $(PORT)")
+#    field(SCAN, "5 second")
+#    #field(ZRST, "NOERROR")
+#    field(ZRST, "")        #damit im css nichts angezeigt wird, liegt ja kein Fehler vor
+#    field(ONST, "FUSE")    #ERRORS
+#    field(TWST, "THERM")
+#    field(THST, "FUSE+THERM")
+#    field(NIST, "UNDEF")
+#}
 
 record(ao, "$(WEDLKI)reset_Erroreg")
 {
@@ -64,27 +87,16 @@ record(bo, "$(WEDLKI)on_set")
     info (autosaveFields_pass0, "VAL")
 }
 
-record(bo, "$(ELMNT)on_set")
+record(bo, "$(P)$(R)on_set")
 {
     field(DESC, "Switch on/off one channel")
     field(DTYP, "stream")
     field(OUT,  "@wedlkiste.proto switchchan($(CHAN)) $(PORT)")
     field(ZNAM, "OFF")
     field(ONAM, "ON")
-    #field(TIME, "")
-    field(TPRO, "1")
-    
 }
 
-#Timestamp
-record(stringin, "$(ELMNT)on_set:T") {
-  field(DTYP, "Soft Timestamp")
-  field(TSEL, "$(ELMNT)on_set.TIME CP")
-  field(INP, "@%b %d %Y %H:%M:%S")
-  #field(INP, "@%b %d, %Y %H:%M:%S.%09f")
-}
-
-record(ai, "$(ELMNT)imax_get")  #to determine the cardtype
+record(ai, "$(P)$(R)imax_get")
 {
     field(DESC, "Read maximal current of a channel")
     field(DTYP, "stream")
@@ -92,122 +104,78 @@ record(ai, "$(ELMNT)imax_get")  #to determine the cardtype
     field(PINI, "YES")
     field(EGU,  "A")
     field(PREC, "1")
-    field(FLNK, "$(ELMNT)limits1_seq")
+    field(FLNK, "$(P)$(R)limits1_seq")
+    info (autosaveFields_pass0, "VAL")
 }
 
-record(calc, "$(ELMNT)calc-imax") {
+record(calc, "$(P)$(R)calc-imax") {
   field(PINI, "YES")
-  field(INPA, "$(ELMNT)imax_get")
+  field(INPA, "$(P)$(R)imax_get")
   field(CALC, "-A")
 }
 
-record(seq, "$(ELMNT)limits1_seq")
+record(seq, "$(P)$(R)limits1_seq")
 {
     field(DESC, "Distribute card current limit")
     field(SELM, "All")
-    field(DOL1, "$(ELMNT)imax_get")
-    field(DOL2, "$(ELMNT)calc-imax")
-    field(DOL3, "$(ELMNT)imax_get")
-    field(DOL4, "$(ELMNT)calc-imax")
-    field(DOL5, "$(ELMNT)imax_get")
-    field(DOL6, "$(ELMNT)imax_get")
-    field(DOL7, "$(ELMNT)imax_get")
-    field(DOL8, "$(ELMNT)calc-imax")
-    field(DOL9, "$(ELMNT)imax_get")
-    field(DOLA, "$(ELMNT)imax_get")
-    field(LNK1, "$(ELMNT)i_set.EGUF")
-    field(LNK2, "$(ELMNT)i_set.DRVL")
-    field(LNK3, "$(ELMNT)i_set.DRVH")
-    field(LNK4, "$(ELMNT)i_set.LOPR")
-    field(LNK5, "$(ELMNT)i_set.HOPR")
-    field(LNK6, "$(ELMNT)inom_get.EGUF")
-    field(LNK7, "$(ELMNT)inom_get.HOPR")
-    field(LNK8, "$(ELMNT)inom_get.LOPR")
-    field(LNK9, "$(ELMNT)i_get.EGUF")
-    field(LNKA, "$(ELMNT)i_get.HOPR")
-    field(FLNK, "$(ELMNT)limits2_seq")
+    field(DOL1, "$(P)$(R)imax_get")
+    field(DOL2, "$(P)$(R)calc-imax")
+    field(DOL3, "$(P)$(R)imax_get")
+    field(DOL4, "$(P)$(R)calc-imax")
+    field(DOL5, "$(P)$(R)imax_get")
+    field(DOL6, "$(P)$(R)imax_get")
+    field(DOL7, "$(P)$(R)imax_get")
+    field(DOL8, "$(P)$(R)calc-imax")
+    field(DOL9, "$(P)$(R)imax_get")
+    field(DOLA, "$(P)$(R)imax_get")
+    field(LNK1, "$(P)$(R)i_set.EGUF")
+    field(LNK2, "$(P)$(R)i_set.DRVL")
+    field(LNK3, "$(P)$(R)i_set.DRVH")
+    field(LNK4, "$(P)$(R)i_set.LOPR")
+    field(LNK5, "$(P)$(R)i_set.HOPR")
+    field(LNK6, "$(P)$(R)inom_get.EGUF")
+    field(LNK7, "$(P)$(R)inom_get.HOPR")
+    field(LNK8, "$(P)$(R)inom_get.LOPR")
+    field(LNK9, "$(P)$(R)i_get.EGUF")
+    field(LNKA, "$(P)$(R)i_get.HOPR")
+    field(FLNK, "$(P)$(R)limits2_seq")
 }
 
-record(seq, "$(ELMNT)limits2_seq")
+record(seq, "$(P)$(R)limits2_seq")
 {
     field(DESC, "Distribute card current limit")
     field(SELM, "All")
-    field(DOL1, "$(ELMNT)calc-imax")
-    field(DOL2, "$(ELMNT)imax_get")
-    field(DOL3, "$(ELMNT)imax_get")
-    field(DOL4, "$(ELMNT)calc-imax")
-    field(LNK1, "$(ELMNT)i_get.LOPR")
-    field(LNK2, "$(ELMNT)u_get.EGUF")
-    field(LNK3, "$(ELMNT)u_get.HOPR")
-    field(LNK4, "$(ELMNT)u_get.LOPR")
+    field(DOL1, "$(P)$(R)calc-imax")
+    field(DOL2, "$(P)$(R)imax_get")
+    field(DOL3, "$(P)$(R)imax_get")
+    field(DOL4, "$(P)$(R)calc-imax")
+    field(LNK1, "$(P)$(R)i_get.LOPR")
+    field(LNK2, "$(P)$(R)u_get.EGUF")
+    field(LNK3, "$(P)$(R)u_get.HOPR")
+    field(LNK4, "$(P)$(R)u_get.LOPR")
 }
 
-record(ao, "$(ELMNT)i_set") 
+record(ao, "$(P)$(R)i_set") 
 {
     field(DESC, "Set DAC value of a channel")
-    field(OROC, "0")
+    #field(OROC, "0")
     field(DTYP, "stream")
     field(OUT,  "@wedlkiste.proto setdacval($(CHAN)) $(PORT)")
-    field(FLNK, "$(WEDLKI)load_dac")        #nach jedem Setzen eines DAC Wertes, wird er in das DAC-Register geladen
     field(SCAN, "Passive")
     field(LINR, "LINEAR")
     field(EGUL, "0")    # Engineering Units Low
-    #field(EGUF, ""$(ELMNT)imax_get")    # highest eng. value # Engineering Units Full
+    #field(EGUF, ""$(P)$(R)imax_get")    # highest eng. value # Engineering Units Full
     field(EGU,  "A")
     field(PREC, "6")
-    #field(DRVL, "$(ELMNT)imax_get")    # max value
-    #field(DRVH, "$(ELMNT)imax_get")    # min value
-    #field(LOPR, "$(ELMNT)imax_get")    # min display
-    #field(HOPR, "$(ELMNT)imax_get")    # max display
+    #field(DRVL, "$(P)$(R)imax_get")    # max value
+    #field(DRVH, "$(P)$(R)imax_get")    # min value
+    #field(LOPR, "$(P)$(R)imax_get")    # min display
+    #field(HOPR, "$(P)$(R)imax_get")    # max display
+    field (PRIO, "HIGH")
     info(autosaveFields_pass0,"VAL")
 }
 
-record(calcout, "calc_ramp") {
-  field(INPA, "$(ELMNT)i_set CP")
-  field(INPB, "$(ELMNT)i_set.OVAL CP")
-  field(CALC, "A!=B?6:0")
-  field(OOPT, "On Change")
-  field(OUT,  "$(ELMNT)i_set.SCAN")
-}
-
-record(ao, "$(ELMNT)iwobblemin_set")
-{
-    field(DESC, "Set wobbel min value of a channel")
-    field(DTYP, "Soft Channel")
-    #field(EGU,  "A")
-    field(PREC, "0")
-    field(LOPR, "50")    # min value
-    field(HOPR, "99")    # max value
-}
-
-record(ao, "$(ELMNT)iwobblemax_set")
-{
-    field(DESC, "Set wobble max value of a channel")
-    field(DTYP, "Soft Channel")
-    #field(EGU,  "A")
-    field(PREC, "0")
-    field(LOPR, "101")    # min value
-    field(HOPR, "150")    # max value
-}
-
-record(ao, "$(ELMNT)iwobble_set") 
-{
-    field(DESC, "Set DAC wobble value of a channel")
-    field(DTYP, "Soft Channel")
-    field(SCAN, ".1 second")
-    field(EGU,  "A")
-    field(PREC, "6")
-}
-
-record(calcout, "calc_wobble") {
-  field(INPA, "$(ELMNT)iwobble_set CP")
-  field(INPB, "$(ELMNT)iwobble_set.OVAL CP")    
-  field(CALC,  "A<B?6:5")      #6=1sec, 5=2sec, 4=5sec, siehe Mamiwiki Doku ramp, soll nie aufhören
-  field(OOPT, "On Change")
-  field(OUT,  "$(ELMNT)iwobble_set.SCAN")
-}
-
-record(ai, "$(ELMNT)inom_get")
+record(ai, "$(P)$(R)inom_get")
 {
     field(DESC, "Read DAC register value of a channel")
     field(DTYP, "stream")
@@ -215,56 +183,55 @@ record(ai, "$(ELMNT)inom_get")
     field(SCAN, "10 second")
     field(LINR, "LINEAR")
     field(EGUL, "0")
-    #field(EGUF, "$(ELMNT)imax_get")
+    #field(EGUF, "$(P)$(R)imax_get")
     field(EGU,  "A")
     field(PREC, "6")
-    #field(HOPR, "$(ELMNT)imax_get")                # max display
-    #field(LOPR, "-$(ELMNT)imax_get")               # min display
-    field(FLNK, "$(ELMNT)devi")  # process devi after read
+    #field(HOPR, "$(P)$(R)imax_get")                # max display
+    #field(LOPR, "-$(P)$(R)imax_get")               # min display
 }
 
-record(ai, "$(ELMNT)i_get")
+record(ai, "$(P)$(R)i_get")
 {
     field(DESC, "Read measured current of a channel")
     field(DTYP, "stream")
-    field(INP,  "@wedlkiste.proto getact($(CHAN),$(ELMNT)vrdy) $(PORT)")
+    field(INP,  "@wedlkiste.proto getact($(CHAN),$(P)$(R)vrdy) $(PORT)")
     field(SCAN, "10 second")
     field(LINR, "LINEAR")
     field(EGUL, "0")
-    #field(EGUF, "$(ELMNT)imax_get")
+    #field(EGUF, "$(P)$(R)imax_get")
     field(EGU,  "A")
     field(PREC, "6")
-    #field(HOPR, "$(ELMNT)imax_get")
-    #field(LOPR, "-$(ELMNT)imax_get")
-    field(FLNK, "$(ELMNT)devi")  # process devi after read
+    #field(HOPR, "$(P)$(R)imax_get")
+    #field(LOPR, "-$(P)$(R)imax_get")
+    field(FLNK, "$(P)$(R)devi")  # process devi after read
 }
 
-record(ai, "$(ELMNT)u_get")
+record(ai, "$(P)$(R)u_get")
 {
     field(DESC, "Read measured voltage of a channel")
     field(DTYP, "stream")
-    field(INP,  "@wedlkiste.proto getvolt($(CHAN),$(ELMNT)vrdy) $(PORT)")
+    field(INP,  "@wedlkiste.proto getvolt($(CHAN),$(P)$(R)vrdy) $(PORT)")
     field(SCAN, "10 second")
     field(LINR, "LINEAR")
     field(EGUL, "0")
-    #field(EGUF, "$(ELMNT)imax_get")
+    #field(EGUF, "$(P)$(R)imax_get")
     field(EGU,  "V")
     field(PREC, "6")
-    #field(HOPR, "$(ELMNT)imax_get")
-    #field(LOPR, "-$(ELMNT)imax_get")
+    #field(HOPR, "$(P)$(R)imax_get")
+    #field(LOPR, "-$(P)$(R)imax_get")
 }
 
-record(calc, "$(ELMNT)devi")
+record(calc, "$(P)$(R)devi")
 {
     field(DESC, "Diff nominal-actual")
-    #field(INPA, "$(ELMNT)inom_get")    # Hajo 29.06.17
-    field(INPA, "$(ELMNT)i_set")
-    field(INPB, "$(ELMNT)i_get")
-    field(INPC, "$(ELMNT)vrdy")
+    #field(INPA, "$(P)$(R)inom_get")    # Hajo 29.06.17
+    field(INPA, "$(P)$(R)i_set")
+    field(INPB, "$(P)$(R)i_get")
+    field(INPC, "$(P)$(R)vrdy")
     field(INPD, "1000")
     field(CALC, "(A - B) * C * D")
     field(EGU,  "mA")
-    #field(PREC, "6")
+    field(PREC, "6")
     field(HOPR, "1000")      #all settings from Hajo
     field(LOPR, "-1000")
     field(HIHI, "500")   
@@ -284,34 +251,11 @@ record(calc, "$(ELMNT)devi")
 }
 
 # Messwert aktuell
-record(bi, "$(ELMNT)vrdy") {
+record(bi, "$(P)$(R)vrdy") {
     field(ZNAM, "UNREADY")
     field(ONAM, "READY")
 }
 
-#####################################################################
-# on/off state of a channel Petra  {2, 1, 0} 2=Anzahl der Felder, 1=an, 2=noerror
-##### wird nicht benutzt #####
-record(mbbi, "$(ELMNT)onoff_pe")
-{
-    field(DESC, "ON/Off state of selected channel")
-    field(DTYP, "stream")
-    field(INP,  "@wedlkiste.proto onoff($(CHAN)) $(PORT)")
-    #field(SCAN, "5 second")
-    field(ZRST, "OFF")
-    field(ONST, "ON")
-    field(NIST, "UNDEF")
-}
+include "./db/wobblen.db"
 
-# on/off and error states of a channel
-##### wird nicht benutzt #####
-record(aai, "$(ELMNT)stats-Chan")
-{
-    field(DESC, "State of selected channel")
-    field(DTYP, "stream")
-    field(INP,  "@wedlkiste.proto stateschan($(CHAN)) $(PORT)")
-    #field(SCAN, "5 second")
-    field(FTVL, "USHORT")
-    field(NELM, "2")
-}
 

@@ -1,0 +1,154 @@
+###### Wobblen #########
+record(ai, "$(P)$(R)i_set_orig") 
+{
+    field(DESC, "Set DAC wobble value of a channel")
+    field(DTYP, "Soft Channel")
+    field(EGU,  "A")
+    field(PREC, "6")
+}
+
+record(ai, "$(P)$(R)i_get_scan_orig") 
+{
+    field(DESC, "Set DAC wobble value of a channel")
+    field(DTYP, "Soft Channel")
+    field(EGU,  "A")
+}
+
+record(ao, "$(P)$(R)iwobblemin_set")   
+{
+    field(DESC, "Set wobble min value of a channel in %")
+    field(DTYP, "Soft Channel")
+    field(VAL, "90")
+    field(EGU,  "%")
+    field(PREC, "0")
+    field(LOPR, "50")    # min value
+    field(HOPR, "99")    # max value
+    field(FLNK, "$(P)$(R)calc_iwobblemin")
+    info(autosaveFields_pass0, "VAL")
+}
+
+record(ao, "$(P)$(R)iwobblemax_set")
+{
+    field(DESC, "Set wobble max value of a channel in %")
+    field(DTYP, "Soft Channel")
+    field(VAL, "110")
+    field(EGU,  "%")
+    field(PREC, "0")
+    field(LOPR, "101")    # min value
+    field(HOPR, "150")    # max value
+    field(FLNK, "$(P)$(R)calc_iwobblemax")
+    info(autosaveFields_pass0, "VAL")
+}
+
+record(ao, "$(P)$(R)delaymin_set")
+{
+    field(DESC, "Delaytime min of a channel in sec")
+    field(DTYP, "Soft Channel")
+    field(VAL,  "0.4")
+     field(EGU,  "sec")
+    info(autosaveFields_pass0, "VAL")
+}
+
+record(ao, "$(P)$(R)delaymax_set")
+{
+    field(DESC, "Delaytime max of a channel in sec")
+    field(DTYP, "Soft Channel")
+    field(VAL,  "0.6")
+    field(EGU,  "sec")
+    info(autosaveFields_pass0, "VAL")
+}
+
+record(calc, "$(P)$(R)calc_iwobblemin") 
+{
+    field(INPA, "$(P)$(R)i_set")
+    field(INPB, "$(P)$(R)iwobblemin_set")
+    field(CALC, "A / 100 * B")
+    field(EGU,  "A")
+    field(PREC, "6")
+}
+
+record(calc, "$(P)$(R)calc_iwobblemax") 
+{
+    field(INPA, "$(P)$(R)i_set")
+    field(INPB, "$(P)$(R)iwobblemax_set")
+    field(CALC, "A / 100 * B")
+    field(EGU,  "A")
+    field(PREC, "6")
+}
+
+record(mbbo, "$(P)$(R)wob_init")
+{
+    field(DESC, "Init wobblen")
+    field(DTYP, "Raw Soft Channel")
+    field(VAL,  "0")        #no wob_init 1024 entspricht 1000000000
+    field(FLNK, "$(P)$(R)wob_init_seq.VAL PP NMS")
+    field(ZRVL, "0x1c0")      #Bit Map: 111000000 do LNK8 - LNK9
+    field(ZRST, "DE-INIT")
+    field(ONVL, "0x7F")       #BIT MAP: 0001111111 do LNK1 - LNK7
+    field(ONST, "INIT")
+}
+
+record(seq,"$(P)$(R)wob_init_seq")
+{
+    field(SELM, "Mask")
+    field(SELL, "$(P)$(R)wob_init.RVAL NPP NMS")
+                                                         #####INIT
+    field(DOL1, "$(P)$(R)i_get.SCAN")                    #rem original SCAN Value for i_get
+    field(LNK1, "$(P)$(R)i_get_scan_orig.SCAN PP NMS")
+    field(DOL2, "$(P)$(R)i_set")                         # original Value for i_get 
+    field(LNK2, "$(P)$(R)i_set_orig.VAL PP NMS")
+                                                        
+    field(DOL3, "$(P)$(R)iwobblemin_set")                #process Min = 90% of i_set
+    field(LNK3, "$(P)$(R)iwobblemin_set.VAL PP NMS")
+    field(DOL4, "$(P)$(R)iwobblemax_set")                #process Max = 110% of i_set
+    field(LNK4, "$(P)$(R)iwobblemax_set.VAL PP NMS")
+    
+    field(DOL5, "$(P)$(R)delaymin_set")                  #set delaytime
+    field(LNK5, "$(P)$(R)wobblen_seq.DLY3 NPP NMS")
+    field(DOL6, "$(P)$(R)delaymax_set")
+    field(LNK6, "$(P)$(R)wobblen_seq.DLY4 NPP NMS")
+    
+    field(DOL7,"1")                                      #start wobblen      
+    field(LNK7,"$(P)$(R)wobblen.VAL PP NMS")
+
+    field(DOL8, "$(P)$(R)i_set_orig")                    #####DE-INIT                     
+    field(LNK8, "$(P)$(R)i_set.VAL PP NMS")
+    field(DOL9, "$(P)$(R)i_get_scan_orig.SCAN")            
+    field(LNK9, "$(P)$(R)i_get.SCAN PP NMS")
+}   
+
+record(mbbo, "$(P)$(R)wobblen")
+{
+    field(DESC, "Switch on/off wobblen")
+    field(DTYP, "Raw Soft Channel")
+    field(VAL,  "0")      #no wobblen 256 entspricht 100000000
+    field(FLNK, "$(P)$(R)wobblen_seq.VAL PP NMS") #PP = Process Passiv, NMS = Non Maximize Security
+    
+    field(ZRVL, "0x30")     #Bit Map: 110000 do LNK5 - LNK6
+    field(ZRST, "OFF")      #set to original values and switch off wobblen
+    field(ONVL, "0xF")      #BIT MAP: 001111 do LNK1 - LNK4
+    field(ONST, "ON")       #wobblen on
+}
+
+record(seq,"$(P)$(R)wobblen_seq")
+{
+    field(SELM, "Mask")
+    field(SELL, "$(P)$(R)wobblen.RVAL NPP NMS")
+                                                        ####ON
+    field(DOL1, "9")   # entspricht 0.1 sec             #set SCAN to 0.1 to watch wobblen
+    field(LNK1, "$(P)$(R)i_get.SCAN PP NMS")
+    field(DOL2, "9")   # entspricht 0.1 sec             #set SCAN to 0.1 to process wobblen
+    field(LNK2, "$(P)$(R)wobblen.SCAN PP NMS")
+                    
+    field(DOL3, "$(P)$(R)calc_iwobblemin")              #wobblen
+    field(LNK3, "$(P)$(R)i_set.VAL PP NMS")
+    field(DOL4, "$(P)$(R)calc_iwobblemax")
+    field(LNK4, "$(P)$(R)i_set.VAL PP NMS")
+                                                        ###OFF
+    field(DOL5, "0")                                    #de-init wob-init 
+    field(LNK5, "$(P)$(R)wob_init.VAL PP NMS")
+    field(DOL6, "0")                                    #set to Passive        
+    field(LNK6, "$(P)$(R)wobblen.SCAN NPP NMS")
+}
+    
+###### end Wobblen ############
