@@ -27,7 +27,10 @@ channel_set{
 }
 
 channel_set_ack{
+    #This tells the abacus what to do, 
+    #if valve status goes from open to closed
     out "ch \$1 off";
+    out "ls off";
 }
 
 channel_get{

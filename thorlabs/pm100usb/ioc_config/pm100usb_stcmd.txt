@@ -1,0 +1,6 @@
+##====Thorlabs PM100USB====
+#Grep Device ID using lsusb
+usbtmcConfigure("pm100usb1", 0x1313, 0x8072) 
+dbLoadRecords("db/pm100usb.db", "P=steam:,R=powme1:,PORT=pm100usb1")
+#asynSetTraceIOMask("pm100usb1", -1, 0x6)
+#asynSetTraceMask("pm100usb1", -1, 0x9)

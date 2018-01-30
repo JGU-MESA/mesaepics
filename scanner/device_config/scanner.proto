@@ -1,18 +1,63 @@
 Terminator = CR LF;
 
+##====================================================
+##================== Debug ===========================
+debug {
+    out "%s";
+    in "%39c";
+}
+
+##====================================================
+##================== Device ==========================
+
 getDevIdent{
     out "*IDN?";
-    in "%40c";
+    in "Scanner %40c";
 }
+
+##====================================================
+##==================  Positions ======================
 
 getPos{
     out "SCAN:POSI?";
     in "%f";
 }
 
+##====================================================
+##================== Predefined Positions ============
+## !!!!!!!!!!!!!
+## mbbo!! Keep order or adapt db!!
+## 0 = nullpositon, schirm1, schirm2h, schirm2v, scanbegin, scanend
+## !!!!!!!!!!!!!
+
+setStopPosDiscrete_melba_020:{
+    out "SCAN:STOP %{64.8|2.8|147.3|138.3|30|120}";
+    in "OK";
+}
+
+setStopPosDiscrete_melba_050:{
+    out "SCAN:STOP %{63|1|145.5|136.5|28|118.2}";
+    in "OK";
+}
+
+##====================================================
+##================== Set arbitrary Positions =========
+
 getStopPos{
     out "SCAN:STOP?";
     in "%f";
+    @init{
+        out "SCAN:STOP?";
+        in "%f";
+    }
+}
+
+setStopPos{
+    out "SCAN:STOP %f";
+    in "OK";
+    @init{
+        getStopPos;
+    }
 }
 
 getStartPos{
@@ -20,130 +65,200 @@ getStartPos{
     in "%f";
 }
 
-getMaxVel{
-    out "SCAN:MAXI?";
-    in "%f";
-    @init {    out "SCAN:MAXI?";
-           in "%f";}
-}
-
-getMinVel{
-    out "SCAN:MINI?";
-    in "%f";
-    @init {    out "SCAN:MINI?";
-           in "%f";}
-}
-
-getAcc{
-    out "SCAN:ACCE?";
-    in "%f";
-    @init {     out "SCAN:ACCE?";
-            in "%f";}
-}
-
-getRepeat{
-    out "SCAN:PASS?";
-    in "%i";
-    @init {     out "SCAN:PASS?";
-            in "%i";}
-}
-
-getAI0{
-    out "SCAN:AIN0:VALU?";
-    in "%f";
-    @init {     out "SCAN:AIN0:VALU?";
-            in "%f";}
-}
-
-getAI1{
-    out "SCAN:AIN1:VALU?";
-    in "%i";
-    @init {     out "SCAN:AIN1:VALU?";
-            in "%i";}
-}
-
-getAI2{
-    out "SCAN:AIN2:VALU?";
-    in "%i";
-    @init {     out "SCAN:AIN2:VALU?";
-            in "%i";}
-}
-
-getAI3{
-    out "SCAN:AIN3:VALU?";
-    in "%i";
-    @init {     out "SCAN:AIN3:VALU?";
-            in "%i";}
-}
-
-setStopPos{
-    out "SCAN:STOP %f";
-    in "OK";
-    @init { getStopPos; }
-}
-
 setStartPos{
     out "SCAN:STAR %f";
     in "OK";
-    @init { getStartPos; }
+    @init{
+        getStartPos;
+    }
 }
 
-start{
-    out "SCAN:COMM start";
+setRelativePos{
+    out "SCAN:RELA %f";
+    in "OK";
+    @mismatch{ in "Not a number";} #Scanner muss gefixt werden
+}
+
+##====================================================
+##================== Start and Stop ==================
+
+startstop{
+    out "SCAN:COMM %{start|sstop|hstop}";
     in "OK";
 }
+##====================================================
+##================== Get moving status ===============
 
 running{
     out "SCAN:ISRU?";
     in "%i";
 }
 
-singlemode{
-    out "SCAN:MODE single";
-    in "OK";
-    @init {     out "SCAN:MODE single";
-            in "OK"; }
-}
-
-scanmode{
-    out "SCAN:MODE scan";
-    in "OK";
-}
+##====================================================
+##================== Mode ============================
 
 getMode{
     out "SCAN:MODE?";
-    in "%s";
-    @init {     out "SCAN:MODE?";
-            in "%s";}
+    in "%{single|scan}";
+    @init{
+        out "SCAN:MODE?";
+        in "%{single|scan}";
+    }
 }
-	
+
+setMode{
+    out "SCAN:MODE %{single|scan}";
+    in "OK";
+    @init{
+        getMode; 
+    }
+}
+
+##====================================================
+##================== Repetitions=======================	
+getRepeat{
+    out "SCAN:PASS?";
+    in "%i";
+    @init{
+        out "SCAN:PASS?";
+        in "%i";
+    }
+}
+
 setRepeat{
     out "SCAN:REPE %i";
     in "OK";
-    @init {     out "SCAN:REPE 0";
-            in "OK";}
+    @init{ 
+        getRepeat;
+    }
 }
 
-setMinVel{
-    out "SCAN:MINI %f";
-    in "OK";
-    @init {getMinVel;}
+##====================================================
+##================== Velocity ========================
+
+getMaxVel{
+    out "SCAN:MAXI?";
+    in "%f";
+    @init{
+        out "SCAN:MAXI?";
+        in "%f";
+    }
 }
 
 setMaxVel{
     out "SCAN:MAXI %f";
     in "OK";
-    @init {getMaxVel;}
+    @init{
+        getMaxVel;
+    }
 }
+
+getMinVel{
+    out "SCAN:MINI?";
+    in "%f";
+    @init{
+        out "SCAN:MINI?";
+        in "%f";
+    }
+}
+
+setMinVel{
+    out "SCAN:MINI %f";
+    in "OK";
+    @init{
+        getMinVel;
+    }
+}
+
+##====================================================
+##================== Acceleration 0-24500 ============
+
+getAcc{
+    out "SCAN:ACCE?";
+    in "%f";
+    @init{
+        out "SCAN:ACCE?";
+        in "%f";
+    }
+}
+
+setAcc{
+    out "SCAN:ACCE %i";
+    in "OK";
+    @init{
+        getAcc;
+    }
+}
+
+##====================================================
+##================== Deceleration 0-24500 ============
+
+getDec{
+    out "SCAN:DECE?";
+    in "%f";
+    @init{
+        out "SCAN:DECE?";
+        in "%f";
+    }
+}
+
+setDec{
+    out "SCAN:DECE %f";
+    in "OK";
+    @init{
+        getDec;
+    }
+}
+
+##====================================================
+##=============== PMT ================================
+##====================================================
+##====================================================
+##=============== Photomultiplier gains ==============
 
 setPMGain{
     out "SCAN:DOUT %i";
     in "OK";
-    @init {    out "SCAN:DOUT 0";
-           in "OK";}
+    @mismatch{
+        in "Scaled value out of range";
+    }
 }
 
 getPMGain{
     out "SCAN:DOUT?";
     in "%i";
+    @init{
+        out "SCAN:DOUT?";
+        in "%i";
+    }
 }
+##===============================================
+##=============== Analog inputs =================
+
+getAI{
+    out "SCAN:AIN\$1:VALU?";
+    in "%f";
+}
+
+setAVER{
+    out "SCAN:AIN\$1:AVER %i";
+    in "OK";
+}
+
+
+######### Schirmpositionen für melba_020:scan ###################
+#nullposition 64.8
+#schirm1 2.8
+#schirm2h 147.3
+#schirm2v 138.3
+#scanbegin 30
+#scanend 120
+
+######### Schirmpositionen für melba_050:scan ###################
+#nullposition 63
+#schirm1 1
+#schirm2h 145.5
+#schirm2v 136.5
+#scanbegin 28.2
+#scanend 118.2
+
