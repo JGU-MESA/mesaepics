@@ -27,7 +27,7 @@ record(mbbi, "$(P)$(R)stat_get")
     field(ONST, "FUSE")    #ERRORS
     field(TWST, "THERM")
     field(THST, "FUSE+THERM")
-    field(NIST, "UNDEF")
+    #field(NIST, "UNDEF")
 }
 
 ##### old method #####
@@ -94,6 +94,7 @@ record(bo, "$(P)$(R)on_set")
     field(OUT,  "@wedlkiste.proto switchchan($(CHAN)) $(PORT)")
     field(ZNAM, "OFF")
     field(ONAM, "ON")
+    info (autosaveFields_pass0, "VAL")
 }
 
 record(ai, "$(P)$(R)imax_get")
