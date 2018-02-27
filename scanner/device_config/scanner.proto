@@ -246,6 +246,54 @@ setAVER{
 }
 
 
+##===============================================
+##=============== Datastorage ===================
+
+resetData{
+    out "SCAN:DATA:RESE 1";
+    in "OK";
+}
+
+getDataValueNo{
+    out "SCAN:DATA:CHA%(\$1)d:VALU?";
+    in "%d";
+}
+
+getDataValue{
+    out "SCAN:DATA:CHA%(\$1)d:VALU 2500";
+    separator=";";
+    Terminator = ";" CR LF;
+    in "%x";
+}
+
+getDataInput{
+    out "SCAN:DATA:CHA%(\$1)d:INPU?";
+    in "%d";
+}
+
+setDataInput{
+    out "SCAN:DATA:CHA%(\$1)d:INPU %d";
+    in "OK";
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ######### Schirmpositionen für melba_020:scan ###################
 #nullposition 64.8
 #schirm1 2.8

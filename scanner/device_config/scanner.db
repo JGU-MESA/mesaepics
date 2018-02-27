@@ -28,7 +28,7 @@ record(ai, "$(P)$(R)pos_get")
     field(DESC, "Get current position of scanner")
     field(DTYP, "stream")
     field(INP, "@scanner.proto getPos $(PORT)")
-    field(SCAN, "1 second")
+    #field(SCAN, "1 second")
     field(EGU, "mm")
     field(PREC, "2")
     field(HOPR, "150")
@@ -131,6 +131,7 @@ record(calc, "$(P)$(R)relpos_get")
     field(PREC, "2")
     field(HOPR, "150")
     field(LOPR, "-150")
+    field(PINI, "YES")
 }
 
 ##====================================================
@@ -158,7 +159,7 @@ record(mbbi, "$(P)$(R)run_get")
     field(ONST, "Moving")
     field(THST, "Moving to StartPos")
     field(FVST, "Moving to StopPos")
-    field(SCAN, "1 second")
+    #field(SCAN, "1 second")
 }
 
 ##====================================================
@@ -310,3 +311,84 @@ record(ai, "$(P)$(R)dec_get")
     field(HOPR, "24500")
     field(LOPR, "0")
 }
+
+##====================================================
+##================== Datastorage =====================
+
+record(bo, "$(P)$(R)resetData")
+{
+    field(DESC, "Reset last datastorage")
+    field(DTYP, "stream")
+    field(OUT, "@scanner.proto resetData $(PORT)")
+}
+
+record(calc, "$(P)$(R)DataInput_ch_set")
+{
+    field(DESC, "Select DataInput channel")
+    field(HOPR, "7")
+    field(LOPR, "0")
+    field(PREC, "0")
+    field(CALC, "0")
+    field(FLNK, "$(P)$(R)DataInput_ch_fan.PROC")
+}
+
+record(fanout, "$(P)$(R)DataInput_ch_fan")
+{
+    field(LNK1, "$(P)$(R)DataValueNo_get")
+    field(LNK2, "$(P)$(R)DataInput_get")
+}
+
+record(ai, "$(P)$(R)DataValueNo_get")
+{
+    field(DESC, "Read number of samples")
+    field(DTYP, "stream")
+    field(INP, "@scanner.proto getDataValueNo($(P)$(R)DataInput_ch_set) $(PORT)")
+    field(HOPR, "1000000")
+    field(LOPR, "0")
+    field(PINI, "YES")
+}
+
+record(aai, "$(P)$(R)DataValue_get")
+{
+    field(DESC, "Read samples")
+    field(DTYP, "stream")
+    field(INP, "@scanner.proto getDataValue($(P)$(R)DataInput_ch_set) $(PORT)")
+    field(NELM, "2500")
+    field(FTVL, "LONG")
+    field(FLNK, "$(P)$(R)DataValueNo_get")
+}
+
+record(ai, "$(P)$(R)DataInput_get")
+{
+    field(DESC, "Read input of current channel")
+    field(DTYP, "stream")
+    field(INP, "@scanner.proto getDataInput($(P)$(R)DataInput_ch_set) $(PORT)")
+    field(HOPR, "15")
+    field(LOPR, "0")
+    field(PINI, "YES")
+}
+
+record(mbbo, "$(P)$(R)DataInput_set")
+{
+    field(DESC, "Select input of current channel")
+    field(DTYP, "stream")
+    field(OUT, "@scanner.proto setDataInput($(P)$(R)DataInput_ch_set) $(PORT)")
+    field(ZRST, "Analogeingang 0")
+    field(ONST, "Aktuelle Geschwindigkeit")
+    field(TWST, "AktuellerRampenwert")
+    field(THST, "PID Regler P-Term")
+    field(FRST, "PID Regler I-Term")
+    field(FVST, "PID Regler D-Term")
+    field(SXST, "Ausgang PID Regler")
+    field(SVST, "Ausgang DAC")
+    field(EIST, "Eventcounter Zaehler 0")
+    field(NIST, "Eventcounter Zaehler 1")
+    field(TEST, "Eventcounter Zaehler 2")
+    field(ELST, "Eventcounter Zaehler 3")
+    field(TVST, "Eventcounter Zaehler 4")
+    field(TTST, "Analogeingang 1")
+    field(FTST, "Analogeingang 2")
+    field(FFST, "Analogeingang 3")
+    field(FLNK, "$(P)$(R)DataInput_get.PROC")
+}
+
