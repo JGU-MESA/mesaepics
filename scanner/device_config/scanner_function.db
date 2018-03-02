@@ -1,0 +1,130 @@
+##===============================================
+##=============== Enablegenerator ===============
+## EG Input (Ch. 2.1.8.1)
+record(mbbiDirect, "$(P)$(R)eg_input_$(FU)_get")
+{
+    field(DESC, "Get current active input")
+    field(INP, "@scanner.proto getEnableGen($(FU),INPU) $(PORT)")
+    field(DTYP, "stream")
+    field(NOBT, "8")
+    field(PINI, "YES")
+}
+
+record(mbboDirect, "$(P)$(R)eg_input_$(FU)_set")
+{
+    field(DESC, "Set current active input")
+    field(DTYP, "stream")
+    field(OUT, "@scanner.proto setEnableGen($(FU),INPU) $(PORT)")
+    field(FLNK, "$(P)$(R)eg_input_$(FU)_get")
+}
+
+
+## EG FunctionType (Ch. 2.1.8.1)
+record(mbbi, "$(P)$(R)eg_func_$(FU)_get")
+{
+    field(DESC, "Get current active function")
+    field(INP, "@scanner.proto getEnableGen($(FU),FUNC) $(PORT)")
+    field(DTYP, "stream")
+    field(ZRST, "AND")
+    field(ONST, "OR")
+    field(TWST, "XOR")
+    field(PINI, "YES")
+}
+
+record(mbbo, "$(P)$(R)eg_func_$(FU)_set")
+{
+    field(DESC, "Set current active function")
+    field(DTYP, "stream")
+    field(OUT, "@scanner.proto setEnableGen($(FU),FUNC) $(PORT)")
+    field(ZRST, "AND")
+    field(ONST, "OR")
+    field(TWST, "XOR")
+    field(FLNK, "$(P)$(R)eg_func_$(FU)_get")
+}
+
+## EG Output Inversion (Ch. 2.1.8.1)
+record(bi, "$(P)$(R)eg_outp_$(FU)_get")
+{
+    field(DESC, "Get current logic func inverter")
+    field(INP, "@scanner.proto getEnableGen($(FU),OUTP) $(PORT)")
+    field(DTYP, "stream")
+    field(ZNAM, "Not inverted")
+    field(ONAM, "Inverted")
+    field(PINI, "YES")
+}
+
+record(bo, "$(P)$(R)eg_outp_$(FU)_set")
+{
+    field(DESC, "Set current logic func inverter")
+    field(DTYP, "stream")
+    field(OUT, "@scanner.proto setEnableGen($(FU),OUTP) $(PORT)")
+    field(ZNAM, "Not inverted")
+    field(ONAM, "Inverted")
+    field(FLNK, "$(P)$(R)eg_outp_$(FU)_get")
+}
+
+##===============================================
+##=============== Trigger =======================
+## Trigger Input
+record(mbbiDirect, "$(P)$(R)trig_input_$(FU)_get")
+{
+    field(DESC, "Get trigger input of $(FU)")
+    field(DTYP, "stream")
+    field(INP, "@scanner.proto getTriggerFU($(FU),INPU) $(PORT)")
+    field(NOBT, "6")
+    field(PINI, "YES")
+}
+
+record(mbboDirect, "$(P)$(R)trig_input_$(FU)_set")
+{
+    field(DESC, "Select trigger input $(FU)")
+    field(DTYP, "stream")
+    field(OUT, "@scanner.proto setTriggerFU($(FU),INPU) $(PORT)")
+    field(FLNK, "$(P)$(R)trig_input_$(FU)_get.PROC")
+}
+
+
+## Trigger FunctionType (Ch. 2.1.8.1)
+record(mbbi, "$(P)$(R)trig_func_$(FU)_get")
+{
+    field(DESC, "Get current active function")
+    field(INP, "@scanner.proto getTriggerFU($(FU),FUNC) $(PORT)")
+    field(DTYP, "stream")
+    field(ZRST, "AND")
+    field(ONST, "OR")
+    field(TWST, "XOR")
+    field(PINI, "YES")
+}
+
+record(mbbo, "$(P)$(R)trig_func_$(FU)_set")
+{
+    field(DESC, "Set current active function")
+    field(DTYP, "stream")
+    field(OUT, "@scanner.proto setTriggerFU($(FU),FUNC) $(PORT)")
+    field(ZRST, "AND")
+    field(ONST, "OR")
+    field(TWST, "XOR")
+    field(FLNK, "$(P)$(R)trig_func_$(FU)_get")
+}
+
+
+## Trigger Output Inversion (Ch. 2.1.8.1)
+record(bi, "$(P)$(R)trig_outp_$(FU)_get")
+{
+    field(DESC, "Get current logic func inverter")
+    field(INP, "@scanner.proto getTriggerFU($(FU),OUTP) $(PORT)")
+    field(DTYP, "stream")
+    field(ZNAM, "Not inverted")
+    field(ONAM, "Inverted")
+    field(PINI, "YES")
+}
+
+record(bo, "$(P)$(R)trig_outp_$(FU)_set")
+{
+    field(DESC, "Set current logic func inverter")
+    field(DTYP, "stream")
+    field(OUT, "@scanner.proto setTriggerFU($(FU),OUTP) $(PORT)")
+    field(ZNAM, "Not inverted")
+    field(ONAM, "Inverted")
+    field(FLNK, "$(P)$(R)trig_outp_$(FU)_get")
+}

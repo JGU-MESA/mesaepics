@@ -1,15 +1,14 @@
 ##====================================================
 ##================== Debug ===========================
-
 record(stringout, "$(P)$(R)debug") {
    field(DTYP, "stream")
    field(OUT, "@scanner.proto debug $(PORT)")
    field(DISP, "1")
 }
 
+
 ##====================================================
 ##================== Device ==========================
-
 record(waveform, "$(P)$(R)DevIdent")
 {
     field(DESC, "Get device idenfication of scanner")
@@ -20,23 +19,23 @@ record(waveform, "$(P)$(R)DevIdent")
     field(NELM, "40")
 }
 
+
 ##====================================================
 ##==================  Positions ======================
-
 record(ai, "$(P)$(R)pos_get")
 {
     field(DESC, "Get current position of scanner")
     field(DTYP, "stream")
     field(INP, "@scanner.proto getPos $(PORT)")
-    #field(SCAN, "1 second")
+    field(SCAN, "1 second")
     field(EGU, "mm")
     field(PREC, "2")
     field(HOPR, "150")
     field(LOPR, "0")
 }
 
-##==== STOP =====
 
+##==== STOP =====
 record(ao, "$(P)$(R)stoppos_set")
 {
     field(DESC, "Set absolute endposition of scanner")
@@ -77,22 +76,8 @@ record(mbbo, "$(P)$(R)stopposdiscrete_set")
     field(FLNK, "$(P)$(R)stoppos_get.PROC")
 }
 
+
 ##==== START =====
-
-record(ao, "$(P)$(R)startpos_set")
-{
-    field(DESC, "Set absolute startposition of scanner")
-    field(DTYP, "stream")
-    field(OUT, "@scanner.proto setStartPos $(PORT)")
-    field(EGU, "mm")
-    field(PREC, "2")
-    field(HOPR, "150")
-    field(LOPR, "0")
-    field(DRVH, "150")
-    field(DRVL, "0")
-    field(FLNK, "$(P)$(R)startpos_get.PROC")
-}
-
 record(ai, "$(P)$(R)startpos_get")
 {
     field(DESC, "Get current startposition of scanner")
@@ -105,8 +90,22 @@ record(ai, "$(P)$(R)startpos_get")
     field(FLNK, "$(P)$(R)relpos_get")
 }
 
-##==== Relativ to current pos =====
+record(ao, "$(P)$(R)startpos_set")
+{
+    field(DESC, "Set absolute startposition of scanner")
+    field(DTYP, "stream")
+    field(OUT, "@scanner.proto setStartPos $(PORT)")
+    field(EGU, "mm")
+    field(PREC, "2")
+    field(HOPR, "150")
+    field(LOPR, "0")
+    field(DRVH, "150")
+    field(DRVL, "0")
+    field(FLNK, "$(P)$(R)startpos_get")
+}
 
+
+##==== Relativ to current pos =====
 record(ao, "$(P)$(R)relpos_set")
 {
     field(DESC, "Set absolute startposition of scanner")
@@ -136,7 +135,6 @@ record(calc, "$(P)$(R)relpos_get")
 
 ##====================================================
 ##================== Start and Stop ==================
-
 record(mbbo, "$(P)$(R)start")
 {
     field(DESC, "Start moving of scanner")
@@ -147,25 +145,21 @@ record(mbbo, "$(P)$(R)start")
     field(TWST, "Hard Stop")
 }
 
+
 ##====================================================
 ##================== Running Status ==================
-
-record(mbbi, "$(P)$(R)run_get")
+record(mbbiDirect, "$(P)$(R)run_get")
 {
     field(DESC, "Is scanner moving?")
     field(DTYP, "stream")
     field(INP, "@scanner.proto running $(PORT)")
-    field(ZRST, "Standby")
-    field(ONST, "Moving")
-    field(THST, "Moving to StartPos")
-    field(FVST, "Moving to StopPos")
-    #field(SCAN, "1 second")
+    field(NOBT, "3")
+    field(SCAN, "1 second")
 }
+
 
 ##====================================================
 ##================== Scanning mode ===================
-
-
 record(mbbo, "$(P)$(R)mode_set")
 {
     field(DESC, "Choose scan mode")
@@ -185,9 +179,9 @@ record(mbbi, "$(P)$(R)mode_get")
     field(ONST, "Scan")
 }
 
+
 ##====================================================
 ##================== Repetitions =====================
-
 record(ao, "$(P)$(R)repeat_set")
 {
     field(DESC, "Set number of repeats for scanmode")
@@ -203,7 +197,7 @@ record(ao, "$(P)$(R)repeat_set")
 
 record(ai, "$(P)$(R)repeat_get")
 {
-    field(DESC, "Get number of completed scans")
+    field(DESC, "Get number of repeats for scanmode")
     field(DTYP, "stream")
     field(INP, "@scanner.proto getRepeat $(PORT)")
     field(PREC, "0")
@@ -211,9 +205,20 @@ record(ai, "$(P)$(R)repeat_get")
     field(LOPR, "0")
 }
 
+record(ai, "$(P)$(R)passes_get")
+{
+    field(DESC, "Get number of completed scans")
+    field(DTYP, "stream")
+    field(INP, "@scanner.proto getPasses $(PORT)")
+    field(PREC, "0")
+    field(HOPR, "1e9")
+    field(LOPR, "0")
+    field(SCAN, "1 second")
+}
+
+
 ##====================================================
 ##================== Velocity ========================
-
 record(ao, "$(P)$(R)minvel_set")
 {
     field(DESC, "Set minimum velocity")
@@ -262,7 +267,6 @@ record(ai, "$(P)$(R)maxvel_get")
 
 ##====================================================
 ##================== Acceleration 0-24500 ============
-
 record(ao, "$(P)$(R)acc_set")
 {
     field(DESC, "Get current acceleration")
@@ -288,7 +292,6 @@ record(ai, "$(P)$(R)acc_get")
 
 ##====================================================
 ##================== Deceleration 0-24500 ============
-
 record(ao, "$(P)$(R)dec_set")
 {
     field(DESC, "Set current deceleration")
@@ -314,12 +317,12 @@ record(ai, "$(P)$(R)dec_get")
 
 ##====================================================
 ##================== Datastorage =====================
-
-record(bo, "$(P)$(R)resetData")
+record(bo, "$(P)$(R)resetdata")
 {
     field(DESC, "Reset last datastorage")
     field(DTYP, "stream")
     field(OUT, "@scanner.proto resetData $(PORT)")
+    field(FLNK, "$(P)$(R)DataInput_ch_fan")
 }
 
 record(calc, "$(P)$(R)DataInput_ch_set")
@@ -329,11 +332,13 @@ record(calc, "$(P)$(R)DataInput_ch_set")
     field(LOPR, "0")
     field(PREC, "0")
     field(CALC, "0")
+    field(PINI, "YES")
     field(FLNK, "$(P)$(R)DataInput_ch_fan.PROC")
 }
 
 record(fanout, "$(P)$(R)DataInput_ch_fan")
 {
+    field(DISP, "1")
     field(LNK1, "$(P)$(R)DataValueNo_get")
     field(LNK2, "$(P)$(R)DataInput_get")
 }
@@ -345,6 +350,7 @@ record(ai, "$(P)$(R)DataValueNo_get")
     field(INP, "@scanner.proto getDataValueNo($(P)$(R)DataInput_ch_set) $(PORT)")
     field(HOPR, "1000000")
     field(LOPR, "0")
+    field(SCAN, "1 second")
     field(PINI, "YES")
 }
 
@@ -352,19 +358,33 @@ record(aai, "$(P)$(R)DataValue_get")
 {
     field(DESC, "Read samples")
     field(DTYP, "stream")
-    field(INP, "@scanner.proto getDataValue($(P)$(R)DataInput_ch_set) $(PORT)")
+    field(INP, "@scanner.proto getDataValue($(P)$(R)DataInput_ch_set,2500) $(PORT)")
     field(NELM, "2500")
     field(FTVL, "LONG")
     field(FLNK, "$(P)$(R)DataValueNo_get")
 }
 
-record(ai, "$(P)$(R)DataInput_get")
+record(mbbi, "$(P)$(R)DataInput_get")
 {
     field(DESC, "Read input of current channel")
     field(DTYP, "stream")
     field(INP, "@scanner.proto getDataInput($(P)$(R)DataInput_ch_set) $(PORT)")
-    field(HOPR, "15")
-    field(LOPR, "0")
+    field(ZRST, "Analogeingang 0")
+    field(ONST, "Aktuelle Geschwindigkeit")
+    field(TWST, "AktuellerRampenwert")
+    field(THST, "PID Regler P-Term")
+    field(FRST, "PID Regler I-Term")
+    field(FVST, "PID Regler D-Term")
+    field(SXST, "Ausgang PID Regler")
+    field(SVST, "Ausgang DAC")
+    field(EIST, "Eventcounter Zaehler 0")
+    field(NIST, "Eventcounter Zaehler 1")
+    field(TEST, "Eventcounter Zaehler 2")
+    field(ELST, "Eventcounter Zaehler 3")
+    field(TVST, "Eventcounter Zaehler 4")
+    field(TTST, "Analogeingang 1")
+    field(FTST, "Analogeingang 2")
+    field(FFST, "Analogeingang 3")
     field(PINI, "YES")
 }
 
@@ -392,3 +412,324 @@ record(mbbo, "$(P)$(R)DataInput_set")
     field(FLNK, "$(P)$(R)DataInput_get.PROC")
 }
 
+
+##===============================================
+##=============== Enablegenerator ===============
+## EG Window LEFT
+record(ai, "$(P)$(R)eg_windleft_get")
+{
+    field(DESC, "Get position comparator configuration")
+    field(DTYP, "stream")
+    field(INP, "@scanner.proto getEnableGenWindow(LEFT) $(PORT)")
+    field(HOPR, "150")
+    field(LOPR, "0")
+    field(PREC, "3")
+    field(EGU, "mm")
+    field(PINI, "YES")
+}
+
+record(ao, "$(P)$(R)eg_windleft_set")
+{
+    field(DESC, "Set position comparator configuration")
+    field(DTYP, "stream")
+    field(OUT, "@scanner.proto setEnableGenWindow(LEFT) $(PORT)")
+    field(HOPR, "150")
+    field(LOPR, "0")
+    field(DRVH, "150")
+    field(DRVL, "0")
+    field(PREC, "3")
+    field(EGU, "mm")
+    field(FLNK, "$(P)$(R)eg_windleft_get")
+}
+
+
+## EG Window RIGHT
+record(ai, "$(P)$(R)eg_windright_get")
+{
+    field(DESC, "Get position comparator configuration")
+    field(DTYP, "stream")
+    field(INP, "@scanner.proto getEnableGenWindow(RIGH) $(PORT)")
+    field(HOPR, "150")
+    field(LOPR, "0")
+    field(PREC, "3")
+    field(EGU, "mm")
+    field(PINI, "YES")
+}
+
+record(ao, "$(P)$(R)eg_windright_set")
+{
+    field(DESC, "Set position comparator configuration")
+    field(DTYP, "stream")
+    field(OUT, "@scanner.proto setEnableGenWindow(RIGH) $(PORT)")
+    field(HOPR, "150")
+    field(LOPR, "0")
+    field(DRVH, "150")
+    field(DRVL, "0")
+    field(PREC, "3")
+    field(EGU, "mm")
+    field(FLNK, "$(P)$(R)eg_windright_get")
+}
+
+
+## EG Window Filter
+record(ai, "$(P)$(R)eg_windfilter_get")
+{
+    field(DESC, "No pulses below value in 10ns")
+    field(DTYP, "stream")
+    field(INP, "@scanner.proto getEnableGenWindow(FILT) $(PORT)")
+    field(HOPR, "1e9")
+    field(LOPR, "0")
+    field(PREC, "0")
+    field(ASLO, "10")
+    field(EGU, "ns")
+    field(PINI, "YES")
+}
+
+record(ao, "$(P)$(R)eg_windfilter_set")
+{
+    field(DESC, "No pulses below value in 10ns")
+    field(DTYP, "stream")
+    field(OUT, "@scanner.proto setEnableGenWindow(FILT) $(PORT)")
+    field(HOPR, "1e9")
+    field(LOPR, "0")
+    field(DRVH, "1e9")
+    field(DRVL, "0")
+    field(PREC, "0")
+    field(ASLO, "10")
+    field(EGU, "ns")
+    field(FLNK, "$(P)$(R)eg_windfilter_get")
+}
+
+
+##===============================================
+##=============== Trigger =======================
+## Trigger Edge Selection
+record(mbbi, "$(P)$(R)trig_edge_get")
+{
+    field(DESC, "Get config of active edge")
+    field(DTYP, "stream")
+    field(INP, "@scanner.proto getTriggerBinary(EDGE) $(PORT)")
+    field(ZRST, "Steigende Flanke")
+    field(ONST, "Fallende Flanke")
+    field(TWST, "Beide Flanken")
+    field(THST, "Pegel")
+    field(PINI, "YES")
+}
+
+record(mbbo, "$(P)$(R)trig_edge_set")
+{
+    field(DESC, "Set config of active edge")
+    field(DTYP, "stream")
+    field(OUT, "@scanner.proto setTriggerBinary(EDGE) $(PORT)")
+    field(ZRST, "Steigende Flanke")
+    field(ONST, "Fallende Flanke")
+    field(TWST, "Beide Flanken")
+    field(THST, "Pegel")
+    field(FLNK, "$(P)$(R)trig_edge_get")
+}
+
+
+## Trigger Delta Position
+record(ai, "$(P)$(R)trig_deltpos_get")
+{
+    field(DESC, "Get position comparator configuration")
+    field(DTYP, "stream")
+    field(INP, "@scanner.proto getTrigger(DELT) $(PORT)")
+    field(HOPR, "150")
+    field(LOPR, "0")
+    field(PREC, "3")
+    field(EGU, "mm")
+    field(PINI, "YES")
+}
+
+record(ao, "$(P)$(R)trig_deltpos_set")
+{
+    field(DESC, "Set position comparator configuration")
+    field(DTYP, "stream")
+    field(OUT, "@scanner.proto setTrigger(DELT) $(PORT)")
+    field(HOPR, "150")
+    field(LOPR, "0")
+    field(DRVH, "150")
+    field(DRVL, "0")
+    field(PREC, "3")
+    field(EGU, "mm")
+    field(FLNK, "$(P)$(R)trig_deltpos_get.PROC")
+}
+
+
+## Cycle Trigger
+record(ai, "$(P)$(R)trig_cycle_get")
+{
+    field(DESC, "Get current period of cycle trigger")
+    field(DTYP, "stream")
+    field(INP, "@scanner.proto getTrigger(CYCL) $(PORT)")
+    field(HOPR, "1e9")
+    field(LOPR, "2")
+    field(PREC, "0")
+    field(ASLO, "10")
+    field(EGU, "ns")
+    field(PINI, "YES")
+}
+
+record(ao, "$(P)$(R)trig_cycle_set")
+{
+    field(DESC, "Set current period of cycle trigger")
+    field(DTYP, "stream")
+    field(OUT, "@scanner.proto setTrigger(CYCL) $(PORT)")
+    field(HOPR, "1e9")
+    field(LOPR, "2")
+    field(DRVH, "1e9")
+    field(DRVL, "2")
+    field(PREC, "0")
+    field(ASLO, "10")
+    field(EGU, "ns")
+    field(FLNK, "$(P)$(R)trig_cycle_get.PROC")
+}
+
+
+##===============================================
+##=============== Function FU10 =================
+##========== FU10 Enablegenerator ===============
+## EG Input (Ch. 2.1.8.1)
+record(mbbi, "$(P)$(R)eg_input_FU10_get")
+{
+    field(DESC, "Get current active input")
+    field(INP, "@scanner.proto getEnableGen(FU10,INPU) $(PORT)")
+    field(DTYP, "stream")
+    field(ZRST, "None active")
+    field(ONST, "Ausgang LF0")
+    field(TWST, "Ausgang LF1")
+    field(THST, "Ausgang LF0 und LF1")
+    field(PINI, "YES")
+}
+
+record(mbbo, "$(P)$(R)eg_input_FU10_set")
+{
+    field(DESC, "Set current active input")
+    field(DTYP, "stream")
+    field(OUT, "@scanner.proto setEnableGen(FU10,INPU) $(PORT)")
+    field(ZRST, "None active")
+    field(ONST, "Ausgang LF0")
+    field(TWST, "Ausgang LF1")
+    field(THST, "Ausgang LF0 und LF1")
+    field(FLNK, "$(P)$(R)eg_input_FU10_get")
+}
+
+
+## EG FunctionType (Ch. 2.1.8.1)
+record(mbbi, "$(P)$(R)eg_func_FU10_get")
+{
+    field(DESC, "Get current active function")
+    field(INP, "@scanner.proto getEnableGen(FU10,FUNC) $(PORT)")
+    field(DTYP, "stream")
+    field(ZRST, "AND")
+    field(ONST, "OR")
+    field(TWST, "XOR")
+    field(PINI, "YES")
+}
+
+record(mbbo, "$(P)$(R)eg_func_FU10_set")
+{
+    field(DESC, "Set current active function")
+    field(DTYP, "stream")
+    field(OUT, "@scanner.proto setEnableGen(FU10,FUNC) $(PORT)")
+    field(ZRST, "AND")
+    field(ONST, "OR")
+    field(TWST, "XOR")
+    field(FLNK, "$(P)$(R)eg_func_FU10_get")
+}
+
+
+## EG Output Inversion (Ch. 2.1.8.1)
+record(bi, "$(P)$(R)eg_outp_FU10_get")
+{
+    field(DESC, "Get current logic func inverter")
+    field(INP, "@scanner.proto getEnableGen(FU10,OUTP) $(PORT)")
+    field(DTYP, "stream")
+    field(ZNAM, "Not inverted")
+    field(ONAM, "Inverted")
+    field(PINI, "YES")
+}
+
+record(bo, "$(P)$(R)eg_outp_FU10_set")
+{
+    field(DESC, "Set current logic func inverter")
+    field(DTYP, "stream")
+    field(OUT, "@scanner.proto setEnableGen(FU10,OUTP) $(PORT)")
+    field(ZNAM, "Not inverted")
+    field(ONAM, "Inverted")
+    field(FLNK, "$(P)$(R)eg_outp_FU10_get")
+}
+
+
+##========== FU10 Trigger =======================
+## Trigger Input
+record(mbbi, "$(P)$(R)trig_input_FU10_get")
+{
+    field(DESC, "Get trigger input of FU10")
+    field(DTYP, "stream")
+    field(INP, "@scanner.proto getTriggerFU(FU10,INPU) $(PORT)")
+    field(ZRST, "None active")
+    field(ONST, "Ausgang LF0")
+    field(TWST, "Ausgang LF1")
+    field(THST, "Ausgang LF0 und LF1")
+    field(PINI, "YES")
+}
+
+record(mbbo, "$(P)$(R)trig_input_FU10_set")
+{
+    field(DESC, "Select trigger input FU10")
+    field(DTYP, "stream")
+    field(OUT, "@scanner.proto setTriggerFU(FU10,INPU) $(PORT)")
+    field(ZRST, "None active")
+    field(ONST, "Ausgang LF0")
+    field(TWST, "Ausgang LF1")
+    field(THST, "Ausgang LF0 und LF1")
+    field(FLNK, "$(P)$(R)trig_input_FU10_get.PROC")
+}
+
+
+## Trigger FunctionType (Ch. 2.1.8.1)
+record(mbbi, "$(P)$(R)trig_func_FU10_get")
+{
+    field(DESC, "Get current active function")
+    field(INP, "@scanner.proto getTriggerFU(FU10,FUNC) $(PORT)")
+    field(DTYP, "stream")
+    field(ZRST, "AND")
+    field(ONST, "OR")
+    field(TWST, "XOR")
+    field(PINI, "YES")
+}
+
+record(mbbo, "$(P)$(R)trig_func_FU10_set")
+{
+    field(DESC, "Set current active function")
+    field(DTYP, "stream")
+    field(OUT, "@scanner.proto setTriggerFU(FU10,FUNC) $(PORT)")
+    field(ZRST, "AND")
+    field(ONST, "OR")
+    field(TWST, "XOR")
+    field(FLNK, "$(P)$(R)trig_func_FU10_get")
+}
+
+
+## Trigger Output Inversion (Ch. 2.1.8.1)
+record(bi, "$(P)$(R)trig_outp_FU10_get")
+{
+    field(DESC, "Get current logic func inverter")
+    field(INP, "@scanner.proto getTriggerFU(FU10,OUTP) $(PORT)")
+    field(DTYP, "stream")
+    field(ZNAM, "Not inverted")
+    field(ONAM, "Inverted")
+    field(PINI, "YES")
+}
+
+record(bo, "$(P)$(R)trig_outp_FU10_set")
+{
+    field(DESC, "Set current logic func inverter")
+    field(DTYP, "stream")
+    field(OUT, "@scanner.proto setTriggerFU(FU10,OUTP) $(PORT)")
+    field(ZNAM, "Not inverted")
+    field(ONAM, "Inverted")
+    field(FLNK, "$(P)$(R)trig_outp_FU10_get")
+}
