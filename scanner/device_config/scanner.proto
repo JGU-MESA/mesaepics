@@ -63,6 +63,10 @@ setStopPos{
 getStartPos{
     out "SCAN:STAR?";
     in "%f";
+    @init{
+        out "SCAN:STAR?";
+        in "%f";
+    }
 }
 
 setStartPos{
@@ -117,10 +121,10 @@ setMode{
 ##====================================================
 ##================== Repetitions=======================	
 getRepeat{
-    out "SCAN:PASS?";
+    out "SCAN:REPE?";
     in "%i";
     @init{
-        out "SCAN:PASS?";
+        out "SCAN:REPE?";
         in "%i";
     }
 }
@@ -130,6 +134,15 @@ setRepeat{
     in "OK";
     @init{ 
         getRepeat;
+    }
+}
+
+getPasses{
+    out "SCAN:PASS?";
+    in "%i";
+    @init{
+        out "SCAN:PASS?";
+        in "%i";
     }
 }
 
@@ -210,6 +223,7 @@ setDec{
     }
 }
 
+
 ##====================================================
 ##=============== PMT ================================
 ##====================================================
@@ -232,6 +246,8 @@ getPMGain{
         in "%i";
     }
 }
+
+
 ##===============================================
 ##=============== Analog inputs =================
 
@@ -244,6 +260,130 @@ setAVER{
     out "SCAN:AIN\$1:AVER %i";
     in "OK";
 }
+
+
+##====================================================
+##=============== Data aquisition ====================
+##====================================================
+##===============================================
+##=============== Datastorage ===================
+
+resetData{
+    out "SCAN:DATA:RESE 1";
+    in "OK";
+}
+
+getDataValueNo{
+    out "SCAN:DATA:CHA%(\$1)d:VALU?";
+    in "%d";
+}
+
+getDataValue{
+    out "SCAN:DATA:CHA%(\$1DataInput_ch_set)d:VALU %(\$1dv_calc)d";
+    ReadTimeout = 10000;
+    separator=";";
+    Terminator = ";" CR LF;
+    in "%x";
+}
+
+getDataInput{
+    out "SCAN:DATA:CHA%(\$1)d:INPU?";
+    in "%d";
+}
+
+setDataInput{
+    out "SCAN:DATA:CHA%(\$1)d:INPU %d";
+    in "OK";
+    @init{
+        out "SCAN:DATA:CHA%(\$1)d:INPU?";
+        in "%d";
+    }
+}
+
+
+##===============================================
+##=============== Enablegenerator ===============
+# Window
+getEnableGenWindow{
+    out "SCAN:ENAB:WIND:\$1?";
+    in "%f";
+}
+
+setEnableGenWindow{
+    out "SCAN:ENAB:WIND:\$1 %f";
+    in "OK";
+    @init{
+        out "SCAN:ENAB:WIND:\$1?";
+        in "%f";
+    }
+}
+
+# Input
+getEnableGen{
+    out "SCAN:ENAB:\$1:\$2?";
+    in "%d";
+}
+
+setEnableGen{
+    out "SCAN:ENAB:\$1:\$2 %d";
+    in "OK";
+    @init{
+        out "SCAN:ENAB:\$1:\$2?";
+        in "%d";
+    }
+}
+
+
+##===============================================
+##=============== Trigger =======================
+getTriggerBinary{
+    out "SCAN:TRIG:\$1?";
+    in "%i";
+}
+
+setTriggerBinary{
+    out "SCAN:TRIG:\$1 %i";
+    in "OK";
+    @init{
+        out "SCAN:TRIG:\$1?";
+        in "%i";
+    }
+}
+
+getTrigger{
+    out "SCAN:TRIG:\$1?";
+    in "%f";
+}
+
+setTrigger{
+    out "SCAN:TRIG:\$1 %f";
+    in "OK";
+    @init{
+        out "SCAN:TRIG:\$1?";
+        in "%f";
+    }
+}
+
+getTriggerFU{
+    out "SCAN:TRIG:\$1:\$2?";
+    in "%d";
+}
+
+setTriggerFU{
+    out "SCAN:TRIG:\$1:\$2 %d";
+    in "OK";
+    @init{
+        out "SCAN:TRIG:\$1:\$2?";
+        in "%d";
+    }
+}
+
+
+
+
+
+
+
 
 
 ######### Schirmpositionen für melba_020:scan ###################

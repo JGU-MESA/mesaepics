@@ -6,14 +6,10 @@ record(ai, "$(P)$(R)i_get")
     field(DTYP,"stream")
     field(INP,"@scanner.proto getAI($(CH)) $(PORT)")
     field(SCAN,".1 second")
-<<<<<<< HEAD
-    field(PREC,"3")
-=======
     field(PREC,"0")
     field(EGU, "bit")
     field(HOPR, "65535")
     field(LOPR, "0")
->>>>>>> origin/steam
     #field(DISP, "1")
 }
 
