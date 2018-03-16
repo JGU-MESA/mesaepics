@@ -279,7 +279,8 @@ getDataValueNo{
 }
 
 getDataValue{
-    out "SCAN:DATA:CHA%(\$1)d:VALU \$2";
+    out "SCAN:DATA:CHA%(\$1DataInput_ch_set)d:VALU %(\$1dv_calc)d";
+    ReadTimeout = 10000;
     separator=";";
     Terminator = ";" CR LF;
     in "%x";
