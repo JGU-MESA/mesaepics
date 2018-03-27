@@ -1,6 +1,7 @@
 Terminator = CR LF;
-#replytimeout = 2000;
-Extrainput = ignore;
+replytimeout = 1000;
+ExtraInput = Ignore;
+@mismatch{ in "Invalid command, type help";}
 
 debug{
     out "%s";
@@ -108,7 +109,7 @@ dc_get{
 }
 
 dc_set{
-    out "dc %{0|1}";
+    out "dc %{off|on}";
     @init{ dc_get;}
 }
 
