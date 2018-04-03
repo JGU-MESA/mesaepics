@@ -1,0 +1,86 @@
+# This database delivers the records for each datastroage channel
+# Macros e.g.: 
+# P = melba_050:
+# R = scan:
+# CH = 0
+# melba_050:scan:datach0_*
+record(ai, "$(P)$(R)datach$(CH)_noofsamples_get")
+{
+    field(DESC, "Read number of samples")
+    field(DTYP, "stream")
+    field(INP, "@scanner.proto getDataValueNo($(CH)) $(PORT)")
+    field(HOPR, "1e6")
+    field(LOPR, "0")
+    field(SCAN, "1 second")
+    field(PREC, "0")
+    field(FLNK, "$(P)$(R)datach$(CH)_dv_calc")
+}
+
+record(calc, "$(P)$(R)datach$(CH)_dv_calc")
+{
+    # Make sure not to read to much datapoints at once
+    # Otherwise the connection will break down
+    field(DISP, "1")
+    field(INPA, "$(P)$(R)datach$(CH)_noofsamples_get")
+    field(INPB, "1e5")
+    field(CALC, "A < B ? A : B")
+}
+
+record(aai, "$(P)$(R)datach$(CH)_samples_get")
+{
+    field(DESC, "Read samples")
+    field(DTYP, "stream")
+    field(INP, "@scanner.proto getDataValue($(CH),$(P)$(R)datach$(CH)) $(PORT)")
+    field(NELM, "100000")
+    field(FTVL, "LONG")
+    field(FLNK, "$(P)$(R)datach$(CH)_samples_get")
+}
+
+
+record(mbbi, "$(P)$(R)datach$(CH)_input_get")
+{
+    field(DESC, "Read input of channel $(CH)")
+    field(DTYP, "stream")
+    field(INP, "@scanner.proto getDataInput($(CH)) $(PORT)")
+    field(ZRST, "Analogeingang 0")
+    field(ONST, "Aktuelle Geschwindigkeit")
+    field(TWST, "AktuellerRampenwert")
+    field(THST, "PID Regler P-Term")
+    field(FRST, "PID Regler I-Term")
+    field(FVST, "PID Regler D-Term")
+    field(SXST, "Ausgang PID Regler")
+    field(SVST, "Ausgang DAC")
+    field(EIST, "Eventcounter Zaehler 0")
+    field(NIST, "Eventcounter Zaehler 1")
+    field(TEST, "Eventcounter Zaehler 2")
+    field(ELST, "Eventcounter Zaehler 3")
+    field(TVST, "Eventcounter Zaehler 4")
+    field(TTST, "Analogeingang 1")
+    field(FTST, "Analogeingang 2")
+    field(FFST, "Analogeingang 3")
+    field(PINI, "YES")
+}
+
+record(mbbo, "$(P)$(R)datach$(CH)_input_set")
+{
+    field(DESC, "Select input of channel $(CH)")
+    field(DTYP, "stream")
+    field(OUT, "@scanner.proto setDataInput($(CH)) $(PORT)")
+    field(ZRST, "Analogeingang 0")
+    field(ONST, "Aktuelle Geschwindigkeit")
+    field(TWST, "AktuellerRampenwert")
+    field(THST, "PID Regler P-Term")
+    field(FRST, "PID Regler I-Term")
+    field(FVST, "PID Regler D-Term")
+    field(SXST, "Ausgang PID Regler")
+    field(SVST, "Ausgang DAC")
+    field(EIST, "Eventcounter Zaehler 0")
+    field(NIST, "Eventcounter Zaehler 1")
+    field(TEST, "Eventcounter Zaehler 2")
+    field(ELST, "Eventcounter Zaehler 3")
+    field(TVST, "Eventcounter Zaehler 4")
+    field(TTST, "Analogeingang 1")
+    field(FTST, "Analogeingang 2")
+    field(FFST, "Analogeingang 3")
+    field(FLNK, "$(P)$(R)datach$(CH)_input_get")
+}

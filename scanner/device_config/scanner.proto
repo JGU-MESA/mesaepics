@@ -225,20 +225,52 @@ setDec{
 
 
 ##====================================================
-##=============== PMT ================================
+##=============== Analog Inputs ======================
 ##====================================================
-##====================================================
-##=============== Photomultiplier gains ==============
+# Calculated Value
+getAIValue{
+    out "SCAN:AIN\$1:VALU?";
+    in "%f";
+}
 
-setPMGain{
-    out "SCAN:DOUT %i";
-    in "OK";
-    @mismatch{
-        in "Scaled value out of range";
+# Average
+getAIAver{
+    out "SCAN:AIN\$1:AVER?";
+    in "%i";
+    @init{
+        out "SCAN:AIN\$1:AVER?";
+        in "%i";
     }
 }
 
-getPMGain{
+setAIAver{
+    out "SCAN:AIN\$1:AVER %i";
+    in "OK";
+    @init{
+        getAIAver;
+    }
+}
+
+# Offset
+getAIOffset{
+    out "SCAN:AIN\$1:OFFS?";
+    in "%i";
+    @init{
+        out "SCAN:AIN\$1:OFFS?";
+        in "%i";
+    }
+}
+
+setAIOffset{
+    out "SCAN:AIN\$1:OFFS %i";
+    in "OK";
+    @init{
+        getAIOffset;
+    }
+}
+
+# Gain set by digital outputs
+getDoutAIGain{
     out "SCAN:DOUT?";
     in "%i";
     @init{
@@ -247,19 +279,18 @@ getPMGain{
     }
 }
 
-
-##===============================================
-##=============== Analog inputs =================
-
-getAI{
-    out "SCAN:AIN\$1:VALU?";
-    in "%f";
-}
-
-setAVER{
-    out "SCAN:AIN\$1:AVER %i";
+setDoutAIGain{
+    out "SCAN:DOUT %i";
     in "OK";
+    @mismatch{
+        in "Scaled value out of range";
+    }
+    @init{
+        getDoutAIGain;
+    }
 }
+
+
 
 
 ##====================================================
@@ -274,12 +305,12 @@ resetData{
 }
 
 getDataValueNo{
-    out "SCAN:DATA:CHA%(\$1)d:VALU?";
-    in "%d";
+    out "SCAN:DATA:CHA\$1:VALU?";
+    in "%i";
 }
 
 getDataValue{
-    out "SCAN:DATA:CHA%(\$1DataInput_ch_set)d:VALU %(\$1dv_calc)d";
+    out "SCAN:DATA:CHA\$1:VALU %(\$2_dv_calc)d";
     ReadTimeout = 10000;
     separator=";";
     Terminator = ";" CR LF;
@@ -287,15 +318,15 @@ getDataValue{
 }
 
 getDataInput{
-    out "SCAN:DATA:CHA%(\$1)d:INPU?";
+    out "SCAN:DATA:CHA\$1:INPU?";
     in "%d";
 }
 
 setDataInput{
-    out "SCAN:DATA:CHA%(\$1)d:INPU %d";
+    out "SCAN:DATA:CHA\$1:INPU %d";
     in "OK";
     @init{
-        out "SCAN:DATA:CHA%(\$1)d:INPU?";
+        out "SCAN:DATA:CHA\$1:INPU?";
         in "%d";
     }
 }
