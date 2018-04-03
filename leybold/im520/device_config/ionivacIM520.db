@@ -5,12 +5,38 @@ record(stringout, "$(P)$(R)debug") {
     field(OUT, "@ionivacIM520.proto debug $(PORT)")
 }
 
+##===== Reset Status =====
+##
+record(bo, "$(P)$(R)stat_reset") {
+    field(DTYP, "stream")
+    field(OUT, "@ionivacIM520.proto stat_reset $(PORT)")
+}
+
 ##===== Status =====
 ##
-record(stringin, "$(P)$(R)stat_get") {
-    field(DESC, "Reads status bit code")
+#record(stringin, "$(P)$(R)stat_get") {
+#    field(DESC, "Reads status bit code")
+#    field(DTYP, "stream")
+#    field(INP, "@ionivacIM520.proto stat_get $(PORT)")
+#    field(SCAN, "2 second")
+#}
+
+record(mbbiDirect, "$(P)$(R)stat_get") {
+    field(DESC, "Reads status bit code (p.112-113)")
     field(DTYP, "stream")
     field(INP, "@ionivacIM520.proto stat_get $(PORT)")
+    field(SCAN, "2 second")
+    field(NOBT, "8")
+    field(FLNK, "$(P)$(R)stat_error")
+}
+
+record(bi, "$(P)$(R)stat_error") {
+    field(DESC, "Gaug in error state")
+    field(INP, "$(P)$(R)stat_get.B7")
+    field(ZNAM, "Operational state")
+    field(ONAM, "Error state")
+    field(ZSV, "NO_ALARM")
+    field(OSV, "MAJOR")
 }
 
 

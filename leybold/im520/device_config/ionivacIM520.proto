@@ -15,11 +15,19 @@ debug {
 
 ##===== Status =====
 ##
-stat_get {
-    out "STS R";
-    in "STS %8cB";
+#stat_get {
+#    out "STS R";
+#    in "STS %8cB";
+#}
+
+stat_reset {
+    out "DCL"
 }
 
+stat_get {
+    out "STS R";
+    in "STS %8bB";
+}
 
 
 ##===== Pressure =====
