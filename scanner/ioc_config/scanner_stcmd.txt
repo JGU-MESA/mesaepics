@@ -1,40 +1,28 @@
-#!../../bin/linux-x86_64/scanner
-
-## You may have to change scanner to something else
-## everywhere it appears in this file
-
-< /home/epics/scannerioc/iocBoot/iocscanner/envPaths
-
-cd "${TOP}"
-epicsEnvSet ("STREAM_PROTOCOL_PATH", ".:../../db")
-
-## Register all support components
-dbLoadDatabase "dbd/scanner.dbd"
-scanner_registerRecordDeviceDriver pdbbase
-
-## Load record instances
-#dbLoadRecords("db/xxx.db","user=friedersHost")
-
 ##===== Scanner020 =====
 #drvAsynIPPortConfigure("scanner020", "10.32.240.85:7")
 #dbLoadRecords("db/scanner.db","P=melba_020:, R=scan:, NULL=64.8, PORT=scanner020")
-#dbLoadRecords("db/scanner_channel.db","P=melba_020:,R=pmt1:,CH=1,PORT=scanner020")
-#dbLoadRecords("db/scanner_channel.db","P=melba_020:,R=pmt2:,CH=2,PORT=scanner020")
+#dbLoadRecords("db/scanner_function.db","P=melba_020:,R=scan:,FU=FU00, PORT=scanner020")
+#dbLoadRecords("db/scanner_function.db","P=melba_020:,R=scan:,FU=FU01, PORT=scanner020")
+#dbLoadRecords("db/scanner_analog_input.db","P=melba_020:,R=scan:,CH=0,PORT=scanner020")
+#dbLoadRecords("db/scanner_analog_input.db","P=melba_020:,R=pmt1:,CH=1,PORT=scanner020")
+#dbLoadRecords("db/scanner_analog_input.db","P=melba_020:,R=pmt2:,CH=2,PORT=scanner020")
 
 ##===== Scanner050 =====
 drvAsynIPPortConfigure("scanner050", "10.32.240.86:7")
 dbLoadRecords("db/scanner.db","P=melba_050:,R=scan:,NULL=63, PORT=scanner050")
 dbLoadRecords("db/scanner_function.db","P=melba_050:,R=scan:,FU=FU00, PORT=scanner050")
 dbLoadRecords("db/scanner_function.db","P=melba_050:,R=scan:,FU=FU01, PORT=scanner050")
-#dbLoadRecords("db/scanner_channel.db","P=steam:,R=pmt1:,CH=1,PORT=scanner050")
-#dbLoadRecords("db/scanner_channel.db","P=steam:,R=pmt2:,CH=2,PORT=scanner050")
-
-#dbLoadRecords("db/scanner.db","P=melba_050:,R=scan:,PORT=scanner050") 
-
-cd "${TOP}/iocBoot/${IOC}"
-iocInit
-
-dbl > /home/epics/dbl_latest.lst
+dbLoadRecords("db/scanner_datach.db","P=melba_050:, R=scan:, CH=0, PORT=scanner050")
+dbLoadRecords("db/scanner_datach.db","P=melba_050:, R=scan:, CH=1, PORT=scanner050")
+dbLoadRecords("db/scanner_datach.db","P=melba_050:, R=scan:, CH=2, PORT=scanner050")
+dbLoadRecords("db/scanner_datach.db","P=melba_050:, R=scan:, CH=3, PORT=scanner050")
+dbLoadRecords("db/scanner_datach.db","P=melba_050:, R=scan:, CH=4, PORT=scanner050")
+dbLoadRecords("db/scanner_datach.db","P=melba_050:, R=scan:, CH=5, PORT=scanner050")
+dbLoadRecords("db/scanner_datach.db","P=melba_050:, R=scan:, CH=6, PORT=scanner050")
+dbLoadRecords("db/scanner_datach.db","P=melba_050:, R=scan:, CH=7, PORT=scanner050")
+dbLoadRecords("db/scanner_analog_input.db","P=melba_050:,R=scan_ch0:,CH=0,PORT=scanner050")
+dbLoadRecords("db/scanner_analog_input.db","P=steam:,R=pmt1:,CH=1,PORT=scanner050")
+dbLoadRecords("db/scanner_analog_input.db","P=steam:,R=pmt2:,CH=2,PORT=scanner050")
 
 
 asynSetTraceIOMask("scanner050",-1,0x6) 
