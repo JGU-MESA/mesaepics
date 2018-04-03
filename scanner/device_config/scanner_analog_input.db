@@ -1,0 +1,91 @@
+# Macros P,R und CH
+# Example: melba_050:scan_ch0:*
+
+record(ai, "$(P)$(R)i_get")
+{
+    field(DESC, "Get signal at analog input $(CH)")
+    field(DTYP, "stream")
+    field(INP, "@scanner.proto getAIValue($(CH)) $(PORT)")
+    field(SCAN, ".1 second")
+    field(PREC, "0")
+    field(EGU, "bit")
+    field(HOPR, "65535")
+    field(LOPR, "0")
+    #field(DISP, "1")
+}
+
+record(ao, "$(P)$(R)aver_set")
+{
+    field(DESC, "Set averaging of analog input 2^(value)")
+    field(DTYP, "stream")
+    field(OUT, "@scanner.proto setAIAver($(CH)) $(PORT)")
+    field(FLNK, "$(P)$(R)aver_get")
+}
+
+record(ai, "$(P)$(R)aver_get")
+{
+    field(DESC, "get averaging of analog input 2^(value)")
+    field(DTYP, "stream")
+    field(INP, "@scanner.proto getAIAver($(CH)) $(PORT)")
+    field(PINI, "YES")
+}
+
+record(ao, "$(P)$(R)offset_set")
+{
+    field(DESC, "Set averaging of analog input 2^(value)")
+    field(DTYP, "stream")
+    field(OUT, "@scanner.proto setAIAver($(CH)) $(PORT)")
+    field(FLNK, "$(P)$(R)aver_get")
+    field(PREC, "0")
+    field(EGU, "bit")
+    field(HOPR, "65535")
+    field(LOPR, "0")
+    field(DRVH, "65535")
+    field(DRVL, "0")
+}
+
+record(ai, "$(P)$(R)offset_get")
+{
+    field(DESC, "get averaging of analog input 2^(value)")
+    field(DTYP, "stream")
+    field(INP, "@scanner.proto getAIAver($(CH)) $(PORT)")
+    field(PINI, "YES")
+    field(PREC, "0")
+    field(EGU, "bit")
+    field(HOPR, "65535")
+    field(LOPR, "0")
+}
+
+record(ai, "$(P)$(R)dout_gain_get")
+{
+    field(DESC, "Get gain of analog input")
+    field(DTYP, "stream")
+    field(INP, "@scanner.proto getDoutAIGain $(PORT)")
+    field(SCAN, "1 second")
+    field(PREC, "0")
+    field(HOPR, "2")
+    field(LOPR, "0")
+}
+
+record(ao, "$(P)$(R)dout_gain_set")
+{
+    field(DESC, "Set gain of analog input")
+    field(PREC, "0")
+    field(DRVH, "15")
+    field(DRVL, "0")
+    field(FLNK, "$(P)$(R)dout_gain_send.PROC")
+}
+
+record(calcout, "$(P)$(R)dout_gain_send")
+{
+    field(DESC, "Set gain of digital output")
+    field(DTYP, "stream")
+    field(OUT, "@scanner.proto setDoutAIGain $(PORT)")
+    field(INPA, "$(P)$(R)dout_gain_get")
+    field(INPB, "$(P)$(R)dout_gain_set")
+    field(INPC, "$(CH)")
+    # ToDo:
+    # Calc field needs to be adopted to more than 2 channel!!
+    field(CALC, "C = 1 ? (A & 12) | B : (A & 3) | (B << 2)")
+    field(FLNK, "$(P)$(R)dout_gain_get")
+}
