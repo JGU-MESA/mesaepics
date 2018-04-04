@@ -80,7 +80,9 @@ setStartPos{
 setRelativePos{
     out "SCAN:RELA %f";
     in "OK";
-    @mismatch{ in "Not a number";} #Scanner muss gefixt werden
+    @mismatch{ 
+        in "Not a number"; #Scanner muss gefixt werden
+    } 
 }
 
 ##====================================================
@@ -311,10 +313,15 @@ getDataValueNo{
 
 getDataValue{
     out "SCAN:DATA:CHA\$1:VALU %(\$2_dv_calc)d";
-    ReadTimeout = 10000;
+    LockTimeout = 600;
+    ReplyTimeout = 500;
+    # ReadTimeout = 5000;
     separator=";";
-    Terminator = ";" CR LF;
+    InTerminator = ";" CR LF;
     in "%x";
+    @mismatch{
+        in "Empty command";
+    }
 }
 
 getDataInput{

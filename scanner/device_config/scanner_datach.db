@@ -22,7 +22,7 @@ record(calc, "$(P)$(R)datach$(CH)_dv_calc")
     # Otherwise the connection will break down
     field(DISP, "1")
     field(INPA, "$(P)$(R)datach$(CH)_noofsamples_get")
-    field(INPB, "1e5")
+    field(INPB, "100000")
     field(CALC, "A < B ? A : B")
 }
 
@@ -35,6 +35,17 @@ record(aai, "$(P)$(R)datach$(CH)_samples_get")
     field(FTVL, "LONG")
     field(FLNK, "$(P)$(R)datach$(CH)_samples_get")
 }
+
+# Test Waveform
+#record(waveform, "test:datach$(CH)_wf_get")
+#{
+#    field(DESC, "Read samples")
+#    field(DTYP, "stream")
+#    field(INP, "@scanner.proto getDataValue($(CH),$(P)$(R)datach$(CH)) $(PORT)")
+#    field(NELM, "100000")
+#    field(FTVL, "LONG")
+#    field(FLNK, "$(P)$(R)datach$(CH)_samples_get")
+#}
 
 
 record(mbbi, "$(P)$(R)datach$(CH)_input_get")
