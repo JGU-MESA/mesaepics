@@ -1,4 +1,5 @@
-# Macros P,R und CH
+# Macros P,R and CH
+# CH = 1,2 or 3 (Analog chanel 0 is reserved for the potentiometer)
 # Example: melba_050:scan_ch0:*
 
 record(ai, "$(P)$(R)i_get")
@@ -34,7 +35,7 @@ record(ao, "$(P)$(R)offset_set")
 {
     field(DESC, "Set averaging of analog input 2^(value)")
     field(DTYP, "stream")
-    field(OUT, "@scanner.proto setAIAver($(CH)) $(PORT)")
+    field(OUT, "@scanner.proto setAIOffset($(CH)) $(PORT)")
     field(FLNK, "$(P)$(R)aver_get")
     field(PREC, "0")
     field(EGU, "bit")
@@ -48,7 +49,7 @@ record(ai, "$(P)$(R)offset_get")
 {
     field(DESC, "get averaging of analog input 2^(value)")
     field(DTYP, "stream")
-    field(INP, "@scanner.proto getAIAver($(CH)) $(PORT)")
+    field(INP, "@scanner.proto getAIOffset($(CH)) $(PORT)")
     field(PINI, "YES")
     field(PREC, "0")
     field(EGU, "bit")
@@ -84,8 +85,7 @@ record(calcout, "$(P)$(R)dout_gain_send")
     field(INPA, "$(P)$(R)dout_gain_get")
     field(INPB, "$(P)$(R)dout_gain_set")
     field(INPC, "$(CH)")
-    # ToDo:
-    # Calc field needs to be adopted to more than 2 channel!!
-    field(CALC, "C = 1 ? (A & 12) | B : (A & 3) | (B << 2)")
+    field(CALC, "C = 1 ? (A & 12) | B : (C = 2 ? (A & 3) | (B << 2) : A)")
+    # A & 12 löscht Bit 0 und Bit 1, "oder B" setzt Bitwert
     field(FLNK, "$(P)$(R)dout_gain_get")
 }
