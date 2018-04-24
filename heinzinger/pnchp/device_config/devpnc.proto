@@ -1,7 +1,7 @@
 OutTerminator = LF;
 InTerminator = NUL;
 #LockTimeout = 2000;
-ReplyTimeout = 1000;
+ReplyTimeout = 2000;
 ExtraInput = Ignore;
 
 delay = 100;
@@ -90,13 +90,14 @@ getD {
 
 getAver {
     out "AVER?";
-    in "%d";
+    in "%i";
     @init{ out "AVER?";
-           in "%d";
+           in "%i";
     }
 }
 
 setAver {
-    out "AVER %d"; 
+    out "AVER %d";
+    wait $delay;
     @init{ getAver;}
 }

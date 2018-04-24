@@ -87,11 +87,12 @@ record(ao, "$(P)$(R)u_set")
     field(DTYP, "stream")
     field(OUT, "@devpnc.proto setVolt $(PORT)")
     field(DRVL, "0")
-    field(DRVH, "200")
+    #field(DRVH, "200")
+    field(DRVH, "110")
 }
 
 #Record für Rampen
-record (calcout, "calc") {
+record (calcout, "$(P)$(R)calc") {
   field(INPA, "$(P)$(R)SetVolt CP")
   field(INPB, "$(P)$(R)SetVolt.OVAL CP")
   field(CALC, "A!=B?6:0")
@@ -113,21 +114,32 @@ record(ao, "$(P)$(R)i_set")
     field(DRVL, "0")
 }
 
+
+#===== Average =====
+
 record(ai, "$(P)$(R)aver_get")
 {
-    field(DESC, "Get current average for measurement:1,2,4,8,16 (default: 4)")
+    field(DESC, "Get current average (default: 4)")
     field(LOPR, "1")
     field(HOPR, "16")
     field(DTYP, "stream")
     field(INP, "@devpnc.proto getAver $(PORT)")
 }
 
-record(ao, "$(P)$(R)aver_set")
+record(mbbo, "$(P)$(R)aver_set")
 {
     field(DESC, "Set average for measurement")
-    field(LOPR, "1")
-    field(HOPR, "16")
     field(DTYP, "stream")
+    field(ZRVL, "1")
+    field(ONVL, "2")
+    field(TWVL, "4")
+    field(THVL, "8")
+    field(FRVL, "16")
+    field(ZRST, "1")
+    field(ONST, "2")
+    field(TWST, "4")
+    field(THST, "8")
+    field(FRST, "16")
     field(OUT, "@devpnc.proto setAver $(PORT)")
     field(FLNK, "$(P)$(R)aver_get.PROC")
 }
