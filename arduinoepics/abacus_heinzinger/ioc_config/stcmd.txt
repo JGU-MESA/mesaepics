@@ -1,0 +1,31 @@
+#!../../bin/linux-x86_64/test
+
+## You may have to change test to something else
+## everywhere it appears in this file
+
+< /home/epics/testioc/iocBoot/ioctest/envPaths
+
+cd "${TOP}"
+epicsEnvSet ("STREAM_PROTOCOL_PATH", ".:../../db")
+
+## Register all support components
+dbLoadDatabase "dbd/test.dbd"
+test_registerRecordDeviceDriver pdbbase
+
+## Load record instances
+#dbLoadRecords("db/xxx.db","user=friedersHost")
+#dbLoadRecords("db/calc_channelaccess.db","P=test:,R=calc:,pvA=merlot:ch8:t_get")
+
+##===== Heinzarduino =====
+drvAsynIPPortConfigure("heinzarduino", "10.32.240.:23")
+dbLoadRecords("db/heinzarduino.db", "P=ha:,R=,PORT=heinzarduino")
+
+cd "${TOP}/iocBoot/${IOC}"
+iocInit
+
+## Start any sequence programs
+#seq sncxxx,"user=friedersHost"
+dbl > /home/epics/dbl_latest.lst
+
+asynSetTraceIOMask("heinzarduino",-1,0x6) 
+asynSetTraceMask("heinzarduino",-1,0x9) 

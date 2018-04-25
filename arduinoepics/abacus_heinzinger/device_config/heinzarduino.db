@@ -1,0 +1,107 @@
+record(stringout, "$(P)$(R)debug")
+{
+    field(DTYP, "stream")
+    field(OUT, "@heinzarduino.proto debug $(PORT)")
+}
+
+#===== Current =====
+record(ai, "$(P)$(R)i_get")
+{
+    field(DESC, "Get Current")
+    field(DTYP, "stream")
+    field(INP, "@heinzarduino.proto GetCurr $(PORT)")
+    field(SCAN, ".2 second")
+    field(EGU,  "A")
+    field(ASLO, "1e-6") ## Device sends uA
+    field(PREC, "3")
+    field(HOPR, "0.01")
+    field(LOPR, "3e-7")
+}
+
+record(ai, "$(P)$(R)i_std_get")
+{
+    field(DESC, "Get Current")
+    field(DTYP, "stream")
+    field(INP, "@heinzarduino.proto GetCurrStd $(PORT)")
+    field(SCAN, "I/O Intr")
+    field(EGU,  "A")
+    field(ASLO, "1e-6") ## Device sends uA
+    field(PREC, "3")
+    field(HOPR, "0.01")
+    field(LOPR, "3e-7")
+}
+
+record(ai, "$(P)$(R)i_max_get")
+{
+    field(DESC, "Get Current")
+    field(DTYP, "stream")
+    field(INP, "@heinzarduino.proto GetCurrMax $(PORT)")
+    field(SCAN, "I/O Intr")
+    field(EGU,  "A")
+    field(ASLO, "1e-6") ## Device sends uA
+    field(PREC, "3")
+    field(HOPR, "0.01")
+    field(LOPR, "3e-7")
+}
+
+record(ai, "$(P)$(R)i_min_get")
+{
+    field(DESC, "Get Current")
+    field(DTYP, "stream")
+    field(INP, "@heinzarduino.proto GetCurrMin $(PORT)")
+    field(SCAN, "I/O Intr")
+    field(EGU,  "A")
+    field(ASLO, "1e-6") ## Device sends uA
+    field(PREC, "3")
+    field(HOPR, "0.01")
+    field(LOPR, "3e-7")
+}
+
+#===== Voltage =====
+record(ai, "$(P)$(R)u_get")
+{
+    field(DESC, "Get Voltage")
+    field(DTYP, "stream")
+    field(INP,  "@heinzarduino.proto GetVolt $(PORT)")
+    field(SCAN, ".2 second")
+    field(EGU,  "kV")
+    field(PREC, "3")
+    field(HOPR, "200")
+    field(LOPR, "0")
+}
+
+record(ai, "$(P)$(R)u_std_get")
+{
+    field(DESC, "Get Voltage")
+    field(DTYP, "stream")
+    field(INP,  "@heinzarduino.proto GetVoltStd $(PORT)")
+    field(SCAN, "I/O Intr")
+    field(EGU,  "kV")
+    field(PREC, "3")
+    field(HOPR, "200")
+    field(LOPR, "0")
+}
+
+record(ai, "$(P)$(R)u_max_get")
+{
+    field(DESC, "Get Voltage")
+    field(DTYP, "stream")
+    field(INP,  "@heinzarduino.proto GetVoltMax $(PORT)")
+    field(SCAN, "I/O Intr")
+    field(EGU,  "kV")
+    field(PREC, "3")
+    field(HOPR, "200")
+    field(LOPR, "0")
+}
+
+record(ai, "$(P)$(R)u_min_get")
+{
+    field(DESC, "Get Voltage")
+    field(DTYP, "stream")
+    field(INP,  "@heinzarduino.proto GetVoltMin $(PORT)")
+    field(SCAN, "I/O Intr")
+    field(EGU,  "kV")
+    field(PREC, "3")
+    field(HOPR, "200")
+    field(LOPR, "0")
+}
