@@ -1,0 +1,27 @@
+#!../../bin/linux-x86_64/steampreb
+
+#- You may have to change steampreb to something else
+#- everywhere it appears in this file
+
+< /home/epics/steamprebioc/iocBoot/iocsteampreb/envPaths
+
+cd "${TOP}"
+epicsEnvSet ("STREAM_PROTOCOL_PATH", ".:../../db")
+
+## Register all support components
+dbLoadDatabase "dbd/steampreb.dbd"
+steampreb_registerRecordDeviceDriver pdbbase
+
+## Load record instances
+##====QE====
+dbLoadRecords("db/qe_calc.db", "P=steam:,R=qe_hv:,CURR=steam:hv_abacus:i_get, A=1, POWW=steam:laser:pow_get,LAMBDANM=808")
+dbLoadRecords("db/qe_calc.db", "P=steam:,R=qe_bd:,CURR=melba_060:bd:i_get, A=1e3, POWW=steam:laser:pow_get, LAMBDANM=808")
+
+cd "${TOP}/iocBoot/${IOC}"
+iocInit
+
+
+dbl > /home/epics/dbl_latest.lst
+## Start any sequence programs
+#seq sncxxx,"user=frieders"
+
