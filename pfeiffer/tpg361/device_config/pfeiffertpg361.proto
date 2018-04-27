@@ -1,8 +1,15 @@
 Terminator = CR LF;
 
-p_get{
+p_stat_get{
 	out "PR1";
 	in 0x06;
 	out 0x05;
-	in "0,%E";
+	in "%1d,%*e";
+}
+
+p_get_raw{
+	#out "PR1";
+	#in 0x06;
+	#out 0x05;
+	in "%*1d,%e";
 }
