@@ -30,6 +30,7 @@ getOutputState {
 }
 
 setOutputState {
+    out "VOLT 0";
     out "OUTP %d";
     wait $delay;
     @init{ getOutputState;}
