@@ -1,5 +1,5 @@
-//Latest update: 25.04.2018
-//Recently: Averaging of measurement
+//Latest update: 26.04.2018
+//Recently: Single command measurement
 /*
   Arduino_TCP
 
@@ -29,21 +29,13 @@
 #include <Wire.h>
 #include <Adafruit_ADS1015.h>
 
-//==== Needed packages for DAC MCP4725 ====
-#include <Adafruit_MCP4725.h>
-
 
 //===== Needed Variables =====
 #define MAX_CMD_LENGTH   25
-#define testled 13 //Select testled pin
-#define pledpin 11 //Select preparation LED pin
-#define voltsetpin 6 //Select voltout pin
-#define currsetpin 9 //Select current pin
-#define outputonoffpin 12 //Select output on/off pin
 
 
 //===== Static/DHCP =====
-byte mac[] = {0x90, 0xA2, 0xDA, 0x10, 0x5C, 0x8F}; // Enter a MAC address// abacus01: 90-A2-DA-10-5C-8F
+byte mac[] = {0x90, 0xA2, 0xDA, 0x11, 0x20, 0xA1}; // Enter a MAC address// abacus01: 90-A2-DA-10-5C-8F
 
 struct IPObject {
   boolean dhcp_state; //static IP (false) or DHCP (true)
@@ -73,8 +65,8 @@ float bits2volt = 0.0001875F; // Bits to V
     15bit available-> 1bit=0.1875mV=1.875e-4V
 */
 
-//===== Averaging parameter =====
-const int numReadings = 64; // numReadings < 2^16
+//=============== Averaging parameter ===============
+int numReadings = 32; // numReadings < 2^16
 
 float meas_aver(char channel, float *mean, float *std, float *maxi, float *mini) {
 
@@ -108,7 +100,54 @@ float meas_aver(char channel, float *mean, float *std, float *maxi, float *mini)
   *std = sqrt(sqDevSum / numReadings) * bits2volt; // Result in volt
 }
 
+//=============== Average all ===============
+float meas_aver_all(float *mean_curr, float *std_curr, float *maxi_curr, float *mini_curr,
+                    float *mean_volt, float *std_volt, float *maxi_volt, float *mini_volt) {
 
+  uint16_t arrc[numReadings];
+  uint16_t arrv[numReadings];
+  uint32_t sumc = 0;
+  uint32_t sumv = 0;
+  float sqDevSumc = 0;
+  float sqDevSumv = 0;
+
+  for (int i = 0; i < numReadings ; i++) {
+    // Measure channel data
+    arrc[i] = ads.readADC_Differential_0_1(); // in bits
+    arrv[i] = ads.readADC_Differential_2_3(); // in bits
+    // Sum
+    sumc += arrc[i]; // in bits
+    sumv += arrv[i]; // in bits
+    // Maximum and minimum
+    if (i == 1) {
+      *maxi_curr = arrc[i];
+      *mini_curr = arrc[i];
+      *maxi_volt = arrv[i];
+      *mini_volt = arrv[i];
+    }
+    if (*maxi_curr < arrc[i]) *maxi_curr = arrc[i];
+    if (*mini_curr > arrc[i]) *mini_curr = arrc[i];
+    if (*maxi_volt < arrv[i]) *maxi_volt = arrv[i];
+    if (*mini_volt > arrv[i]) *mini_volt = arrv[i];
+  }
+  *maxi_curr = *maxi_curr * bits2volt;
+  *mini_curr = *mini_curr * bits2volt;
+  *maxi_volt = *maxi_volt * bits2volt;
+  *mini_volt = *mini_volt * bits2volt;
+  *mean_curr = (float)sumc / numReadings * bits2volt; // Result in volt
+  *mean_volt = (float)sumv / numReadings * bits2volt; // Result in volt
+
+  for (int i = 0; i < numReadings ; i++) {
+    float dc = ((float)sumc / numReadings - arrc[i]);
+    float dv = ((float)sumv / numReadings - arrv[i]);
+    sqDevSumc += dc * dc;
+    sqDevSumv += dv * dv;
+  }
+  *std_curr = sqrt(sqDevSumc / numReadings) * bits2volt; // Result in volt
+  *std_volt = sqrt(sqDevSumv / numReadings) * bits2volt; // Result in volt
+}
+
+//=============== Setup ===============
 void setup() {
   //===== Serial =====
   Serial.begin(9600); // Open serial communications and wait for port to open
@@ -125,10 +164,6 @@ void setup() {
 
   server.begin(); // start server
 
-  //===== Default Pin mode setup =====
-  //All pins are at startup by default in INPUT-Mode (besides PIN 13!!)
-  pinMode(testled, OUTPUT); // set led pin to output
-
   //===== ADC setup ADS1115 =====
   ads.begin();
 
@@ -138,6 +173,7 @@ void setup() {
 
 }
 
+//=============== Loop ===============
 void loop() {
   //===== Ethernet: Create a client connection =====
   EthernetClient client = server.available();
@@ -228,8 +264,8 @@ void loop() {
 }
 
 
-//===== Function that reads the commands via Ethernet =====
-void readTelnetCommand(char c, EthernetClient &client) {
+//=============== Function that reads the commands via Ethernet ===============
+void readTelnetCommand(char c, EthernetClient & client) {
   if (cmdstr.length() == MAX_CMD_LENGTH) {
     cmdstr = "";
   }
@@ -239,16 +275,18 @@ void readTelnetCommand(char c, EthernetClient &client) {
   else
     cmdstr += c;
 
+  //Debug
   //Serial.print("cmdstr_read = ");
   //Serial.println(cmdstr);
 }
 
-//===== Function that executes the read command =====
-void parseCommand(EthernetClient &client) {
+
+//=============== Function that executes the read command ===============
+void parseCommand(EthernetClient & client) {
 
   //===== Debug: Show received command on serial terminal =====
-  Serial.print("cmdstr = ");
-  Serial.println(cmdstr);
+  //Serial.print("cmdstr = ");
+  //Serial.println(cmdstr);
 
   //===== QUIT =====
   if (cmdstr.equals("quit")) {
@@ -263,9 +301,13 @@ void parseCommand(EthernetClient &client) {
 
   //===== HELP =====
   else if (cmdstr.equals("help")) {
-    client.println("--- Telnet Server Help ---");
+    client.println("--- Abacus Heinzinger Help ---");
     client.println("quit        : close the connection");
     client.println("ip?         : get ip address");
+    client.println("meas:curr?  : measure current in uA (10V=10mA)");
+    client.println("meas:volt?  : measure voltage in kV (10V=200kV)");
+    client.println("meas:all?   : measure current and voltage");
+    client.println("meas:num?   : show number of readings/samples");
   }
 
   //===== IP =====
@@ -299,6 +341,48 @@ void parseCommand(EthernetClient &client) {
     client.print("volt_std:"); client.println(std_volt * u_scale_V_to_kV, 6);
     client.print("volt_max:"); client.println(max_volt * u_scale_V_to_kV, 6);
     client.print("volt_min:"); client.println(min_volt * u_scale_V_to_kV, 6);
+  }
+
+  //===== Measure all =====
+  else if (cmdstr.equals("meas:all?")) {
+    float mean_curr = 0;
+    float std_curr = 0;
+    float max_curr = 0;
+    float min_curr = 0;
+    float mean_volt = 0;
+    float std_volt = 0;
+    float max_volt = 0;
+    float min_volt = 0;
+    meas_aver_all(&mean_curr, &std_curr, &max_curr, &min_curr,
+                  &mean_volt, &std_volt, &max_volt, &min_volt); // Get results in volt
+    float i_scale_V_to_uA = 2000 ; // scale: 10 000 uA / 5 V;
+    float u_scale_V_to_kV = 200 / 5.0; // 200kV corresponds to 5V
+    client.print("curr_get:"); client.println(mean_curr * i_scale_V_to_uA, 6);
+    client.print("curr_std:"); client.println(std_curr * i_scale_V_to_uA, 6);
+    client.print("curr_max:"); client.println(max_curr * i_scale_V_to_uA, 6);
+    client.print("curr_min:"); client.println(min_curr * i_scale_V_to_uA, 6);
+    client.print("volt_get:"); client.println(mean_volt * u_scale_V_to_kV, 6);
+    client.print("volt_std:"); client.println(std_volt * u_scale_V_to_kV, 6);
+    client.print("volt_max:"); client.println(max_volt * u_scale_V_to_kV, 6);
+    client.print("volt_min:"); client.println(min_volt * u_scale_V_to_kV, 6);
+  }
+
+  //===== Show numReadings =====
+  else if (cmdstr.equals("meas:num?")) {
+    client.print("numReadings:"); client.println(numReadings);
+  }
+
+  //===== Set numReadings =====
+  else if (cmdstr.startsWith("num ")) {
+    int num = cmdstr.substring(3).toInt();
+    if ((2 <= num) && (num <= 128))
+    {
+      numReadings = num;
+      client.println("ok");
+    }
+    else {
+      client.println("Number out of range");
+    }
   }
 
   //===== Invalid Command, HELP =====
