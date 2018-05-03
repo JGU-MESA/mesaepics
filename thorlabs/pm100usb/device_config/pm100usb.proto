@@ -1,4 +1,6 @@
 Terminator = LF;
+
+ReplyTimeout = 200;
 ##=====================================
 ##=============== Debug ===============
 debug {
@@ -17,17 +19,10 @@ idn {
 get_wavelength {
     out "SENS:CORR:WAV?";
     in "%f";
-    @init{
-        out "SENS:CORR:WAV?";
-        in "%f";
-    }
 }
 
 set_wavelength {
     out "SENS:CORR:WAV %f";
-    @init{
-        get_wavelength;
-    }
 }
 
 ##=====================================
@@ -62,3 +57,37 @@ get_pdens {
     out "MEAS:PDEN?";
     in "%f";
 }
+
+##=====================================
+##=============== Zeroing =============
+get_zero_state {
+    out "SENS:CORR:COLL:ZERO:STAT?";
+    in "%i";
+}
+
+set_zero {
+    out "SENS:CORR:COLL:ZERO:INIT";
+    @init{
+        get_zero_state;
+    }
+}
+
+##=====================================
+##=============== Zeroing =============
+get_aver {
+    out "SENS:AVER?";
+    in "%d";
+    @init{
+        out "SENS:AVER?";
+        in "%d";
+    }
+}
+
+set_aver {
+    out "SENS:AVER %d";
+    @init{
+        get_aver;
+    }
+}
+
+
