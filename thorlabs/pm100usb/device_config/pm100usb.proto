@@ -1,6 +1,6 @@
 Terminator = LF;
 
-ReplyTimeout = 200;
+ReplyTimeout = 500;
 ##=====================================
 ##=============== Debug ===============
 debug {
