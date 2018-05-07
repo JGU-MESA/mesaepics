@@ -1,9 +1,9 @@
 //  Laser controller script
 //  Originally by S.Heidrich
-//  Edited by S.Friederich (IP configuration part)
-//  latest update: 17.08.2017
-//  Latest update: if on_state == false -> dc,sh and mu not available (of course)
-const float version = 1.3;
+//  Edited by S.Friederich
+//  latest update: 07.05.2018
+//  Latest update: Shot in one function
+const float version = 1.4;
 //========== Needed Packages ==========
 #include <EEPROM.h>
 #include <SPI.h>
@@ -53,6 +53,50 @@ int eeAddress = 0; // Defined address for EEPROM
 
 
 //==============================
+void single_shot() {
+  // Single_Shot:
+  for (int n = 0; n < 16; n++) {
+    digitalWriteFast(shiftPin, LOW);
+    delayMicroseconds(1);
+    digitalWrite(dataPin, bitRead(amplitude, n) == 1 ? HIGH : LOW);
+    delayMicroseconds(1);
+    digitalWriteFast(shiftPin, HIGH);
+    delayMicroseconds(1);
+  }
+  digitalWriteFast(storePin, HIGH);
+  delayMicroseconds(1);
+  digitalWriteFast(storePin, LOW);
+  delayMicroseconds(1);
+  // Set-Pin:
+  digitalWriteFast(HandshakePin, LOW);
+  delayMicroseconds(D1);
+  digitalWriteFast(HandshakePin, HIGH);
+  delayMicroseconds(1);
+  // Pulse length:
+  if (D2 < 16383) {
+    delayMicroseconds(D2);
+  };
+  if (D2 >= 16383) {
+    delay(D2 / 1000);
+  };
+  //Register is set to zero after single shot:
+  for (int n = 0; n < 16; n++) {
+    digitalWriteFast(shiftPin, LOW);
+    delayMicroseconds(1);
+    digitalWriteFast(dataPin, LOW);
+    delayMicroseconds(1);
+    digitalWriteFast(shiftPin, HIGH);
+    delayMicroseconds(1);
+  }
+  digitalWriteFast(storePin, HIGH);
+  delayMicroseconds(1);
+  digitalWriteFast(storePin, LOW);
+  delayMicroseconds(1);
+  // Set-Pin:
+  digitalWriteFast(HandshakePin, LOW);
+  delayMicroseconds(D1);
+  digitalWriteFast(HandshakePin, HIGH);
+}
 
 void setup() {
   //===== Serial =====
@@ -311,7 +355,7 @@ void parseCommand(EthernetClient &client) {
   //===== Set number of shots =====
   else if (cmdstr.startsWith("n ")) {
     value = cmdstr.substring(1).toInt();
-    if (value >= 0 && value < 65536) {
+    if (value >= 1 && value < 65536) {
       Nshot = value;
     }
   }
@@ -359,28 +403,6 @@ void parseCommand(EthernetClient &client) {
     TestVariable = 1;
   }
 
-  /* //===== DC =====
-    else if (cmdstr.equals("dcbla")) {
-     client.println("Set request for dc value:");
-     client.println(amplitude);
-     client.println("-----");
-     for (int n = 0; n < 16; n++) {
-       digitalWrite(shiftPin, LOW);
-       digitalWrite(dataPin, bitRead(amplitude, n) == 1 ? HIGH : LOW);
-       digitalWrite(shiftPin, HIGH);
-     }
-     digitalWrite(storePin, HIGH);
-     digitalWrite(storePin, LOW);
-     digitalWrite(HandshakePin, LOW);
-     delay(10);
-     digitalWrite(HandshakePin, HIGH);
-     while (TestVariable == 0);
-     TestVariable = 1;
-     client.println("fertig!");
-     client.println("-----");
-    }*/
-
-
 
   //===== Read DC state =====
   else if (cmdstr.equals("dc?")) {
@@ -391,50 +413,51 @@ void parseCommand(EthernetClient &client) {
   //===== Single shot =====
   else if (cmdstr.equals("sh")) {
     if (on_state == true) {
+      single_shot();
       //Single shot:
-      for (int n = 0; n < 16; n++) {
-        digitalWriteFast(shiftPin, LOW);
-        delayMicroseconds(1);
-        digitalWrite(dataPin, bitRead(amplitude, n) == 1 ? HIGH : LOW);
-        delayMicroseconds(1);
-        digitalWriteFast(shiftPin, HIGH);
-        delayMicroseconds(1);
-      }
-      digitalWriteFast(storePin, HIGH);
-      delayMicroseconds(1);
-      digitalWriteFast(storePin, LOW);
-      delayMicroseconds(1);
-      // Set-Pin:
-      digitalWriteFast(HandshakePin, LOW);
-      delayMicroseconds(D1);
-      digitalWriteFast(HandshakePin, HIGH);
-      // Pulse length:
-      if (D2 < 16383) {
-        delayMicroseconds(D2);
-      };
-      if (D2 >= 16383) {
-        delay(D2 / 1000);
-      };
-      //Register is set to zero after single shot
-      for (int n = 0; n < 16; n++) {
-        digitalWriteFast(shiftPin, LOW);
-        delayMicroseconds(1);
-        digitalWriteFast(dataPin, LOW);
-        delayMicroseconds(1);
-        digitalWriteFast(shiftPin, HIGH);
-        delayMicroseconds(1);
-      }
-      digitalWriteFast(storePin, HIGH);
-      delayMicroseconds(1);
-      digitalWriteFast(storePin, LOW);
-      delayMicroseconds(1);
-      // Set-Pin:
-      digitalWriteFast(HandshakePin, LOW);
-      delayMicroseconds(D1);
-      digitalWriteFast(HandshakePin, HIGH);
-      delayMicroseconds(1);
-      while (TestVariable == 0);//Handshake
-      TestVariable = 1;
+      //      for (int n = 0; n < 16; n++) {
+      //        digitalWriteFast(shiftPin, LOW);
+      //        delayMicroseconds(1);
+      //        digitalWrite(dataPin, bitRead(amplitude, n) == 1 ? HIGH : LOW);
+      //        delayMicroseconds(1);
+      //        digitalWriteFast(shiftPin, HIGH);
+      //        delayMicroseconds(1);
+      //      }
+      //      digitalWriteFast(storePin, HIGH);
+      //      delayMicroseconds(1);
+      //      digitalWriteFast(storePin, LOW);
+      //      delayMicroseconds(1);
+      //      // Set-Pin:
+      //      digitalWriteFast(HandshakePin, LOW);
+      //      delayMicroseconds(D1);
+      //      digitalWriteFast(HandshakePin, HIGH);
+      //      // Pulse length:
+      //      if (D2 < 16383) {
+      //        delayMicroseconds(D2);
+      //      };
+      //      if (D2 >= 16383) {
+      //        delay(D2 / 1000);
+      //      };
+      //      //Register is set to zero after single shot
+      //      for (int n = 0; n < 16; n++) {
+      //        digitalWriteFast(shiftPin, LOW);
+      //        delayMicroseconds(1);
+      //        digitalWriteFast(dataPin, LOW);
+      //        delayMicroseconds(1);
+      //        digitalWriteFast(shiftPin, HIGH);
+      //        delayMicroseconds(1);
+      //      }
+      //      digitalWriteFast(storePin, HIGH);
+      //      delayMicroseconds(1);
+      //      digitalWriteFast(storePin, LOW);
+      //      delayMicroseconds(1);
+      //      // Set-Pin:
+      //      digitalWriteFast(HandshakePin, LOW);
+      //      delayMicroseconds(D1);
+      //      digitalWriteFast(HandshakePin, HIGH);
+      //      delayMicroseconds(1);
+      //      while (TestVariable == 0);//Handshake
+      //      TestVariable = 1;
     }
   }
 
@@ -444,49 +467,51 @@ void parseCommand(EthernetClient &client) {
     if (on_state == true) {
       mu_state = true;
       // Multiple shots:
-      for (int i = 0; i < Nshot; i++) {
+      for (int i = 1; i <= Nshot; i++) {
         // Shot:
-        for (int n = 0; n < 16; n++) {
-          digitalWriteFast(shiftPin, LOW);
-          delayMicroseconds(1);
-          digitalWrite(dataPin, bitRead(amplitude, n) == 1 ? HIGH : LOW);
-          delayMicroseconds(1);
-          digitalWriteFast(shiftPin, HIGH);
-          delayMicroseconds(1);
-        }
-        digitalWriteFast(storePin, HIGH);
-        delayMicroseconds(1);
-        digitalWriteFast(storePin, LOW);
-        delayMicroseconds(1);
-        // Set-Pin:
-        digitalWriteFast(HandshakePin, LOW);
-        delayMicroseconds(D1);
-        digitalWriteFast(HandshakePin, HIGH);
-        delayMicroseconds(1);
-        // Pulse length:
-        if (D2 < 16383) {
-          delayMicroseconds(D2);
-        };
-        if (D2 >= 16383) {
-          delay(D2 / 1000);
-        };
-        //Register is set to zero after single shot:
-        for (int n = 0; n < 16; n++) {
-          digitalWriteFast(shiftPin, LOW);
-          delayMicroseconds(1);
-          digitalWriteFast(dataPin, LOW);
-          delayMicroseconds(1);
-          digitalWriteFast(shiftPin, HIGH);
-          delayMicroseconds(1);
-        }
-        digitalWriteFast(storePin, HIGH);
-        delayMicroseconds(1);
-        digitalWriteFast(storePin, LOW);
-        delayMicroseconds(1);
-        // Set-Pin:
-        digitalWriteFast(HandshakePin, LOW);
-        delayMicroseconds(D1);
-        digitalWriteFast(HandshakePin, HIGH);
+        single_shot();
+
+        //        for (int n = 0; n < 16; n++) {
+        //          digitalWriteFast(shiftPin, LOW);
+        //          delayMicroseconds(1);
+        //          digitalWrite(dataPin, bitRead(amplitude, n) == 1 ? HIGH : LOW);
+        //          delayMicroseconds(1);
+        //          digitalWriteFast(shiftPin, HIGH);
+        //          delayMicroseconds(1);
+        //        }
+        //        digitalWriteFast(storePin, HIGH);
+        //        delayMicroseconds(1);
+        //        digitalWriteFast(storePin, LOW);
+        //        delayMicroseconds(1);
+        //        // Set-Pin:
+        //        digitalWriteFast(HandshakePin, LOW);
+        //        delayMicroseconds(D1);
+        //        digitalWriteFast(HandshakePin, HIGH);
+        //        delayMicroseconds(1);
+        //        // Pulse length:
+        //        if (D2 < 16383) {
+        //          delayMicroseconds(D2);
+        //        };
+        //        if (D2 >= 16383) {
+        //          delay(D2 / 1000);
+        //        };
+        //        //Register is set to zero after single shot:
+        //        for (int n = 0; n < 16; n++) {
+        //          digitalWriteFast(shiftPin, LOW);
+        //          delayMicroseconds(1);
+        //          digitalWriteFast(dataPin, LOW);
+        //          delayMicroseconds(1);
+        //          digitalWriteFast(shiftPin, HIGH);
+        //          delayMicroseconds(1);
+        //        }
+        //        digitalWriteFast(storePin, HIGH);
+        //        delayMicroseconds(1);
+        //        digitalWriteFast(storePin, LOW);
+        //        delayMicroseconds(1);
+        //        // Set-Pin:
+        //        digitalWriteFast(HandshakePin, LOW);
+        //        delayMicroseconds(D1);
+        //        digitalWriteFast(HandshakePin, HIGH);
         // Distance between two positive flanks:
         if (Tshot < 16383) {
           delayMicroseconds(Tshot);
