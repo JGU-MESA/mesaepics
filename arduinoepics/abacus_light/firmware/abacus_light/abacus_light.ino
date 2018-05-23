@@ -46,14 +46,14 @@ boolean connected = false; // whether or not the client was connected previously
 String cmdstr; // command string that will be evaluated when received via ethernet
 const byte light[]  = { A0, A1, A2, A3, A4, A5, 7, 8}; // Define analog pins for channel on off
 int ll = sizeof(light) / sizeof(light[0]);
-const byte dimmer[]  = { 3, 6, 5, 9, 10, 11, 13}; // Define analog pins for dimming (only 7 are available for dimming)
+const byte dimmer[]  = { 3, 5, 6, 9, 10, 11, 13}; // Define analog pins for dimming (only 7 are available for dimming)
 int ld = sizeof(dimmer) / sizeof(dimmer[0]);
 uint8_t dimmerstate[]  = { 255, 255, 255, 255, 255, 255, 255};
 
 
 //===== Timer variables and constants =====
 boolean allowchange = false; // whether or not the status of a light may be changed
-const uint16_t timeperiod = 250; // timer to wait until light status may be changed in ms
+const uint16_t timeperiod = 100; // timer to wait until light status may be changed in ms
 
 void timer() {
   allowchange = true;
@@ -249,7 +249,7 @@ void parseCommand(EthernetClient & client) {
       //===== Read set channel state =====
       else if (cmdstr.endsWith("?")) {
         boolean channelstate = !digitalRead(channelnumber); // Inverse logic (1=on=LOW)
-        client.print("current set state: ch "); client.print(channelnumber);
+        client.print("current set state: ch "); client.print(ch);
         client.print(" "); client.println(channelstate);
       }
       else {
