@@ -81,7 +81,7 @@ record(ao, "$(P)$(R)amp_set"){
     field(DTYP, "stream")
     field(OUT, "@laser50.proto amp_set $(PORT)")
     #field(DRVH, "65535")  #caution, 20000 = 1W
-    field(DRVH, "9000")   #current Maximum set to 1mW
+    field(DRVH, "30000")   #current Maximum set to 1mW
     field(DRVL, "1")
     field(HOPR, "65535")
     field(LOPR, "0")
@@ -205,11 +205,22 @@ record(bi, "$(P)$(R)mu_get"){
 ##==== Calc LaserPower ====
 record(calc, "$(P)$(R)pow_get"){
     field(INPA, "$(POWERMETER)pow_get")
-    field(INPB, "8.1690") 
-    field(INPC, "16.414") 
+    field(INPB, "16.4140") 
+    field(INPC, "18.878") 
     field(INPD, "$(P)$(R)on_get") 
     field(EGU, "W")
-    field(CALC, "D = 1 ? (A < 2e-2 ? C * A : B * A) : 0")
+    field(CALC, "D = 1 ? (A < 75e-3 ? B  * A : C * A) : 0")
+    field(SCAN, ".1 second")
+    field(PREC, "2")
+}
+
+record(calc, "$(P)$(R)pow_att_get"){
+    field(INPA, "$(POWERMETER)pow_get")
+    field(INPB, "0.0309") 
+    field(INPC, "0.0342") 
+    field(INPD, "$(P)$(R)on_get") 
+    field(EGU, "W")
+    field(CALC, "D = 1 ? (A < 75e-3 ? B  * A : C * A) : 0")
     field(SCAN, ".1 second")
     field(PREC, "2")
 }

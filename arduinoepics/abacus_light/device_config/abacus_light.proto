@@ -7,16 +7,6 @@ debug{
     in "%39c";
 }
 
-testled_get{
-    out "tled?";
-    in "tled:%{0|1}";
-}
-
-testled_set{
-    out "%{off|on}";
-    @init{testled_get;}
-}
-
 channel_set_read{
     out "ch \$1 ?";
     in "current set state: ch \$1 %{0|1}";
@@ -24,9 +14,19 @@ channel_set_read{
 
 channel_set{
     out "ch \$1 %{off|on}";
-    @init{channel_set_read;}
 }
 
 all_channel_off{
     out "all ch %{off}";
 }
+
+dimm_read{
+    out "dimm \$1 ?";
+    in "current dimmer state: ch \$1 %d";    
+}
+
+dimm_set{
+    out "dimm \$1 %d";
+}
+
+

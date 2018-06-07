@@ -53,7 +53,6 @@ record(bi, "$(P)$(R)pow_unit_get")
 {
     field(DTYP, "stream")
     field(INP, "@pm100usb.proto get_power_unit $(PORT)")
-    field(EGU, "W")
     field(PINI, "YES")
     field(ZNAM, "W")
     field(ONAM, "DBM")
@@ -93,4 +92,44 @@ record(ai, "$(P)$(R)powdens_get")
     field(LOPR, "1e-3")
     field(HOPR, "1")
     field(SCAN, "1 second")
+}
+
+##=====================================
+##=============== Zero ================
+record(bo, "$(P)$(R)zero_set")
+{
+    field(DTYP, "stream")
+    field(OUT, "@pm100usb.proto set_zero $(PORT)")
+    field(FLNK, "$(P)$(R)zero_stat_get")
+}
+
+record(bi, "$(P)$(R)zero_stat_get")
+{
+    field(DTYP, "stream")
+    field(INP, "@pm100usb.proto get_zero_state $(PORT)")
+    field(ZNAM, "No Zeroing")
+    field(ONAM, "Zeroing")
+    field(SCAN, "2 second")
+}
+
+##=====================================
+##=============== Average =============
+record(ao, "$(P)$(R)aver_set")
+{
+    field(DTYP, "stream")
+    field(OUT, "@pm100usb.proto set_aver $(PORT)")
+    field(DRVL, "1")
+    field(DRVH, "100")
+    field(LOPR, "1")
+    field(HOPR, "100")
+    field(FLNK, "$(P)$(R)aver_get")
+}
+
+record(ai, "$(P)$(R)aver_get")
+{
+    field(DTYP, "stream")
+    field(INP, "@pm100usb.proto get_aver $(PORT)")
+    field(LOPR, "1")
+    field(HOPR, "100")
+    field(SCAN, "10 second")
 }
