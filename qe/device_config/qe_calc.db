@@ -5,7 +5,7 @@ record(calc, "$(P)$(R)qe_get")
     field(INPB, "$(POWW)") # B = P[W]
     field(INPC, "$(LAMBDANM)")  # C = lambda[nm]
     field(INPD, "$(A)")  # D = scale of A
-    field(CALC, "B <= 0 ? 0 : A*D/B*124/C") 
+    field(CALC, "B <= 0 || A <=0 ? 0 : A*D/B*124/C") 
     #QE[%] = I[mA]/P[W]*124/lambda[nm]
     field(SCAN, ".1 second")
     field(EGU, "%")
