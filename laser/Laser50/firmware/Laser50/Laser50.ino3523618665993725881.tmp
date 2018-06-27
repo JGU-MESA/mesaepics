@@ -20,7 +20,7 @@ const float version = 1.5;
 //========== Trigger ===============
 const byte p_trig = 4; // Send trigger as 5V signal from this pin
 long trigger_width = 1000; // Trigger pulse width in us
-long trigger_delay = 1800000; // Time between trigger falling flank and shot in us
+long trigger_delay = 10; // Time between trigger falling flank and shot in us
 
 //========== Laser ===============
 int wert;
@@ -61,33 +61,9 @@ struct IPObject {
 IPObject ip_eeprom;
 int eeAddress = 0; // Defined address for EEPROM
 
-//===== Delay function =====
-int dly_func(long dly) {
-  if (dly <= 16383) {
-    delayMicroseconds(dly);
-  }
-  else {
-    int new_dly = (long) dly / 1000;
-    delay(new_dly);
-  }
-}
 
-//===== Trigger =====
-void trigger() {
-  // Trigger signal
-  digitalWrite(p_trig, HIGH);
-  dly_func(trigger_width);
-  digitalWrite(p_trig, LOW);
-
-  // Delay between trigger signal and shot
-  dly_func(abs(trigger_delay - trigger_width));
-}
-
-//===== Single Shot =====
-void single_shot(int trig_enable = 0) {
-  if (trig_enable == 1) {
-    trigger();
-  }
+//==============================
+void single_shot() {
   // Single_Shot:
   for (int n = 0; n < 16; n++) {
     digitalWriteFast(shiftPin, LOW);
@@ -131,7 +107,6 @@ void single_shot(int trig_enable = 0) {
   delayMicroseconds(D1);
   digitalWriteFast(HandshakePin, HIGH);
 }
-
 
 void setup() {
   //===== Serial =====
@@ -296,8 +271,8 @@ void parseCommand(EthernetClient &client) {
     client.println("t<?> <value>= Set<Read> time in microseconds between two pulses in multiple shot mode");
     client.println("x<?> <value>= Set<Read> length for handshake (no change suggested)");
     client.println("dc<?> {off|on} = Read|Stop|Start DC mode");
-    client.println("sh(t) = (triggered) single shot (pew)");
-    client.println("mu(t) = (triggered) multiple shots (pew,pew,pew)");
+    client.println("sh = Single shot (pew)");
+    client.println("mu = multiple shots (pew,pew,pew)");
   }
 
   //===== IP =====
@@ -450,14 +425,7 @@ void parseCommand(EthernetClient &client) {
   //===== Single shot =====
   else if (cmdstr.equals("sh")) {
     if (on_state == true) {
-      single_shot(0);
-    }
-  }
-
-  //===== Single shot triggered=====
-  else if (cmdstr.equals("sht")) {
-    if (on_state == true) {
-      single_shot(1);
+      single_shot();
     }
   }
 
@@ -471,36 +439,12 @@ void parseCommand(EthernetClient &client) {
         // Shot:
         single_shot();
         // Distance between two positive flanks:
-        dly_func(Tshot);
-//        if (Tshot < 16383) {
-//          delayMicroseconds(Tshot);
-//        };
-//        if (Tshot >= 16383) {
-//          delay(Tshot / 1000);
-//        };
-      };
-      mu_state = false;
-    }
-  }
-
-  //===== Multiple shots with trigger =====
-  else if (cmdstr.equals("mut")) {
-    if (on_state == true) {
-      mu_state = true;
-      // Multiple shots:
-      single_shot(1);
-      dly_func(Tshot);
-      for (int i = 2; i <= Nshot; i++) {
-        // Shot:
-        single_shot();
-        // Distance between two positive flanks:
-        dly_func(Tshot);
-        //        if (Tshot < 16383) {
-        //          delayMicroseconds(Tshot);
-        //        };
-        //        if (Tshot >= 16383) {
-        //          delay(Tshot / 1000);
-        //        };
+        if (Tshot < 16383) {
+          delayMicroseconds(Tshot);
+        };
+        if (Tshot >= 16383) {
+          delay(Tshot / 1000);
+        };
       };
       mu_state = false;
     }

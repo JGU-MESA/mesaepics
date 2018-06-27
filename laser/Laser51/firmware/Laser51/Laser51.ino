@@ -3,8 +3,8 @@
     Edited by S.Friederich
 
 
-    25.06.2018: Trigger signal before shot
-    08.05.2018: default value of handshake (variable D1) changed to 200,
+    26.06.2018: Trigger signal before shot
+    08.05.2018: default value of handshake (variable Thandshake) changed to 200,
     Because single shot did not work properly
 
 */
@@ -17,8 +17,26 @@ const float version = 1.5;
 #include <Wire.h>
 #include <digitalWriteFast.h>
 
+//========== Timer==========
+#include <TimerOne.h>
+#include <TimerThree.h>
+unsigned long tnow;
+// Prepare Shot
+void prepare_shot(boolean high = false);
+// Oneshot
+volatile boolean os_enable_high = false;
+volatile boolean os_enable_low = false;
+void oneshot();
+
+// Multishot
+volatile boolean ms_enable = false;
+long nshots = 10;
+long ms_counter = 1;
+void multishot();
+
 //========== Trigger ===============
 const byte p_trig = 4; // Send trigger as 5V signal from this pin
+boolean trig_enable = false;
 long trigger_width = 1000; // Trigger pulse width in us
 long trigger_delay = 1800000; // Time between trigger falling flank and shot in us
 
@@ -32,23 +50,22 @@ int storePin = 9;
 int HandshakePin = 12;
 int AmpPin = 11;
 int PLPin = 13;
-uint32_t D1 = 200; // Handshake
-uint32_t D2 = 100;
-uint32_t Nshot = 1;
-uint32_t Tshot = 200;
-String cmdstr;
-uint32_t amplitude = 1;
+uint32_t Thandshake = 200; // Handshake
+uint32_t Tpulselength = 100; // pulse length
+uint32_t Nshot = 5; // Multishot: Number of shots
+uint32_t Tshot = 200; // Multishot: Time between falling and rising flank
+uint32_t amplitude = 1; // Amplitude
+
 uint32_t value = 0;
-//uint32_t value0 = 0;
 const byte interruptPin = 2;
 volatile byte TestVariable = 0;
 boolean connected = false;
 boolean on_state = false;
 boolean dc_state = false;
-boolean mu_state = false;
 //========== Ethernet ===============
 EthernetServer server(23);
 EthernetClient client;
+String cmdstr;
 
 //========== Static/DHCP ===============
 byte mac[] = {0x90, 0xA2, 0xDA, 0x10, 0x15, 0x89}; // Enter a MAC address
@@ -83,56 +100,8 @@ void trigger() {
   dly_func(abs(trigger_delay - trigger_width));
 }
 
-//===== Single Shot =====
-void single_shot(int trig_enable = 0) {
-  if (trig_enable == 1) {
-    trigger();
-  }
-  // Single_Shot:
-  for (int n = 0; n < 16; n++) {
-    digitalWriteFast(shiftPin, LOW);
-    delayMicroseconds(1);
-    digitalWrite(dataPin, bitRead(amplitude, n) == 1 ? HIGH : LOW);
-    delayMicroseconds(1);
-    digitalWriteFast(shiftPin, HIGH);
-    delayMicroseconds(1);
-  }
-  digitalWriteFast(storePin, HIGH);
-  delayMicroseconds(1);
-  digitalWriteFast(storePin, LOW);
-  delayMicroseconds(1);
-  // Set-Pin:
-  digitalWriteFast(HandshakePin, LOW);
-  delayMicroseconds(D1);
-  digitalWriteFast(HandshakePin, HIGH);
-  delayMicroseconds(1);
-  // Pulse length:
-  if (D2 < 16383) {
-    delayMicroseconds(D2);
-  };
-  if (D2 >= 16383) {
-    delay(D2 / 1000);
-  };
-  //Register is set to zero after single shot:
-  for (int n = 0; n < 16; n++) {
-    digitalWriteFast(shiftPin, LOW);
-    delayMicroseconds(1);
-    digitalWriteFast(dataPin, LOW);
-    delayMicroseconds(1);
-    digitalWriteFast(shiftPin, HIGH);
-    delayMicroseconds(1);
-  }
-  digitalWriteFast(storePin, HIGH);
-  delayMicroseconds(1);
-  digitalWriteFast(storePin, LOW);
-  delayMicroseconds(1);
-  // Set-Pin:
-  digitalWriteFast(HandshakePin, LOW);
-  delayMicroseconds(D1);
-  digitalWriteFast(HandshakePin, HIGH);
-}
 
-
+//========== SETUP ==========
 void setup() {
   //===== Serial =====
   Serial.begin(9600); // Open serial communications and wait for port to open
@@ -170,9 +139,23 @@ void setup() {
   //Confirmation (optional):
   pinMode(interruptPin, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(interruptPin), confirm, FALLING);
+  //Trigger
+  pinMode(p_trig, OUTPUT);
+  digitalWrite(p_trig, LOW);
+
+  //Timer for oneshot
+  Timer1.initialize(Tpulselength);
+  Timer1.stop();
+  Timer1.attachInterrupt(oneshot);
+
+  //Timer for multishot
+  Timer3.initialize(Tpulselength + Tshot);
+  Timer3.stop();
+  Timer3.attachInterrupt(multishot);
+
 }
 
-
+//========== LOOP ==========
 void loop() {
   //===== Ethernet: Create a client connection =====
   EthernetClient client = server.available();
@@ -287,17 +270,20 @@ void parseCommand(EthernetClient &client) {
   //===== HELP =====
   else if (cmdstr.equals("help")) {
     client.print("--- LASER Controller Version "); client.print(version, 1); client.println(" ---");
-    client.println("OUTP {1|0} = laser on|off");
-    client.println("OUTP? = read on-|off-state");
-    client.println("Only values between 0 and 65536 are permitted!");
-    client.println("p<?> <value>= Set<Read> pulse length");
-    client.println("a<?> <value>= Set<Read> amplitude");
-    client.println("n<?> <value>= Set<Read> number of shots in multiple shot mode");
-    client.println("t<?> <value>= Set<Read> time in microseconds between two pulses in multiple shot mode");
-    client.println("x<?> <value>= Set<Read> length for handshake (no change suggested)");
-    client.println("dc<?> {off|on} = Read|Stop|Start DC mode");
-    client.println("sh(t) = (triggered) single shot (pew)");
-    client.println("mu(t) = (triggered) multiple shots (pew,pew,pew)");
+//        client.print("--- LASER Controller Version "); client.print(version, 1); client.println(" ---");
+//        client.println("OUTP {1|0} = laser on|off");
+//        client.println("OUTP? = read on-|off-state");
+//        client.println("Only values between 0 and 65536 are permitted!");
+//        client.println("p<?> <value>= Set<Read> pulse length");
+//        client.println("a<?> <value>= Set<Read> amplitude");
+//        client.println("n<?> <value>= Set<Read> number of shots in multiple shot mode");
+//        client.println("t<?> <value>= Set<Read> time in microseconds between two pulses in multiple shot mode");
+//        client.println("x<?> <value>= Set<Read> length for handshake (no change suggested)");
+//        client.println("dc<?> {off|on} = Read|Stop|Start DC mode");
+//        client.println("trig<?> {on|off} = Read|Enable|Disable trigger");
+//        client.println("t_w|d <value> = Change trigger pulse width|delay");
+//        client.println("sh = single shot (pew)");
+//        client.println("mu on/off = multiple shots (pew,pew,pew)");
   }
 
   //===== IP =====
@@ -318,7 +304,7 @@ void parseCommand(EthernetClient &client) {
     digitalWrite(6, HIGH);
     on_state = false;
     dc_state = false;
-    mu_state = false;
+    ms_enable = false;
   }
 
   //===== Read ON-OFF-State =====
@@ -333,29 +319,33 @@ void parseCommand(EthernetClient &client) {
   else if (cmdstr.startsWith("x ")) {
     value = cmdstr.substring(1).toInt();
     if (value >= 0 && value < 65536) {
-      D1 = value;
+      Thandshake = value;
     }
   }
 
   //===== Read set-delay =====
   else if (cmdstr.equals("x?")) {
     client.print("Set-delay in mus: ");
-    client.println(D1);
+    client.println(Thandshake);
   }
 
 
   //===== Set pulse length =====
   else if (cmdstr.startsWith("p ")) {
     value = cmdstr.substring(1).toInt();
-    if (value >= 0 && value < 65536) {
-      D2 = value;
+    /*
+       https://playground.arduino.cc/Code/Timer1
+       maximum TimerOne period = 8388480us ~ 8.3s
+    */
+    if (value >= 10 && value < 8388479) {
+      Tpulselength = value;
+      Timer1.setPeriod(Tpulselength);
     }
   }
 
   //===== Read pulse length =====
   else if (cmdstr.equals("p?")) {
-    client.print("Pulse length in mus: ");
-    client.println(D2);
+    client.print("Pulse length in mus: "); client.println(Tpulselength);
   }
 
 
@@ -377,8 +367,9 @@ void parseCommand(EthernetClient &client) {
   //===== Set cycle time =====
   else if (cmdstr.startsWith("t ")) {
     value = cmdstr.substring(1).toInt();
-    if (value >= 0 && value < 65536) {
+    if (value >= 10) {
       Tshot = value;
+      Timer3.setPeriod(Tpulselength + Tshot);
     }
   }
 
@@ -392,7 +383,7 @@ void parseCommand(EthernetClient &client) {
   //===== Set number of shots =====
   else if (cmdstr.startsWith("n ")) {
     value = cmdstr.substring(1).toInt();
-    if (value >= 1 && value < 65536) {
+    if (value >= 2) {
       Nshot = value;
     }
   }
@@ -401,6 +392,38 @@ void parseCommand(EthernetClient &client) {
   else if (cmdstr.equals("n?")) {
     client.print("Number of shots: ");
     client.println(Nshot);
+  }
+
+  //===== TRIGGER =====
+  else if (cmdstr.equals("trig?")) {
+    client.print("Trigger: ");
+    client.println(trig_enable);
+  }
+
+  else if (cmdstr.equals("trig on")) {
+    trig_enable = true;
+  }
+
+  else if (cmdstr.equals("trig off")) {
+    trig_enable = false;
+  }
+
+  else if (cmdstr.startsWith("tw ")) {
+    value = cmdstr.substring(2).toInt();
+    if (value >= 10 && value <= 10000000) trigger_width = value;
+  }
+
+  else if (cmdstr.equals("tw?")) {
+    client.print("trigger_width: "); client.println(trigger_width);
+  }
+
+  else if (cmdstr.startsWith("td ")) {
+    value = cmdstr.substring(2).toInt();
+    if (value >= 10 && value <= 10000000) trigger_delay = value;
+  }
+
+  else if (cmdstr.equals("td?")) {
+    client.print("trigger_delay: "); client.println(trigger_delay);
   }
 
   //==================== LASER OUTPUT ====================
@@ -450,67 +473,37 @@ void parseCommand(EthernetClient &client) {
   //===== Single shot =====
   else if (cmdstr.equals("sh")) {
     if (on_state == true) {
-      single_shot(0);
+      client.println("pew");
+      prepare_shot(true);
+      os_enable_high = true;
+      if (trig_enable) trigger();
+      Timer1.start();
     }
   }
-
-  //===== Single shot triggered=====
-  else if (cmdstr.equals("sht")) {
-    if (on_state == true) {
-      single_shot(1);
-    }
-  }
-
 
   //===== Multiple shots =====
-  else if (cmdstr.equals("mu")) {
+  else if (cmdstr.equals("mu on")) {
     if (on_state == true) {
-      mu_state = true;
-      // Multiple shots:
-      for (int i = 1; i <= Nshot; i++) {
-        // Shot:
-        single_shot();
-        // Distance between two positive flanks:
-        dly_func(Tshot);
-//        if (Tshot < 16383) {
-//          delayMicroseconds(Tshot);
-//        };
-//        if (Tshot >= 16383) {
-//          delay(Tshot / 1000);
-//        };
-      };
-      mu_state = false;
+      client.println("pew pew pew");
+      prepare_shot(true);
+      ms_enable = true;
+      if (trig_enable) trigger();
+      Timer3.start();
     }
   }
 
-  //===== Multiple shots with trigger =====
-  else if (cmdstr.equals("mut")) {
-    if (on_state == true) {
-      mu_state = true;
-      // Multiple shots:
-      single_shot(1);
-      dly_func(Tshot);
-      for (int i = 2; i <= Nshot; i++) {
-        // Shot:
-        single_shot();
-        // Distance between two positive flanks:
-        dly_func(Tshot);
-        //        if (Tshot < 16383) {
-        //          delayMicroseconds(Tshot);
-        //        };
-        //        if (Tshot >= 16383) {
-        //          delay(Tshot / 1000);
-        //        };
-      };
-      mu_state = false;
-    }
+  else if (cmdstr.equals("mu off")) {
+    ms_enable = false;
+    Timer3.stop();
+    prepare_shot();
   }
 
-  //===== Read mu_state =====
+  //===== Read ms_enable =====
   else if (cmdstr.equals("mu?")) {
     client.print("mu: ");
-    client.println(mu_state);
+    client.println(ms_enable);
   }
+
   //===== Invalid Command, HELP =====
   else {
     client.println("Invalid command, type help");
@@ -519,6 +512,82 @@ void parseCommand(EthernetClient &client) {
   cmdstr = "";
 }
 
+//========== Shot-FUNCTION ==========
+void prepare_shot(boolean high = false) {
+  for (int n = 0; n < 16; n++) {
+    digitalWriteFast(shiftPin, LOW);
+    if (high) digitalWrite(dataPin, bitRead(amplitude, n) == 1 ? HIGH : LOW);
+    else digitalWriteFast(dataPin, LOW);
+    digitalWriteFast(shiftPin, HIGH);
+  }
+  digitalWriteFast(storePin, HIGH);
+  digitalWriteFast(storePin, LOW);
+  digitalWriteFast(HandshakePin, LOW);// Laser shoots if HandshakePing LOW->HIGH
+  delay(1);
+}
+
+
+//========== ONESHOT ==========
+void oneshot() {
+  noInterrupts();
+  if (os_enable_low) {
+    //Serial.print("Timer1 off:");Serial.println(micros()-tnow);
+    //digitalWriteFast(p_trig, LOW);
+    digitalWriteFast(HandshakePin, LOW);// Laser shoots if HandshakePing LOW->HIGH
+    if (ms_enable) ms_counter += 1;
+    os_enable_low = false;
+    Timer1.stop();
+    if (!ms_enable) prepare_shot();
+  }
+  if (os_enable_high) {
+    //digitalWriteFast(p_trig, HIGH);
+    digitalWriteFast(HandshakePin, HIGH);// Laser shoots if HandshakePing LOW->HIGH
+    os_enable_high = false;
+    os_enable_low = true;
+  }
+  interrupts();
+}
+
+//========== MULTISHOT ==========
+void multishot() {
+  noInterrupts();
+  if (ms_enable && ms_counter <= Nshot &&
+      !os_enable_high && !os_enable_low) {
+    os_enable_high = true;
+    Timer1.start(); // Oneshot
+    if (ms_counter == Nshot) {
+      ms_enable = false;
+      ms_counter = 1;
+      Timer3.stop();
+      prepare_shot();
+    }
+  }
+  interrupts();
+}
 
 
 
+
+
+
+/* This worked
+   void oneshot_test() {
+  noInterrupts();
+  if (os_enable_low) {
+    //Serial.print("Timer1 off:");Serial.println(micros()-tnow);
+    digitalWrite(p_trig, LOW);
+    if (ms_enable) ms_counter += 1;
+    os_enable_low = false;
+    Timer1.stop();
+  }
+  if (os_enable_high) {
+    //tnow = micros();
+    //Serial.print("Timer1 on: ");Serial.println(tnow);
+    //Serial.println("pew");
+    digitalWrite(p_trig, HIGH);
+    os_enable_high = false;
+    os_enable_low = true;
+  }
+  interrupts();
+  }
+*/

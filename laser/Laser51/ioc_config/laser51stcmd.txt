@@ -1,0 +1,29 @@
+#!../../bin/linux-x86_64/laser
+
+## You may have to change laser to something else
+## everywhere it appears in this file
+
+< /home/epics/laserioc/iocBoot/ioclaser/envPaths
+
+cd "${TOP}"
+epicsEnvSet ("STREAM_PROTOCOL_PATH", ".:../../db")
+
+## Register all support components
+dbLoadDatabase "dbd/laser.dbd"
+laser_registerRecordDeviceDriver pdbbase
+
+## Load record instances
+##===== Laser =====
+drvAsynIPPortConfigure("laser50", "10.32.240.78:23")
+dbLoadRecords("db/laser50.db","P=steam:,R=laser:,POWERMETER=steam:powme1:,LASERSHUTTER=steam:laser_shutter:,PORT=laser50")
+
+cd "${TOP}/iocBoot/${IOC}"
+
+iocInit
+
+dbl > /home/epics/dbl_latest.lst
+
+#asynSetTraceIOMask("laser50",-1,0x6) 
+#asynSetTraceMask("laser50",-1,0x9) 
+## Start any sequence programs
+#seq sncxxx,"user=friedersHost"

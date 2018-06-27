@@ -1,0 +1,132 @@
+Terminator = CR LF;
+replytimeout = 1000;
+ExtraInput = Ignore;
+@mismatch{ in "Invalid command, type help";}
+
+debug{
+    out "%s";
+    in "%39c";
+}
+
+on_get{
+    out "outp?";
+    in  "outp: %{0|1}";
+    @init{
+        out "outp?";
+        in  "outp: %{0|1}";
+    }
+}
+
+on_set{
+    out "outp %{0|1}";
+    @init{ on_get;}
+}
+
+#===== Pulse Length =====
+pl_get{
+    out "p?";
+    in  "Pulse length in mus: %u";
+    @init{
+        out "p?";
+        in  "Pulse length in mus: %u";
+    }
+}
+
+pl_set{
+    out "p %u";
+    @init{ pl_get; }
+}
+
+#===== Amplitude =====
+amp_get{
+    out "a?";
+    in  "Amplitude: %u";
+    @init{
+        out "a?";
+        in  "Amplitude: %u";
+    }
+}
+
+amp_set{
+    out "a %u";
+    @init{ amp_get; }
+}
+
+#===== Number of shots =====
+nos_get{
+    out "n?";
+    in  "Number of shots: %u";
+    @init{
+        out "n?";
+        in  "Number of shots: %u";
+    }
+}
+
+nos_set{
+    out "n %u";
+    @init{ nos_get;}
+}
+
+#===== Cycle time = time span between two shots =====
+dt_get{
+    out "t?";
+    in  "Cycle time in mus: %u";
+    @init{
+        out "t?";
+        in  "Cycle time in mus: %u";
+    }
+}
+
+dt_set{
+    out "t %u";
+    @init{ dt_get; }
+}
+
+#===== Handshake =====
+handshake_get{
+    out "x?";
+    in  "Set-delay in mus: %u";
+    @init{
+        out "x?";
+        in  "Set-delay in mus: %u";
+    }
+}
+
+handshake_set{
+    out "x %u";
+    @init{ handshake_get;}
+}
+
+#===== DC mode =====
+dc_get{
+    out "dc?";
+    in "dc: %{0|1}";
+    @init{
+        out "dc?";
+        in "dc: %{0|1}";
+    }
+}
+
+dc_set{
+    out "dc %{off|on}";
+    @init{ dc_get;}
+}
+
+#===== Shot =====
+sh_set{
+    out "sh";
+}
+
+#===== Multiple Shot =====
+mu_get{
+    out "mu?";
+    in "mu: %{0|1}";
+    @init{
+        out "mu?";
+        in "mu: %{0|1}";
+    }
+}
+
+mu_set{
+    out "mu";
+}
