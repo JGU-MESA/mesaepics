@@ -198,8 +198,8 @@ record(bo, "$(P)$(R)mu_set"){
     field(DESC, "Execute multiple shot")
     field(DTYP, "stream")
     field(OUT, "@laser51.proto mu_set $(PORT)")
-	field(ZNAM, "OFF")
-	field(ZNAM, "ON")
+	field(ZNAM, "0")
+	field(ONAM, "1")
     field(FLNK, "$(P)$(R)setamp_get.PROC")
 }
 
