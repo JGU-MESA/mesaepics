@@ -128,5 +128,58 @@ mu_get{
 }
 
 mu_set{
-    out "mu";
+    out "mu %{0|1}";
+}
+
+#===== Trigger =====
+trigger{
+    out "trigger";
+}
+
+trig_get{
+	out "trig?";
+	in "Trigger: %{0|1}";
+	@init{
+		out "trig?";
+		in "Trigger: %{0|1}";
+	}
+}
+
+trig_set{
+	out "trig %{0|1}";
+	@init{
+		trig_get;
+	}
+}
+
+trig_width_get{
+	out "tw?";
+	in "trigger_width: %u";
+	@init{
+		out "tw?";
+		in "trigger_width: %u";
+	}
+}
+
+trig_width_set{
+	out "tw %u";
+	@init{
+		trig_width_get;
+	}
+}
+
+trig_delay_get{
+	out "td?";
+	in "trigger_delay: %u";
+	@init{
+		out "td?";
+		in "trigger_delay: %u";
+	}
+}
+
+trig_delay_set{
+	out "td %u";
+	@init{
+		trig_delay_get;
+	}
 }
