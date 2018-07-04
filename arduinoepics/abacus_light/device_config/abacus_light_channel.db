@@ -5,7 +5,7 @@ record (bi, "$(P)$(R)on_get")
     field(ZNAM, "Off")
     field(ONAM, "On")
     field(PINI, "YES")
-    field(SCAN, "5 second")
+    field(SCAN, "1 second")
 }
 
 record (bo, "$(P)$(R)on_set")
