@@ -38,7 +38,6 @@ record(ai, "$(P)$(R)rawpos_get")
 record(calc, "$(P)$(R)pos_get")
 {
     field(DESC, "Get current position of scanner")
-    field(DTYP, "stream")
     field(EGU, "mm")
     field(PREC, "2")
     field(HOPR, "150")
@@ -252,6 +251,7 @@ record(ao, "$(P)$(R)minvel_set")
     field(DRVL, "0")
     field(HOPR, "24.5")
     field(LOPR, "0")
+    field(EGU, "m/s")
     field(FLNK, "$(P)$(R)minvel_get.PROC")
 }
 
@@ -263,6 +263,7 @@ record(ai, "$(P)$(R)minvel_get")
     field(PREC, "1")
     field(HOPR, "24.5")
     field(LOPR, "0")
+    field(EGU, "m/s")
 }
 
 record(ao, "$(P)$(R)maxvel_set")
@@ -275,6 +276,7 @@ record(ao, "$(P)$(R)maxvel_set")
     field(DRVL, "0")
     field(HOPR, "24.5")
     field(LOPR, "0")
+    field(EGU, "m/s")
     field(FLNK, "$(P)$(R)maxvel_get.PROC")
 }
 
@@ -286,6 +288,7 @@ record(ai, "$(P)$(R)maxvel_get")
     field(PREC, "1")
     field(HOPR, "24.5")
     field(LOPR, "0")
+    field(EGU, "m/s")
 }
 
 ##====================================================
@@ -300,6 +303,7 @@ record(ao, "$(P)$(R)acc_set")
     field(DRVL, "0")
     field(HOPR, "24500")
     field(LOPR, "0")
+    field(EGU, "m/s^2")
     field(FLNK, "$(P)$(R)acc_get.PROC")
 }
 
@@ -311,6 +315,7 @@ record(ai, "$(P)$(R)acc_get")
     field(PREC, "2")
     field(HOPR, "24500")
     field(LOPR, "0")
+    field(EGU, "m/s^2")
 }
 
 ##====================================================
@@ -325,6 +330,7 @@ record(ao, "$(P)$(R)dec_set")
     field(DRVL, "0")
     field(HOPR, "24500")
     field(LOPR, "0")
+    field(EGU, "m/s^2")
     field(FLNK, "$(P)$(R)dec_get.PROC")
 }
 
@@ -336,6 +342,7 @@ record(ai, "$(P)$(R)dec_get")
     field(PREC, "2")
     field(HOPR, "24500")
     field(LOPR, "0")
+    field(EGU, "m/s^2")
 }
 
 ##====================================================
