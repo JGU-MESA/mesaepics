@@ -251,7 +251,7 @@ record(ao, "$(P)$(R)minvel_set")
     field(DRVL, "0")
     field(HOPR, "24.5")
     field(LOPR, "0")
-    field(EGU, "m/s")
+    field(EGU, "mm/s")
     field(FLNK, "$(P)$(R)minvel_get.PROC")
 }
 
@@ -263,7 +263,7 @@ record(ai, "$(P)$(R)minvel_get")
     field(PREC, "1")
     field(HOPR, "24.5")
     field(LOPR, "0")
-    field(EGU, "m/s")
+    field(EGU, "mm/s")
 }
 
 record(ao, "$(P)$(R)maxvel_set")
@@ -276,7 +276,7 @@ record(ao, "$(P)$(R)maxvel_set")
     field(DRVL, "0")
     field(HOPR, "24.5")
     field(LOPR, "0")
-    field(EGU, "m/s")
+    field(EGU, "mm/s")
     field(FLNK, "$(P)$(R)maxvel_get.PROC")
 }
 
@@ -288,7 +288,7 @@ record(ai, "$(P)$(R)maxvel_get")
     field(PREC, "1")
     field(HOPR, "24.5")
     field(LOPR, "0")
-    field(EGU, "m/s")
+    field(EGU, "mm/s")
 }
 
 ##====================================================
