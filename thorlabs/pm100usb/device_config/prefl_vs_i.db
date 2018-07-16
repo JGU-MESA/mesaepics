@@ -1,0 +1,11 @@
+record(calc, "$(P)$(R)i_get") {
+     field(DESC, "Ielectron depending on Prefl")
+     field(INPA, "2.675e-06") # [m] = A/W
+     field(INPB, "$(POWERMETER)")
+     field(EGU, "A")
+     field(HOPR, "0.01")
+     field(LOPR, "0")
+     field(CALC, "A*B")
+     field(PREC, "3")
+     field(SCAN, ".2 second")
+}
