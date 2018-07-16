@@ -86,12 +86,13 @@ record(ai, "$(P)$(R)amp_get"){
     field(HIHI, "35000") #=3W laser power
     field(HHSV, "MAJOR") 
     field(HHSV, "MINOR")
-	field(SCAN, "1 second")
+    field(SCAN, "1 second")
 }
 
 record(calc, "$(P)$(R)setamp_get"){
     field(DESC, "Read the set amplitude at emission")
     field(INPA, "$(P)$(R)amp_get")
+    field(SCAN, "Passive")
     field(HOPR, "65535")
     field(LOPR, "0")
     field(PREC, "0")
@@ -110,13 +111,13 @@ record(ao, "$(P)$(R)amp_set"){
     field(DTYP, "stream")
     field(OUT, "@laser51.proto amp_set $(PORT)")
     #field(DRVH, "65535")  #caution, 20000 = 1W
-    field(DRVH, "30000")   #current Maximum set to 1mW
+    field(DRVH, "40000")   #current Maximum set to 1mW
     field(DRVL, "1")
     field(HOPR, "65535")
     field(LOPR, "0")
     field(PREC, "0")
     field(EGU, "")    
-    field(FLNK, "$(P)$(R)amp_get.PROC")
+#    field(FLNK, "$(P)$(R)amp_get.PROC")
 }
 
 #===== Cycle time = time span between two shots =====
