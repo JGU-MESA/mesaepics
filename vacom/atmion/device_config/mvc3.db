@@ -132,7 +132,7 @@ record (mbbi, "$(P)$(R)stat_get")
     field(TVSV, MAJOR)
     field(TTSV, MAJOR)
     field(FTSV, MAJOR)
-    field(FLNK, "$(P)$(R)on_get.PROC")
+    field(FLNK, "$(P)$(R)on_calc_get.PROC")
 }
 record (calc, "$(P)$(R)p_get")
 {
@@ -146,12 +146,20 @@ record (calc, "$(P)$(R)p_get")
     field(CALC, "B==0?A:0")
 }
 
-record (calc, "$(P)$(R)on_get")
+record (calc, "$(P)$(R)on_calc_get")
 {
     field(SCAN, "Passive")
-    field(INPA, "$(P)$(R)CH1:stat_get")
-    #field(CALC, "(A <= 4)?1:0")
-    field(CALC, "(A <= 4)?0:1")
+    field(INPA, "$(P)$(R)stat_get")
+    field(CALC, "(A <= 4)?1:0")
+    field(FLNK, "$(P)$(R)on_get")
+}
+
+record (bi, "$(P)$(R)on_get")
+{
+    field(SCAN, "Passive")
+    field(INP, "$(P)$(R)on_calc_get")
+    field(ZNAM, "OFF")
+    field(ONAM, "ON")
 }
 
 record (bo, "$(P)$(R)on_set")
