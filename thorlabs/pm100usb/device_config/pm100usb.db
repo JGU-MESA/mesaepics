@@ -45,8 +45,9 @@ record(ai, "$(P)$(R)pow_get")
     field(DTYP, "stream")
     field(INP, "@pm100usb.proto get_power $(PORT)")
     field(EGU, "W")
-    field(SCAN, ".1 second")
+    field(SCAN, ".2 second")
     field(PREC, "3")
+    field(FLNK, "steam:prefl_vs_i:i_get.PROC PP")
 }
 
 record(bi, "$(P)$(R)pow_unit_get")
@@ -67,7 +68,7 @@ record(ai, "$(P)$(R)i_get")
     field(EGU, "A")
     field(LOPR, "50e-9")
     field(HOPR, "5e-3")
-    field(SCAN, "1 second")
+    #field(SCAN, "1 second")
 }
 
 ##=====================================
@@ -79,7 +80,7 @@ record(ai, "$(P)$(R)u_get")
     field(EGU, "V")
     field(LOPR, "1e-3")
     field(HOPR, "1")
-    field(SCAN, "1 second")
+    #field(SCAN, "1 second")
 }
 
 ##=====================================
@@ -91,7 +92,7 @@ record(ai, "$(P)$(R)powdens_get")
     field(EGU, "W/cm^2")
     field(LOPR, "1e-3")
     field(HOPR, "1")
-    field(SCAN, "1 second")
+    #field(SCAN, "1 second")
 }
 
 ##=====================================
@@ -133,3 +134,29 @@ record(ai, "$(P)$(R)aver_get")
     field(HOPR, "100")
     field(SCAN, "10 second")
 }
+
+
+##=====================================
+##=============== CALC Prefl_vs_i======
+record(ai, "steam:prefl_vs_i:slope_set") {
+     field(DESC, "I_electron depending on Prefl")
+     field(INP, "6.596e-7") # A/W
+     field(EGU, "A/W")
+     field(LOPR, "1e-15")
+     field(HOPR, "1e-2")
+     field(PREC, "3")
+     field(FLNK, "steam:prefl_vs_i:i_get")
+}
+
+
+record(calc, "steam:prefl_vs_i:i_get") {
+     field(DESC, "I_electron depending on Prefl")
+     field(INPA, "steam:prefl_vs_i:slope_set") # A/W
+     field(INPB, "$(P)$(R)pow_get") # in W
+     field(EGU, "A")
+     field(LOPR, "0")
+     field(CALC, "A*B")
+     field(PREC, "3")
+     field(SCAN, "Passive")
+}
+
