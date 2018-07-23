@@ -1,3 +1,6 @@
+# AOFFs für i_get, i_max_get und i_min_get gemessen, 
+# am 20.07.2018 bei 100 kV, 1000 Samples, 0.2s delayq
+
 record(stringout, "$(P)$(R)debug")
 {
     field(DTYP, "stream")
@@ -38,7 +41,7 @@ record(ai, "$(P)$(R)i_get")
     field(SCAN, ".1 second")
     field(EGU,  "A")
     field(ASLO, "1e-6") ## Device sends uA
-    #field(AOFF, "-11e-6")
+    field(AOFF, "1.12e-05")
     field(PREC, "3")
     field(HOPR, "0.01")
     field(LOPR, "3e-7")
@@ -65,7 +68,7 @@ record(ai, "$(P)$(R)i_max_get")
     field(SCAN, "I/O Intr")
     field(EGU,  "A")
     field(ASLO, "1e-6") ## Device sends uA
-    #field(AOFF, "-11e-6")
+    field(AOFF, "1.26e-5")
     field(PREC, "3")
     field(HOPR, "0.01")
     field(LOPR, "3e-7")
@@ -79,7 +82,7 @@ record(ai, "$(P)$(R)i_min_get")
     field(SCAN, "I/O Intr")
     field(EGU,  "A")
     field(ASLO, "1e-6") ## Device sends uA
-    #field(AOFF, "-11e-6")
+    field(AOFF, "9.93e-6")
     field(PREC, "3")
     field(HOPR, "0.01")
     field(LOPR, "3e-7")
