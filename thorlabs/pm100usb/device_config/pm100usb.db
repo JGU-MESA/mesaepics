@@ -47,7 +47,7 @@ record(ai, "$(P)$(R)pow_get")
     field(EGU, "W")
     field(SCAN, ".2 second")
     field(PREC, "3")
-    field(FLNK, "steam:prefl_vs_i:i_get.PROC PP")
+    field(FLNK, "$(P)$(R)ibd_vs_prefl_get PP")
 }
 
 record(bi, "$(P)$(R)pow_unit_get")
@@ -138,24 +138,37 @@ record(ai, "$(P)$(R)aver_get")
 
 ##=====================================
 ##=============== CALC Prefl_vs_i======
-record(ai, "steam:prefl_vs_i:slope_set") {
-     field(DESC, "I_electron depending on Prefl")
-     field(INP, "6.596e-7") # A/W
+record(ai, "$(P)$(R)ibd_vs_prefl_slope_set") {
+     field(DESC, "Slope of I_bd vs Prefl")
+     field(INP, "4.028e-4") # A/W, measured 23.07.18, 9:08
      field(EGU, "A/W")
+     field(LOPR, "1e-15")
+     field(HOPR, "1e2")
+     field(PREC, "3")
+     field(FLNK, "$(P)$(R)ibd_vs_prefl_get")
+}
+
+record(ai, "$(P)$(R)ibd_vs_prefl_off_set") {
+     field(DESC, "I_electron depending on Prefl")
+     field(INP, "1.316e-9") # A, measured 23.07.18, 9:08
+     field(EGU, "A")
      field(LOPR, "1e-15")
      field(HOPR, "1e-2")
      field(PREC, "3")
-     field(FLNK, "steam:prefl_vs_i:i_get")
+     field(FLNK, "$(P)$(R)ibd_vs_prefl_get")
 }
 
 
-record(calc, "steam:prefl_vs_i:i_get") {
+record(calc, "$(P)$(R)ibd_vs_prefl_get") {
      field(DESC, "I_electron depending on Prefl")
-     field(INPA, "steam:prefl_vs_i:slope_set") # A/W
-     field(INPB, "$(P)$(R)pow_get") # in W
+     field(INPA, "$(P)$(R)ibd_vs_prefl_slope_set") # A/W
+     field(INPB, "$(P)$(R)ibd_vs_prefl_off_set") # A
+     field(INPC, "$(P)$(R)pow_get") # in W
+     field(INPD, "steam:laser:on_get")
      field(EGU, "A")
-     field(LOPR, "0")
-     field(CALC, "A*B")
+     field(LOPR, "1e-15")
+     field(HOPR, "1e-2")
+     field(CALC, "C<0 || D == 0 ? 0 : A*C+B")
      field(PREC, "3")
      field(SCAN, "Passive")
 }
