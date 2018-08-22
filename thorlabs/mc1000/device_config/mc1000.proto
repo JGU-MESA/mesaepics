@@ -1,0 +1,36 @@
+#thorlabs mc1000
+Terminator = CR LF;
+
+debug{
+    out "%s";
+    in "%39c";
+}
+
+on_set{
+    out "R";
+}
+
+blade_set{
+    out "B %d";
+}
+
+inner_freq_set{
+    out "I %d";
+}
+
+harm_mult_set{
+    out "N %d";
+}
+
+sub_harm_dev_set{
+    out "M %d";
+}
+
+toggle_mode{
+    # Toggle between internal and external reference modes
+    out "X";
+}
+
+ref_out_set{
+    out "O %d";
+}

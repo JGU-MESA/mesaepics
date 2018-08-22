@@ -1,0 +1,10 @@
+drvAsynSerialPortConfigure("tty_mc1000", "/dev/ttyUSB0")
+asynSetOption("tty_mc1000", 0, "baud", 19200)
+asynSetOption("tty_mc1000", 0, "bits", 8)
+asynSetOption("tty_mc1000", 0, "parity", "none")
+asynSetOption("tty_mc1000", 0, "stop", 1)
+asynSetOption("tty_mc1000", 0, "clocal", "Y")
+
+dbLoadRecords("db/mc1000.db", "P=mc:, R=, PORT=tty_mc1000")
+asynSetTraceIOMask("tty_mc1000",-1,0x6) 
+asynSetTraceMask("tty_mc1000",-1,0x9) 
