@@ -1,0 +1,70 @@
+Terminator = LF;
+ReplyTimeout = 100;
+
+getVersion {
+	out "v";
+	in "v %#s";
+}
+
+getCurrent {
+	in ">%e";
+}
+
+setRange {
+	out "r%{0|1}";
+	in "r%{0|1}";
+	@init {
+		out "r";
+		in "r%{0|1}";
+	}
+}
+
+getRange {
+	in "r%{0|1}";
+}
+
+getAutoRange {
+    out "u";
+    in "u%{0|1}";
+    @init{
+        out "u";
+        in "u%{0|1}";
+    }
+}
+
+
+setAutoRange {
+	out "u%{0|1}";
+	in "u%{0|1}";
+	@init {
+        getAutoRange;
+	}
+}
+
+setEnable {
+	out "e%{0|1}";
+	in "e%{0|1}";
+	@init {
+		out "e";
+		in "e%{0|1}";
+	}
+}
+
+getEnable {
+	in "e%{0|1}";
+}
+
+getAveraging{
+    out "a";
+    in "a%d";
+}
+
+setAveraging {
+	out "a%d";
+	in "a%d";
+    @init{
+        getAveraging;
+    }
+
+}
+
