@@ -1,0 +1,64 @@
+
+record (stringin, "$(P)$(R)version_get") {
+	field (PINI, "YES")
+	field (DTYP, "stream")
+	field (INP, "@riesling0.6.proto getVersion $(PORT)")
+}
+record (ai, "$(P)$(R)i_get") {
+	field (SCAN, "I/O Intr")
+	field (DTYP, "stream")
+	field (INP, "@riesling0.6.proto getCurrent $(PORT)")
+}
+record (mbbi, "$(P)$(R)range_get") {
+	field (SCAN, "I/O Intr")
+	field (DTYP, "stream")
+	field (INP, "@riesling0.6.proto getRange $(PORT)")
+	field (ZRVL, "0")
+	field (ZRST, "10 uA")
+	field (ONVL, "1")
+	field (ONST, "10 mA")
+}
+record (mbbo, "$(P)$(R)range_set") {
+	field (DTYP, "stream")
+	field (OUT, "@riesling0.6.proto setRange $(PORT)")
+	field (ZRVL, "0")
+	field (ZRST, "10 uA")
+	field (ONVL, "1")
+	field (ONST, "10 mA")
+}
+record (bo, "$(P)$(R)autorange_set") {
+	field (DTYP, "stream")
+	field (OUT, "@riesling0.6.proto setAutoRange $(PORT)")
+	field (ONAM, "On")
+	field (ZNAM, "Off")
+}
+record (bi, "$(P)$(R)enable_get") {
+	field (SCAN, "I/O Intr")
+	field (DTYP, "stream")
+	field (INP, "@riesling0.6.proto getEnable $(PORT)")
+	field (ONAM, "On")
+	field (ZNAM, "Off")
+}
+record (bo, "$(P)$(R)enable_set") {
+	field (DTYP, "stream")
+	field (OUT, "@riesling0.6.proto setEnable $(PORT)")
+	field (ONAM, "On")
+	field (ZNAM, "Off")
+}
+record (mbbo, "$(P)$(R)averaging_set") {
+	field (DTYP, "stream")
+	field (DESC, "Number of samples to average")
+	field (OUT, "@riesling0.6.proto setAveraging $(PORT)")
+	field (ZRVL, "0")
+	field (ZRST, "1")
+	field (ONVL, "1")
+	field (ONST, "2")
+	field (TWVL, "2")
+	field (TWST, "4")
+	field (THVL, "3")
+	field (THST, "8")
+	field (FRVL, "4")
+	field (FRST, "16")
+}
+
+

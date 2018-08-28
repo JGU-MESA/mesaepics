@@ -1,0 +1,29 @@
+#!../../bin/linux-x86_64/test
+
+## You may have to change simfred to something else
+## everywhere it appears in this file
+
+< envPaths
+
+cd "${TOP}"
+
+## Register all support components
+dbLoadDatabase "dbd/test.dbd"
+test_registerRecordDeviceDriver pdbbase
+
+cd "${TOP}/iocBoot/${IOC}"
+epicsEnvSet("STREAM_PROTOCOL_PATH", ".")
+
+drvAsynSerialPortConfigure("TTY_RIESLING", "/dev/ttyUSB0")
+asynSetOption("TTY_RIESLING", 0, "baud", 9600)
+asynSetOption("TTY_RIESLING", 0, "bits", 8)
+asynSetOption("TTY_RIESLING", 0, "parity", "none")
+asynSetOption("TTY_RIESLING", 0, "stop", 1)
+asynSetOption("TTY_RIESLING", 0, "clocal", "Y")
+asynSetOption("TTY_RIESLING", 0, "crtscts", "N")
+asynSetTraceMask("TTY_RIESLING", -1, 9)
+asynSetTraceIOMask("TTY_RIESLING", -1, 2)
+dbLoadRecords("riesling0.6.db", "P=test:,R=riesling1:,PORT=TTY_RIESLING")
+
+
+iocInit
