@@ -1,0 +1,73 @@
+Terminator = CR;
+
+getModuleName {
+	out "$\$1","M";
+	in "!\$1%#s";
+}
+
+getFirmwareVersion {
+	out "$\$1","F";
+	in "!\$1%#s";
+}
+
+getCurrent {
+	out "#\$1";
+	in ">%*d,%e";
+}
+
+setRange {
+	out "$\$1r%{0|1}";
+	in "!\$1";
+	@init {
+		out "$\$1r";
+		in "!\$1%{0|1}";
+	}
+}
+
+setAutoRange {
+	out "$\$1u%{0|1}";
+	in "!\$1";
+	@init {
+		out "$\$1u";
+		in "!\$1%{0|1}";
+	}
+}
+
+setEnable {
+	out "$\$1e%{0|1}";
+	in "!\$1";
+	@init {
+		out "$\$1e";
+		in "!\$1%{0|1}";
+	}
+}
+
+setAveraging {
+	out "$\$1a%d";
+	in "!\$1";
+	@init {
+		out "$\$1a";
+		in "!\$1%d";
+	}
+}
+
+getRange {
+	out "$\$1s";
+	in "!\$1s%1d%*1d%*1d%*1d";
+}
+
+getAutoRange {
+	in "!\$1s%*1d%1d%*1d%*1d";
+}
+getEnable {
+	in "!\$1s%*1d%*1d%1d%*1d";
+}
+getAveraging {
+	in "!\$1s%*1d%*1d%*1d%1d";
+}
+
+setOffset {
+	out "$\$1o\$2%d";
+	in "!\$1";
+}
+
