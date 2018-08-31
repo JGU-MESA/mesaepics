@@ -1,9 +1,13 @@
 #thorlabs mc1000
+ReplyTimeout = 2000;
 Terminator = CR LF;
-
 debug{
     out "%s";
     in "%39c";
+}
+
+return{
+    out "";
 }
 
 on_set{
@@ -26,11 +30,61 @@ sub_harm_dev_set{
     out "M %d";
 }
 
-toggle_mode{
+mode_set{
     # Toggle between internal and external reference modes
     out "X";
 }
 
 ref_out_set{
     out "O %d";
+}
+
+
+#===== GETS =====
+info_get{
+    out "";
+}
+
+revision_get{
+    in "MC1000 Control Software - Revision %f";
+    ExtraInput = Ignore;
+}
+
+build_get{
+    in "MC1000 Control Software - Revision %*f (build  %0d)";
+    ExtraInput = Ignore;
+}
+
+on_get{
+    in "(R)un motor              (%{Off| On})";
+    ExtraInput = Ignore;
+}
+
+blade_get{
+    in "(B)lade                  (B%{ 10| 15| 30| 60| 2F| 2|2-2})";
+    ExtraInput = Ignore;
+}
+  
+inner_freq_get{
+    in "(I)nternal Frequency     ( %d)";
+    ExtraInput = Ignore;
+}
+
+harm_mult_get{
+    in "(N) Harmonic Multiplier  (   %d)";
+    ExtraInput = Ignore;
+}
+
+sub_harm_mult_get{
+    in "(M) Sub-Harmonic Divider (   %d)";
+    ExtraInput = Ignore;
+}
+
+mode_get{
+    # Toggle between internal and external reference modes
+    in "(X) External Reference   (%{Off| On})";
+}
+
+ref_out_get{
+    in "(O) Reference Output     (%s)";
 }
