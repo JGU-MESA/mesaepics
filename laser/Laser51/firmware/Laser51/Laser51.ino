@@ -550,7 +550,7 @@ void setup() {
   pinMode(p_trig, OUTPUT);
   digitalWriteFast(p_trig, LOW);
 
-  //Timer between trigger and shot
+  //Timer to evaluate ethernet communication
   Timer1.initialize(2500);
   Timer1.attachInterrupt(&evaluateClient);
 }
