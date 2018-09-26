@@ -1,0 +1,42 @@
+Terminator = CR LF;
+replytimeout = 1000;
+
+debug{
+    out "%s";
+    in "%39c";
+}
+#===== Current =====
+GetCurr {
+    out "meas:curr?";
+    in "curr_get:%f";
+}
+
+GetCurrStd {
+    in "curr_std:%f";
+}
+
+GetCurrMax {
+    in "curr_max:%f";
+}
+
+GetCurrMin {
+    in "curr_min:%f";
+}
+
+#===== Voltage =====
+GetVolt {
+    out "meas:volt?";
+    in "volt_get:%f";
+}
+
+GetVoltStd {
+    in "volt_std:%f";
+}
+
+GetVoltMax {
+    in "volt_max:%f";
+}
+
+GetVoltMin {
+    in "volt_min:%f";
+}

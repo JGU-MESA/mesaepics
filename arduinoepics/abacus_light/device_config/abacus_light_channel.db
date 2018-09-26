@@ -1,18 +1,42 @@
 record (bi, "$(P)$(R)on_get")
 {
-    field (DTYP, "stream")
-    field (INP, "@abacus_light.proto channel_set_read($(CH)) $(PORT)")
-    field (ZNAM, "Off")
-    field (ONAM, "On")
-    field (PINI, "YES")
+    field(DTYP, "stream")
+    field(INP, "@abacus_light.proto channel_set_read($(CH)) $(PORT)")
+    field(ZNAM, "Off")
+    field(ONAM, "On")
+    field(PINI, "YES")
+    field(SCAN, "1 second")
 }
 
 record (bo, "$(P)$(R)on_set")
 {
-    field (DTYP, "stream")
-    field (OUT, "@abacus_light.proto channel_set($(CH)) $(PORT)")
-    field (ZNAM, "Off")
-    field (ONAM, "On")
-    field (FLNK, "$(P)$(R)on_get.PROC")
+    field(DTYP, "stream")
+    field(OUT, "@abacus_light.proto channel_set($(CH)) $(PORT)")
+    field(ZNAM, "Off")
+    field(ONAM, "On")
+    field(FLNK, "$(P)$(R)on_get.PROC")
 }
 
+record (ai, "$(P)$(R)dimm_get")
+{
+    field(DESC, "Read dimm value of ch $(CH)")
+    field(DTYP, "stream")
+    field(INP, "@abacus_light.proto dimm_read($(CH)) $(PORT)")
+    field(LOPR, "0")
+    field(HOPR, "255")
+    field(EGU, "bit")
+    field(PINI, "YES")
+}
+
+record (ao, "$(P)$(R)dimm_set")
+{
+    field(DESC, "Read dimm value of ch $(CH)")
+    field(DTYP, "stream")
+    field(OUT, "@abacus_light.proto dimm_set($(CH)) $(PORT)")
+    field(LOPR, "0")
+    field(HOPR, "255")
+    field(DRVL, "0")
+    field(DRVH, "255")
+    field(EGU, "bit")
+    field(FLNK, "$(P)$(R)dimm_get")
+}

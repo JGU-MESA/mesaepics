@@ -1,7 +1,7 @@
 //Arduino based control units: LIGHT
 //Latest update: 02.08.2017
-//Latest improvement: Timer added
-const float version = 1.0;
+//Latest improvement: Dimmer added
+const float version = 1.1;
 String name = "Abacus Light";
 /*
     Arduino_TCP
@@ -24,7 +24,6 @@ String name = "Abacus Light";
 //========== Define Constants ==========
 #define MAX_CMD_LENGTH 25
 // Note: All pins are at startup by default in INPUT-Mode (besides PIN 13!!)
-#define testled 13 //Select testled pin
 
 //==========Static/DHCP===============
 byte mac[] = {0x90, 0xA2, 0xDA, 0x11, 0x20, 0xAE}; // Enter a MAC address
@@ -37,8 +36,6 @@ struct IPObject {
 IPObject ip_eeprom;
 int eeAddress = 0; // Defined address for EEPROM
 
-//==============================
-
 //========== Ethernet server port ==========
 // Initialize the Ethernet server library with a port you want to use
 EthernetServer server(23); //TELNET defaults to port 23
@@ -47,23 +44,20 @@ EthernetServer server(23); //TELNET defaults to port 23
 //========== Needed variables or constants ==========
 boolean connected = false; // whether or not the client was connected previously
 String cmdstr; // command string that will be evaluated when received via ethernet
-const byte readonstate[]  = { A0, A2, A4 }; // Define analog pins in array for on measurement of valve status
-const byte readoffstate[] = { A1, A3, A5 }; // Define analog pins in array for off measurement of valve status
+const byte light[]  = { A0, A1, A2, A3, A4, A5, 7, 8}; // Define analog pins for channel on off
+int ll = sizeof(light) / sizeof(light[0]);
+const byte dimmer[]  = { 3, 5, 6, 9, 10, 11, 13}; // Define analog pins for dimming (only 7 are available for dimming)
+int ld = sizeof(dimmer) / sizeof(dimmer[0]);
+uint8_t dimmerstate[]  = { 255, 255, 255, 255, 255, 255, 255};
+
+
 //===== Timer variables and constants =====
-boolean allowchange = false; // whether or not the status of a valve may be changed
-const uint16_t timeperiod = 500; // timer to wait until valve status may be changed in ms
-
-//===== Pins needed for slit control =====
-#define lasershutterpin 0 //Select pin for lasershutter
-
-//===== Pins needed for slit control =====
-#define slit_ZLDP210P_on 11 // slit pressure ZLDP210P "Endschalter 1"
-#define slit_ZLDP210P_off 12 // slit pressure ZLDP210P "Endschalter 2"
+boolean allowchange = false; // whether or not the status of a light may be changed
+const uint16_t timeperiod = 100; // timer to wait until light status may be changed in ms
 
 void timer() {
   allowchange = true;
 }
-
 
 void setup() {
   //===== Serial =====
@@ -82,20 +76,14 @@ void setup() {
   server.begin(); // start server
 
   //===== Define Input and Output pins =====
-  pinMode(testled, OUTPUT); // set led pin to output
-  pinMode(lasershutterpin, OUTPUT); // set led pin to output
-  for (int i = 1; i <= 8; i++) {
-    pinMode(i, OUTPUT); // set pin i to output (Pin 0 is for VCC)
-    digitalWrite(i, HIGH); // set pin i to HIGH (inverse logic for relais)
+  for (int i = 0; i < ll; i++) {
+    pinMode(light[i], OUTPUT); // set pin i to output (Pin 0 is for VCC)
+    digitalWrite(light[i], HIGH); // set pin i to HIGH (inverse logic for relais)
   }
-  for (int i = 0; i <= 2; i++) {
-    digitalWrite(readonstate[i], INPUT_PULLUP); // Set pins for on state to input_pullup
-    digitalWrite(readoffstate[i], INPUT_PULLUP); // Set pins for off state to input_pullup
+  for (int i = 0; i < ld; i++) {
+    pinMode(dimmer[i], OUTPUT); // Sets analog pins to output
+    analogWrite(dimmer[i], dimmerstate[i]); // Sets analog pins to HIGH = 5V
   }
-  //==== Do the same for the pneumatic slit driver ====
-  //Endschalter on pin 11 and 12
-  digitalWrite(slit_ZLDP210P_on, INPUT_PULLUP); // Set pins for on state to input_pullup
-  digitalWrite(slit_ZLDP210P_off, INPUT_PULLUP); // Set pins for off state to input_pullup
 
   //==== Timer =====
   MsTimer2::set(timeperiod, timer); //
@@ -198,7 +186,7 @@ void loop() {
 }
 
 
-void readTelnetCommand(char c, EthernetClient &client) {
+void readTelnetCommand(char c, EthernetClient & client) {
   if (cmdstr.length() == MAX_CMD_LENGTH) {
     cmdstr = "";
   }
@@ -213,7 +201,7 @@ void readTelnetCommand(char c, EthernetClient &client) {
 
 }
 
-void parseCommand(EthernetClient &client) {
+void parseCommand(EthernetClient & client) {
 
   //====Debug====
   //Serial.print("cmdstr = ");
@@ -230,54 +218,46 @@ void parseCommand(EthernetClient &client) {
     client.print("--- ");
     client.print(name);
     client.print(" Version "); client.print(version, 1); client.println(" ---");
-    client.println("on|off                   : switch test led on/off");
-    client.println("quit                     : close the connection");
-    client.println("ch {1|2..|8} {off|on|?}  : set channel {1|2..|8} {off|on|?}");
-    client.println("all ch off               : switch all channels off");
-    client.println("meas:ch {1|2|3}          : read channel {1|2|3} state");
+    client.println("quit                          : close the connection");
+    client.println("ch {0|1..|7} {off|on|?}       : switch or read channel {0|1..|7} {off|on}");
+    client.println("all ch off                    : switch all channels off");
+    client.println("dimm {0|1..|6} {0..255|?}     : dimm or read dimm channel {0|1..|6}");
     client.println();
     client.println("By S.Friederich");
   }
 
-  //===== TestLED =====
-  else if (cmdstr.equals("on")) {
-    digitalWrite(testled, HIGH);
-  }
-  else if (cmdstr.equals("off")) {
-    digitalWrite(testled, LOW);
-  }
 
-  //===== Read Test-LED state on/off =====
-  else if (cmdstr.equals("tled?")) {
-    client.print("tled:");
-    client.println(digitalRead(testled));
-  }
-
-  //===== Set valve channel on|off =====
+  //===== Set light on/off ======
   else if (cmdstr.startsWith("ch ")) {
-    int channelnumber = cmdstr.substring(3, 4).toInt(); // e.g. "ch 1 on"
-    if (cmdstr.endsWith("on")) {
-      if (allowchange == true && digitalRead(channelnumber) == HIGH) {
-        digitalWrite(channelnumber, LOW); // Inverse logic (on=LOW)
-        allowchange = false;
-        MsTimer2::start();
+    int ch = cmdstr.substring(3, 4).toInt(); // e.g. "ch 1 on"
+    if (0 <= ch && ch < ll) {
+      byte channelnumber = light[ch];
+      if (cmdstr.endsWith("on")) {
+        if (allowchange == true && digitalRead(channelnumber) == HIGH) {
+          digitalWrite(channelnumber, LOW); // Inverse logic (on=LOW)
+          allowchange = false;
+          MsTimer2::start();
+        }
       }
-    }
-    else if (cmdstr.endsWith("off")) {
-      if (allowchange == true && digitalRead(channelnumber) == LOW) {
-        digitalWrite(channelnumber, HIGH); // Inverse logic (on=LOW)
-        allowchange = false;
-        MsTimer2::start();
+      else if (cmdstr.endsWith("off")) {
+        if (allowchange == true && digitalRead(channelnumber) == LOW) {
+          digitalWrite(channelnumber, HIGH); // Inverse logic (on=LOW)
+          allowchange = false;
+          MsTimer2::start();
+        }
       }
-    }
-    //===== Read set channel state =====
-    else if (cmdstr.endsWith("?")) {
-      boolean channelstate = !digitalRead(channelnumber); // Inverse logic (1=on=LOW)
-      client.print("current set state: ch "); client.print(channelnumber);
-      client.print(" "); client.println(channelstate);
+      //===== Read set channel state =====
+      else if (cmdstr.endsWith("?")) {
+        boolean channelstate = !digitalRead(channelnumber); // Inverse logic (1=on=LOW)
+        client.print("current set state: ch "); client.print(ch);
+        client.print(" "); client.println(channelstate);
+      }
+      else {
+        client.println("Command invalid");
+      }
     }
     else {
-      client.println("Command invalid");
+      client.println("Channel out of range!");
     }
 
   }
@@ -285,30 +265,37 @@ void parseCommand(EthernetClient &client) {
   //===== Set all channel off =====
   else if (cmdstr.equals("all ch off")) {
     if (allowchange == true) {
-      for (int i = 1; i <= 8; i++) {
-        digitalWrite(i, HIGH); // set pin i to HIGH (inverse logic for relais)
+      for (int i = 0; i < ll; i++) {
+        digitalWrite(light[i], HIGH); // set pin i to HIGH (inverse logic for relais)
       }
     }
     allowchange = false;
     MsTimer2::start();
   }
 
+  //===== Dimmer =====
+  else if (cmdstr.startsWith("dimm ")) {
+    int ch = cmdstr.substring(5, 6).toInt(); // e.g. "dimm 1 255"; dimmer index starts with 0
+    if (0 <= ch && ch < ld) {
+      byte channelnumber = dimmer[ch];
+      if (cmdstr.endsWith("?")) {
+        client.print("current dimmer state: ch "); client.print(ch);
+        client.print(" "); client.println(dimmerstate[ch]);
+      }
+      else {
+        int dimmvalue = cmdstr.substring(7).toInt();
+        if (0 <= dimmvalue && dimmvalue <= 255) {
+          dimmerstate[ch] = dimmvalue; // Save new set dimmer state for readout
+          analogWrite(channelnumber, dimmvalue); // set pin i to HIGH (inverse logic for relais)
+        }
+        else {
+          client.println("Dimm value out of range");
+        }
+      }
 
-  //===== Read actual valve channel state =====
-  else if (cmdstr.startsWith("meas:ch ")) {
-    int channelnumber = cmdstr.substring(8, 9).toInt(); // e.g. "meas:ch 1"
-    if (channelnumber > 3) // Currently: only 3 channel states are wired and assigned
-      client.println("Invalid channel");
+    }
     else {
-      int channelstate_on = digitalRead(readonstate[channelnumber - 1]); //
-      int channelstate_off = digitalRead(readoffstate[channelnumber - 1]); //
-      client.print("actual state: ch "); client.print(channelnumber); client.print(" ");
-      if (channelstate_on == LOW && channelstate_off)
-        client.println("1");
-      else if (channelstate_on && channelstate_off == LOW)
-        client.println("0");
-      else
-        client.println("undefined");
+      client.println("Wrong dimmer channel selected");
     }
   }
 
@@ -320,5 +307,4 @@ void parseCommand(EthernetClient &client) {
 
   cmdstr = "";
 }
-
 

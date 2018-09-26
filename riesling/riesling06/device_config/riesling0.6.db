@@ -1,0 +1,107 @@
+
+record (stringin, "$(P)$(R)ModuleName_get") {
+	field (PINI, "YES")
+	field (DTYP, "stream")
+	field (INP, "@riesling0.6.proto getModuleName($(AA)) $(PORT)")
+}
+record (stringin, "$(P)$(R)FirmwareVersion_get") {
+	field (PINI, "YES")
+	field (DTYP, "stream")
+	field (INP, "@riesling0.6.proto getFirmwareVersion($(AA)) $(PORT)")
+}
+record (ai, "$(P)$(R)i_get") {
+	field (SCAN, ".5 second")
+	field (DTYP, "stream")
+	field (INP, "@riesling0.6.proto getCurrent($(AA)) $(PORT)")
+	field (EGU, "A")
+	field (PREC, "3")
+	field (LOPR, 1e-12)
+	field (HOPR, 1e-2)
+}
+record (mbbi, "$(P)$(R)range_get") {
+	field (SCAN, "1 second")
+	field (DTYP, "stream")
+	field (INP, "@riesling0.6.proto getRange($(AA)) $(PORT)")
+	field (ZRVL, "0")
+	field (ZRST, "10 uA")
+	field (ONVL, "1")
+	field (ONST, "10 mA")
+}
+record (mbbo, "$(P)$(R)range_set") {
+	field (DTYP, "stream")
+	field (OUT, "@riesling0.6.proto setRange($(AA)) $(PORT)")
+	field (ZRVL, "0")
+	field (ZRST, "10 uA")
+	field (ONVL, "1")
+	field (ONST, "10 mA")
+}
+record (bi, "$(P)$(R)autorange_get") {
+	field (SCAN, "I/O Intr")
+	field (DTYP, "stream")
+	field (INP, "@riesling0.6.proto getAutoRange($(AA)) $(PORT)")
+	field (ONAM, "On")
+	field (ZNAM, "Off")
+}
+record (bo, "$(P)$(R)autorange_set") {
+	field (DTYP, "stream")
+	field (OUT, "@riesling0.6.proto setAutoRange($(AA)) $(PORT)")
+	field (ONAM, "On")
+	field (ZNAM, "Off")
+}
+record (bi, "$(P)$(R)enable_get") {
+	field (SCAN, "I/O Intr")
+	field (DTYP, "stream")
+	field (INP, "@riesling0.6.proto getEnable($(AA)) $(PORT)")
+	field (ONAM, "On")
+	field (ZNAM, "Off")
+}
+record (bo, "$(P)$(R)enable_set") {
+	field (DTYP, "stream")
+	field (OUT, "@riesling0.6.proto setEnable($(AA)) $(PORT)")
+	field (ONAM, "On")
+	field (ZNAM, "Off")
+}
+record (mbbi, "$(P)$(R)averaging_get") {
+	field (SCAN, "I/O Intr")
+	field (DTYP, "stream")
+	field (DESC, "Number of samples to average")
+	field (INP, "@riesling0.6.proto getAveraging($(AA)) $(PORT)")
+	field (ZRVL, "0")
+	field (ZRST, "1")
+	field (ONVL, "1")
+	field (ONST, "2")
+	field (TWVL, "2")
+	field (TWST, "4")
+	field (THVL, "3")
+	field (THST, "8")
+	field (FRVL, "4")
+	field (FRST, "16")
+}
+record (mbbo, "$(P)$(R)averaging_set") {
+	field (DTYP, "stream")
+	field (DESC, "Number of samples to average")
+	field (OUT, "@riesling0.6.proto setAveraging($(AA)) $(PORT)")
+	field (ZRVL, "0")
+	field (ZRST, "1")
+	field (ONVL, "1")
+	field (ONST, "2")
+	field (TWVL, "2")
+	field (TWST, "4")
+	field (THVL, "3")
+	field (THST, "8")
+	field (FRVL, "4")
+	field (FRST, "16")
+}
+
+record(ao, "$(P)$(R)offset0_set") {
+	field (DTYP, "stream")
+	field (OUT, "@riesling0.6.proto setOffset($(AA),0) $(PORT)")
+	field (EGU, "pA")
+}
+
+record(ao, "$(P)$(R)offset1_set") {
+	field (DTYP, "stream")
+	field (OUT, "@riesling0.6.proto setOffset($(AA),1) $(PORT)")
+	field (EGU, "pA")
+}
+

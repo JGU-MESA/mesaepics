@@ -1,0 +1,308 @@
+record(stringout, "$(P)$(R)debug"){
+    field(DTYP, "stream")
+    field(OUT, "@laser51.proto debug $(PORT)")
+}
+
+record(bi, "$(P)$(R)on_get"){
+    field(DESC, "Read on/off status of laser")
+    field(DTYP, "stream")
+    field(INP, "@laser51.proto on_get $(PORT)")
+    field(ZNAM, "OFF")
+    field(ONAM, "ON")
+    field(SCAN, "1 second")
+}
+
+record(bo, "$(P)$(R)on_set"){
+    field(DESC, "Set laser on/off")
+    field(DTYP, "stream")
+    field(OUT, "@laser51.proto on_set $(PORT)")
+    field(ZNAM, "OFF")
+    field(ONAM, "ON")
+    field(FLNK, "$(P)$(R)on_get.PROC") 
+}
+
+#===== Handshake =====
+record(ai, "$(P)$(R)handshake_get"){
+    field(DESC, "Read handshake")
+    field(DTYP, "stream")
+    field(INP, "@laser51.proto handshake_get $(PORT)")
+    field(EGU, "us")
+    field(HOPR, "1000")
+    field(LOPR, "100")
+    field(SCAN, "5 second")
+}
+
+record(ao, "$(P)$(R)handshake_set"){
+    field(DISP, "0")
+    field(DESC, "Set time betw. two shots")
+    field(DTYP, "stream")
+    field(OUT, "@laser51.proto handshake_set $(PORT)")
+    field(DRVH, "1000")
+    field(DRVL, "100")
+    field(HOPR, "1000")
+    field(LOPR, "100")
+    field(PREC, "0")
+    field(EGU, "us")    
+    field(FLNK, "$(P)$(R)handshake_get.PROC")
+}
+
+
+#===== Pulse Length =====
+record(ai, "$(P)$(R)pl_get"){
+    field(DESC, "Read pulse length")
+    field(DTYP, "stream")
+    field(INP, "@laser51.proto pl_get $(PORT)")
+    field(EGU, "us")
+    field(HOPR, "500000")
+    field(LOPR, "100")
+    field(SCAN, "1 second")
+}
+
+record(ao, "$(P)$(R)pl_set"){
+    field(DESC, "Set pulse length")
+    field(DTYP, "stream")
+    field(OUT, "@laser51.proto pl_set $(PORT)")
+    field(DRVH, "8388478")
+    field(DRVL, "25")
+    field(HOPR, "500000")
+    field(LOPR, "100")
+    field(PREC, "0")
+    field(EGU, "us")    
+    field(FLNK, "$(P)$(R)pl_get.PROC")
+}
+
+#===== Amplitude =====
+record(ai, "$(P)$(R)amp_get"){
+    field(DESC, "Read amplitude")
+    field(DTYP, "stream")
+    field(INP, "@laser51.proto amp_get $(PORT)")
+    field(HOPR, "65535")
+    field(LOPR, "0")
+    field(PREC, "0")
+    field(EGU, "")
+    field(HOPR, "65535")
+    field(LOPR, "0")
+    field(HIGH, "20000") #=1W laser power
+    field(HIHI, "35000") #=3W laser power
+    field(HHSV, "MAJOR") 
+    field(HHSV, "MINOR")
+    field(SCAN, "1 second")
+}
+
+record(calc, "$(P)$(R)setamp_get"){
+    field(DESC, "Read the set amplitude at emission")
+    field(INPA, "$(P)$(R)amp_get")
+    field(SCAN, "Passive")
+    field(HOPR, "65535")
+    field(LOPR, "0")
+    field(PREC, "0")
+    field(EGU, "")
+    field(HOPR, "65535")
+    field(LOPR, "0")
+    field(HIGH, "20000") #=1W laser power
+    field(HIHI, "35000") #=3W laser power
+    field(HHSV, "MAJOR") 
+    field(HHSV, "MINOR")
+    field(CALC, "A")
+}
+
+record(ao, "$(P)$(R)amp_set"){
+    field(DESC, "Set amplitude")
+    field(DTYP, "stream")
+    field(OUT, "@laser51.proto amp_set $(PORT)")
+    #field(DRVH, "65535")  #caution, 20000 = 1W
+    field(DRVH, "40000")   #current Maximum set to 1mW
+    field(DRVL, "1")
+    field(HOPR, "65535")
+    field(LOPR, "0")
+    field(PREC, "0")
+    field(EGU, "")    
+#    field(FLNK, "$(P)$(R)amp_get.PROC")
+}
+
+#===== Cycle time = time span between two shots =====
+record(ai, "$(P)$(R)dt_get"){
+    field(DESC, "Read time betw. two shots")
+    field(DTYP, "stream")
+    field(INP, "@laser51.proto dt_get $(PORT)")
+    field(EGU, "us")
+    field(HOPR, "500000")
+    field(LOPR, "100")
+    field(SCAN, "1 second")
+}
+
+record(ao, "$(P)$(R)dt_set"){
+    field(DESC, "Set time betw. two shots")
+    field(DTYP, "stream")
+    field(OUT, "@laser51.proto dt_set $(PORT)")
+    field(DRVH, "500000")
+    field(DRVL, "100")
+    field(HOPR, "500000")
+    field(LOPR, "100")
+    field(PREC, "0")
+    field(EGU, "us")    
+    field(FLNK, "$(P)$(R)dt_get.PROC")
+}
+
+#===== Number of shots =====
+record(ai, "$(P)$(R)nos_get"){
+    field(DESC, "Read number of shots")
+    field(DTYP, "stream")
+    field(INP, "@laser51.proto nos_get $(PORT)")
+    field(EGU, "")
+	field(HOPR, "100000000")
+    field(LOPR, "2")
+    field(SCAN, "1 second")
+}
+
+record(ao, "$(P)$(R)nos_set"){
+    field(DESC, "Set pulse length")
+    field(DTYP, "stream")
+    field(OUT, "@laser51.proto nos_set $(PORT)")
+    field(DRVH, "100000000")
+    field(DRVL, "2")
+    field(HOPR, "100000000")
+    field(LOPR, "2")
+    field(PREC, "0")
+    field(EGU, "")    
+}
+
+#===== DC mode =====
+record(bo, "$(P)$(R)dc_set"){
+    field(DESC, "Set dc beam on or off")
+    field(DTYP, "stream")
+    field(OUT, "@laser51.proto dc_set $(PORT)")
+    field(ZNAM, "OFF")
+    field(ONAM, "ON")
+    field(FLNK, "$(P)$(R)setamp_get.PROC") 
+}
+
+record(bi, "$(P)$(R)dc_get"){
+    field(DESC, "Read dc on/off")
+    field(DTYP, "stream")
+    field(INP, "@laser51.proto dc_get $(PORT)")
+    field(ZNAM, "OFF")
+    field(ONAM, "ON")
+    field(SCAN, "1 second")
+}
+
+#===== Shot =====
+record(bo, "$(P)$(R)sh_set"){
+    field(DESC, "Execute one shot")
+    field(DTYP, "stream")
+    field(OUT, "@laser51.proto sh_set $(PORT)")
+    field(FLNK, "$(P)$(R)setamp_get.PROC") 
+}
+
+#===== Multiple Shot =====
+record(bo, "$(P)$(R)mu_set"){
+    field(DESC, "Execute multiple shot")
+    field(DTYP, "stream")
+    field(OUT, "@laser51.proto mu_set $(PORT)")
+	field(ZNAM, "0")
+	field(ONAM, "1")
+    field(FLNK, "$(P)$(R)setamp_get.PROC")
+}
+
+record(bi, "$(P)$(R)mu_get"){
+    field(DESC, "Read dc on/off")
+    field(DTYP, "stream")
+    field(INP, "@laser51.proto mu_get $(PORT)")
+    field(ZNAM, "OFF")
+    field(ONAM, "ON")
+    field(SCAN, ".5 second")
+}
+
+##==== Calc LaserPower ====
+record(calc, "$(P)$(R)pow_get"){
+    field(INPA, "$(POWERMETER)pow_get")
+    field(INPB, "16.4140") 
+    field(INPC, "18.878") 
+    field(INPD, "$(P)$(R)on_get") 
+    field(EGU, "W")
+    field(CALC, "D = 1 ? (A < 75e-3 ? B  * A : C * A) : 0")
+    field(SCAN, ".1 second")
+    field(PREC, "2")
+}
+
+record(calc, "$(P)$(R)pow_att_get"){
+    field(INPA, "$(POWERMETER)pow_get")
+    field(INPB, "0.0309") 
+    field(INPC, "0.0342") 
+    field(INPD, "$(P)$(R)on_get") 
+    field(EGU, "W")
+    field(CALC, "D = 1 ? (A < 75e-3 ? B  * A : C * A) : 0")
+    field(SCAN, ".1 second")
+    field(PREC, "2")
+}
+
+#===== Trigger =====
+record(bo, "$(P)$(R)trigger"){
+    field(DESC, "Emit trigger signal manually")
+    field(DTYP, "stream")
+    field(OUT, "@laser51.proto trigger $(PORT)")
+}
+
+record(bi, "$(P)$(R)trig_get"){
+    field(DESC, "Read status of trigger")
+    field(DTYP, "stream")
+    field(INP, "@laser51.proto trig_get $(PORT)")
+    field(ZNAM, "OFF")
+    field(ONAM, "ON")
+    field(SCAN, ".5 second")
+}
+
+record(bo, "$(P)$(R)trig_set"){
+    field(DESC, "Set status of trigger")
+    field(DTYP, "stream")
+    field(OUT, "@laser51.proto trig_set $(PORT)")
+    field(ZNAM, "OFF")
+    field(ONAM, "ON")
+    field(FLNK, "$(P)$(R)trig_get.PROC") 
+}
+
+record(ai, "$(P)$(R)trig_width_get"){
+    field(DESC, "Read trigger signal width")
+    field(DTYP, "stream")
+    field(INP, "@laser51.proto trig_width_get $(PORT)")
+    field(EGU, "us")
+	field(HOPR, "100000")
+    field(LOPR, "20")
+    field(SCAN, "1 second")
+}
+
+record(ao, "$(P)$(R)trig_width_set"){
+    field(DESC, "Set pulse length")
+    field(DTYP, "stream")
+    field(OUT, "@laser51.proto trig_width_set $(PORT)")
+    field(DRVH, "100000")
+    field(DRVL, "20")
+    field(HOPR, "100000")
+    field(LOPR, "20")
+    field(PREC, "0")
+    field(EGU, "us")  
+	field(FLNK, "$(P)$(R)trig_width_get")
+}
+
+record(ai, "$(P)$(R)trig_delay_get"){
+    field(DESC, "Read trigger signal delay")
+    field(DTYP, "stream")
+    field(INP, "@laser51.proto trig_delay_get $(PORT)")
+    field(EGU, "us")
+	field(HOPR, "10000000")
+    field(LOPR, "20")
+    field(SCAN, "1 second")
+}
+
+record(ao, "$(P)$(R)trig_delay_set"){
+    field(DESC, "Set pulse length")
+    field(DTYP, "stream")
+    field(OUT, "@laser51.proto trig_delay_set $(PORT)")
+    field(DRVH, "10000000")
+    field(DRVL, "20")
+    field(HOPR, "10000000")
+    field(LOPR, "20")
+    field(PREC, "0")
+    field(EGU, "us")  
+	field(FLNK, "$(P)$(R)trig_delay_get")
+}

@@ -130,16 +130,20 @@ record(mbbo, "$(P)$(R)aver_set")
 {
     field(DESC, "Set average for measurement")
     field(DTYP, "stream")
+    #Values
     field(ZRVL, "1")
     field(ONVL, "2")
     field(TWVL, "4")
     field(THVL, "8")
-    field(FRVL, "16")
+    #field(FRVL, "16")
+    #Strings also needed
     field(ZRST, "1")
     field(ONST, "2")
     field(TWST, "4")
     field(THST, "8")
-    field(FRST, "16")
+    #field(FRST, "16") # Should not be used! 
+                       # Takes too long (~5s); 
+                       #connection useless until then
     field(OUT, "@devpnc.proto setAver $(PORT)")
     field(FLNK, "$(P)$(R)aver_get.PROC")
 }

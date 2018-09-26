@@ -1,0 +1,161 @@
+#thorlabs mc1000
+record(stringout, "$(P)$(R)debug") {
+    field(DTYP, "stream")
+    field(OUT, "@mc1000.proto debug $(PORT)")
+}
+
+record(bo, "$(P)$(R)on_set") {
+    field(DESC, "Toggle run on/off")
+    field(DTYP, "stream")
+    field(OUT, "@mc1000.proto on_set $(PORT)")
+    field(FLNK, "$(P)$(R)info_get.PROC")
+}
+
+record(mbbo, "$(P)$(R)blade_set") {
+    field(DESC, "Set currently installed chopper blade")
+    field(DTYP, "stream")
+    field(OUT,  "@mc1000.proto blade_set $(PORT)")
+    field(ZRST, "10 slot")
+    field(ONST, "15 slot")
+    field(TWST, "30 slot")
+    field(THST, "60 slot")
+    field(FRST, "2-frequency blade")
+    field(FVST, "2 slot")
+    field(SXST, "2 slot slave")
+    field(FLNK, "$(P)$(R)info_get.PROC")
+}
+
+record(ao, "$(P)$(R)intref_set") {
+    field(DESC, "Set the internal reference frequency")
+    field(DTYP, "stream")
+    field(OUT,  "@mc1000.proto inner_freq_set $(PORT)")
+    field(DRVH, "6000")
+    field(DRVL, "14")
+    field(HOPR, "6000")
+    field(LOPR, "14")
+    field(EGU, "Hz")
+    field(FLNK, "$(P)$(R)info_get.PROC")
+}
+
+record(ao, "$(P)$(R)harm_mult_set") {
+    field(DESC, "Set the harmonic multiplier")
+    field(DTYP, "stream")
+    field(OUT,  "@mc1000.proto harm_mult_set $(PORT)")
+    field(DRVH, "15")
+    field(DRVL, "1")
+    field(HOPR, "15")
+    field(LOPR, "1")
+    field(FLNK, "$(P)$(R)info_get.PROC")
+}
+
+record(ao, "$(P)$(R)sub_harm_dev_set") {
+    field(DESC, "Set the sub-harmonic multiplier")
+    field(DTYP, "stream")
+    field(OUT,  "@mc1000.proto sub_harm_dev_set $(PORT)")
+    field(DRVH, "15")
+    field(DRVL, "1")
+    field(HOPR, "15")
+    field(LOPR, "1")
+    field(FLNK, "$(P)$(R)info_get.PROC")
+}
+
+record(bo, "$(P)$(R)toggle_mode_set") {
+    field(DESC, "Toggle int./ext. reference mode")
+    field(DTYP, "stream")
+    field(OUT, "@mc1000.proto mode_set $(PORT)")
+    field(FLNK, "$(P)$(R)info_get.PROC")
+}
+
+
+record(mbbo, "$(P)$(R)refout_set") {
+    field(DESC, "Set source for the REF OUT signal")
+    field(DTYP, "stream")
+    field(OUT, "@mc1000.proto ref_out_set $(PORT)")
+    field(ZRST, "Outer (Chopper wheel)")
+    field(ONST, "Internal synthesizer")
+    field(TWST, "SUM frequency")
+    field(THST, "DIFF frequency")
+    field(FLNK, "$(P)$(R)info_get.PROC")
+}
+
+#===== GETS =====
+
+record(bo, "$(P)$(R)info_get") {
+    field(DESC, "Record to read information")
+    field(DTYP, "stream")
+    field(OUT, "@mc1000.proto info_get $(PORT)")
+    #field(SCAN, "5 second")
+}
+
+record(ai, "$(P)$(R)revision_get") {
+    field(DTYP, "stream")
+    field(INP, "@mc1000.proto revision_get $(PORT)")
+    field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)build_get") {
+    field(DTYP, "stream")
+    field(INP, "@mc1000.proto build_get $(PORT)")
+    field(SCAN, "I/O Intr")
+}
+
+record(bi, "$(P)$(R)on_get") {
+    field(DTYP, "stream")
+    field(INP, "@mc1000.proto on_get $(PORT)")
+    field(SCAN, "I/O Intr")
+    field(ZNAM, "OFF")
+    field(ONAM, "ON")
+}
+
+record(mbbi, "$(P)$(R)blade_get") {
+    field(DESC, "Set currently installed chopper blade")
+    field(DTYP, "stream")
+    field(INP,  "@mc1000.proto blade_get $(PORT)")
+    field(SCAN, "I/O Intr")
+    field(ZRST, "10 slot")
+    field(ONST, "15 slot")
+    field(TWST, "30 slot")
+    field(THST, "60 slot")
+    field(FRST, "2-frequency blade")
+    field(FVST, "2 slot")
+    field(SXST, "2 slot slave")
+}
+
+record(ai, "$(P)$(R)inner_freq_get") {
+    field(DTYP, "stream")
+    field(INP, "@mc1000.proto inner_freq_get $(PORT)")
+    field(SCAN, "I/O Intr")
+    field(EGU, "Hz")
+    field(LOPR, "14")
+    field(HOPR, "6000")
+}
+
+record(ai, "$(P)$(R)harm_mult_get") {
+    field(DTYP, "stream")
+    field(INP, "@mc1000.proto harm_mult_get $(PORT)")
+    field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)sub_harm_mult_get") {
+    field(DTYP, "stream")
+    field(INP, "@mc1000.proto sub_harm_mult_get $(PORT)")
+    field(SCAN, "I/O Intr")
+}
+
+record(bi, "$(P)$(R)toggle_mode_get") {
+    field(DTYP, "stream")
+    field(INP, "@mc1000.proto mode_get $(PORT)")
+    field(SCAN, "I/O Intr")
+    field(ZNAM, "OFF")
+    field(ONAM, "ON")
+}
+
+record(mbbi, "$(P)$(R)refout_get") {
+    field(DESC, "Get source for the REF OUT signal")
+    field(DTYP, "stream")
+    field(INP, "@mc1000.proto ref_out_get $(PORT)")
+    field(ZRST, "Outer (Chopper wheel)")
+    field(ONST, "Internal synthesizer")
+    field(TWST, "SUM frequency")
+    field(THST, "DIFF frequency")
+}
