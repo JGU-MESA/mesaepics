@@ -9,8 +9,6 @@ epicsEnvSet("STREAM_PROTOCOL_PATH", ".:../../db")
 #epicsEnvSet "P" "$(P=melba:wedlposu01:)"
 epicsEnvSet "K_1" "$(K_1=melba:wedlposu01:)"
 epicsEnvSet "K_2" "$(K_2=buna_r5:wedlposu01:)"
-#epicsEnvSet "UMAX", "20)" #edit in db!!!, because db is load with dbLoadTemplate
-                           #MAXVOLT = 20V for melba:wedlposu01
 epicsEnvSet ("ENGINEER", "Petra Schwalbach")
 
 cd "${TOP}"
