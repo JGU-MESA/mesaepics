@@ -107,9 +107,9 @@ switch {
   out "STAT:POSU %{0|1}";
   out "STAT:RESET:STATUS";
   in "OKAY";
-  in "OKAY";                        
+  in "OKAY";
   @mismatch {in "NOP";}   #keine Auswirkungen, was da drin steht?
-  @init { out "STAT:POSU %{0|1}"; } 
+  @init { out "STAT:POSU %{0|1}"; }
   #wait 30;   #??? msec nach dem Ausschalten, bleibt das Geraet noch 30 sec an
 }
 
@@ -121,7 +121,7 @@ switch {
        #1 = Fuse hat angesprochen
        #2 = Therm hat angesprochen
        #3 = Fuse und Therm haben angesprochen
-       
+
 stateschan {
   out "STAT:CHAN? \$1";
   #separator = " ";
@@ -146,7 +146,7 @@ stateschan {
 #Switch on/off one channel
 switchchan {
   out "STAT:RESET:THERM";
-  out "STAT:CHAN \$1 %{0|1}"; 
+  out "STAT:CHAN \$1 %{0|1}";
   in "OKAY";
   in "OKAY";
   @mismatch {in "HW ERROR";}
@@ -199,6 +199,28 @@ getact {
    #@init {getdacval;}
 }
 
+#Read measured current and voltage of a channel in fast mode
+getsngl {
+   out "MEAS:SNGL? \$1";
+   #in "%*c%*c%*c%*c%(\$2)f%*c, %*c%*c%*c%*c%(\$3)f%*c";
+   in "%*c%*c%*c%*c%(\$2\$3uf_get)f%*c, %*c%*c%*c%*c%(\$2\$3if_get)f%*c";
+   #in "%(\$2)f%*c, %*f%*c";
+   @mismatch {in "HW ERROR";}
+}
+
+#Set measurement mode
+setauto {
+   out "STAT:SET:AUTO %{0|1}";
+   in "OKAY";
+   @init {out "STAT:SET:AUTO 0"; in "OKAY"}
+}
+
+#Get measurement mode
+getauto {
+   out "STAT:SET:AUTO?";
+   in "%i";
+}
+
 #Read maximal current of a channel
 getmaxcurr {
    out "MAX:CURR? \$1";
@@ -213,4 +235,3 @@ getvolt {
    in "%f %(\$2)d";
    @mismatch {in "HW ERROR";}
 }
-
