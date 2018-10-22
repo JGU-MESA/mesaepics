@@ -9,12 +9,18 @@ epicsEnvSet("STREAM_PROTOCOL_PATH", ".:../../db")
 #epicsEnvSet "P" "$(P=melba:wedlposu01:)"
 epicsEnvSet "K_1" "$(K_1=melba:wedlposu01:)"
 epicsEnvSet "K_2" "$(K_2=buna_r5:wedlposu01:)"
+#epicsEnvSet "UMAX", "20)" #edit in db!!!, because db is load with dbLoadTemplate
+                           #MAXVOLT = 20V for melba:wedlposu01
+epicsEnvSet ("ENGINEER", "Petra Schwalbach")
 
 cd "${TOP}"
 
 ## Register all support components
 dbLoadDatabase "dbd/wedler.dbd"
 wedler_registerRecordDeviceDriver pdbbase
+
+#Increase to get more informational messages printed to the console.
+#save_restoreSet_Debug(10)                    # 0=initially
 
 < ./iocBoot/$(IOC)/AutoSaveSetup.cmd
 
@@ -33,6 +39,7 @@ drvAsynIPPortConfigure("K_1_PORT","10.32.240.74:23",0,0,0)               #wedler
 #addr: In integer specifying the address of the device. For multiDevice ports a value of -1 means the port itself.
 #mask: The mask value to set. See the mask bit definitions in asynDriver.h
 
+#asynSetTraceFile("K_1_PORT",-1,sngl_output)
 #asynSetTraceIOMask("K_1_PORT",-1,0x2)
 #asynSetTraceMask("K_1_PORT",-1,0x9)
 
@@ -54,6 +61,9 @@ dbLoadRecords("$(AUTOSAVE)/asApp/Db/save_restoreStatus.db", "P=$(K_1)")
 
 dbLoadTemplate("db/wedls.subs")
 
+## pcMonitor
+dbLoadRecords("$(IOCSTATS)/db/ioc.db", "IOCNAME=WEDL-IOC-Status,TODFORMAT=%d.%m.%Y %H:%M:%S")
+
 #traceIocInit
 cd "${TOP}/iocBoot/${IOC}"
 iocInit
@@ -62,5 +72,3 @@ iocInit
 
 ## Start any sequence programs
 #seq sncExample ("elmnt=melba_020:sh, device=melba:wedlposu01")
-
-
