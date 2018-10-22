@@ -1,0 +1,108 @@
+#Channel A (A=Auf)
+#Channel Z (Z=Zu)
+
+record(calc, "$(ELMNT):A")
+{
+    field(DESC, "Calculate Channel A of PV")
+    field(PINI, "YES")
+    field(INPA, "$(PV)")
+    field(CALC, "2*A - 1")
+}
+
+record(calc, "$(ELMNT):Z")
+{
+    field(DESC, "Calculate Channel Z of PV")
+    field(PINI, "YES")
+    field(INPA, "$(PV)")
+    field(CALC, "2*A")
+}
+
+record(ai, "$(ELMNT):A:stat_get")
+{
+    field(DESC, "Get status of a channel")
+    field(SCAN, "1 second")
+    field(DTYP, "stream")
+    field(INP,  "@pvctrl.proto getChanStat($(ELMNT):A) $(PORT)")
+    #field(INP,  "@pvctrl.proto getChanStat($(PV):A) $(PORT)")
+    field(FLNK, "$(ELMNT):calc_stat.INPA")
+}
+
+record(ai, "$(ELMNT):Z:stat_get")
+{
+    field(DESC, "Get status of a channel")
+    field(SCAN, "1 second")
+    field(DTYP, "stream")
+    field(INP,  "@pvctrl.proto getChanStat($(ELMNT):Z) $(PORT)")
+    #field(INP,  "@pvctrl.proto getChanStat($(PV):Z) $(PORT)")
+    field(FLNK, "$(ELMNT):calc_stat.INPB")
+}
+
+#pv opened or closed or error?
+record(calcout, "$(ELMNT):calc_stat") {
+    field(DESC, "Calc status of a pv")
+    field(INPA, "$(ELMNT):A:stat_get")
+    field(INPB, "$(ELMNT):Z:stat_get")
+    field(CALC, "(A+B=1)?(A=0?1:0):2") #A+B=1 opened or closed, but no error
+                                       #A=0 opened (1) A!=0 closed (0)
+    field(OUT,  "$(ELMNT):open_get PP")
+}
+
+record(mbbi, "$(ELMNT):open_get")
+{
+    field(DESC, "pv opened, closed, both opened")
+    field(ZRVL, "0")
+    field(ZRST, "CLOSED")
+    field(ONVL, "1")
+    field(ONST, "OPENED")
+    field(TWVL, "2")
+    field(TWST, "BOTH OPENED")
+}
+
+#set pvs open and close
+#Channel A (A=Auf) of a unit opens a pv
+#Channel Z (Z=Zu)  of a unit close a pv
+record(mbbo, "$(ELMNT):on_set")
+{
+    field(DESC, "Set pv open or close")
+    field(DTYP, "Raw Soft Channel")
+    field(FLNK, "$(ELMNT):on_set_seq.VAL PP NMS")
+    field(ZRVL, "0x1")      #Bit Map: 01 do LNK1
+    field(ZRST, "CLOSE")
+    field(ONVL, "0x2")      #Bit Map: 10 do LNK2
+    field(ONST, "OPEN")
+    info(autosaveFields_pass0,"VAL")
+}
+
+record(seq, "$(ELMNT):on_set_seq")
+{
+    field(SELM, "Mask")
+    field(SELL, "$(ELMNT):on_set.RVAL NPP NMS")
+    field(DOL1, "1")
+    field(LNK1, "$(ELMNT):close_set.VAL PP NMS")
+    field(DOL2, "1")
+    field(LNK2, "$(ELMNT):open_set.VAL PP NMS")
+}
+
+#channel A of a unit open a pv
+record(ao, "$(ELMNT):open_set")
+{
+    field(DESC, "Set pv open")
+    field(DTYP, "stream")
+    field(OUT,  "@pvctrl.proto setOpen/Close($(ELMNT):A) $(PORT)")
+}
+
+#channel Z of a unit close a pv
+record(ao, "$(ELMNT):close_set")
+{
+   field(DESC, "Set pv close")
+   field(DTYP, "stream")
+   field(OUT,  "@pvctrl.proto setOpen/Close($(ELMNT):Z) $(PORT)")
+}
+
+record(calc,  "$(ELMNT):ok") {
+  field(DESC,  "Soll- und Istzustand gleich?")
+  field(SCAN, "1 second")
+  field(INPA,  "$(ELMNT):on_set")
+  field(INPB,  "$(ELMNT):open_get")
+  field(CALC,  "A=B?1:0")
+}
