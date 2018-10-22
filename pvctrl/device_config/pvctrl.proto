@@ -1,0 +1,16 @@
+ReplyTimeout = 1000;
+ReadTimeout  = 5000;
+WriteTimeout = 3000;
+LockTimeout = 9000;
+Terminator = CR LF;
+
+getChanStat {
+   out "inp? %(\$1)d";
+   in  "%*i %f";
+}
+
+setOpen/Close {
+   #out "out \$1 1";
+   out "out %(\$1)d 1";
+   in  "%i %*s %*s";
+}

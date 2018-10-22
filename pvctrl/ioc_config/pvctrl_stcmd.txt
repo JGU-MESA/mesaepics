@@ -1,0 +1,49 @@
+#!../../bin/linux-x86_64/pvctrl
+
+## You may have to change pvctrl to something else
+## everywhere it appears in this file
+
+< envPaths
+epicsEnvSet("STREAM_PROTOCOL_PATH", ".:../../db")
+epicsEnvSet "P" "$(P=mesaplvbox1)"
+epicsEnvSet("ENGINEER", "Petra Schwalbach")
+
+cd "${TOP}"
+
+## Register all support components
+dbLoadDatabase "dbd/pvctrl.dbd"
+pvctrl_registerRecordDeviceDriver pdbbase
+
+#Increase to get more informational messages printed to the console.
+#save_restoreSet_Debug(10)                    # 0=initially
+
+< ./iocBoot/$(IOC)/AutoSaveSetup.cmd
+
+#drvAsynIPPortConfigure("portName","hostInfo",priority,noAutoConnect,noProcessEos)
+drvAsynIPPortConfigure("PVCTRL_1_PORT","10.32.240.98:1515",0,0,0)
+
+## Debugging mode
+#asynSetTraceMask(portName,addr,mask)
+#asynSetTraceIOMask(portName,addr,mask)
+#addr: In integer specifying the address of the device. For multiDevice ports a value of -1 means the port itself.
+#mask: The mask value to set. See the mask bit definitions in asynDriver.h
+
+#asynSetTraceIOMask("PVCTRL_1_PORT",-1,0x2)
+#asynSetTraceMask("PVCTRL_1_PORT",-1,0x9)
+
+## Load record instances
+#dbLoadRecords("db/xxx.db","user=schwalbaHost")
+dbLoadTemplate("db/pvctrl.subs")
+
+dbLoadRecords("$(AUTOSAVE)/asApp/Db/save_restoreStatus.db", "P=$(P)")
+
+## pcMonitor
+dbLoadRecords("$(IOCSTATS)/db/ioc.db", "IOCNAME=PVCTRL-IOC-Status,TODFORMAT=%d.%m.%Y %H:%M:%S")
+
+cd "${TOP}/iocBoot/${IOC}"
+iocInit
+
+< AutoSaveTask.cmd
+
+## Start any sequence programs
+#seq sncxxx,"user=schwalbaHost"

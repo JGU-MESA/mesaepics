@@ -1,0 +1,15 @@
+
+file ./db/pvctrl.db {
+
+   {ELMNT = melba_140:pv, PV = 1,  PORT = PVCTRL_1_PORT }
+   {ELMNT = PV2,          PV = 2,  PORT = PVCTRL_1_PORT }
+   {ELMNT = PV3,          PV = 3,  PORT = PVCTRL_1_PORT }
+   {ELMNT = PV4,          PV = 4,  PORT = PVCTRL_1_PORT }
+   {ELMNT = PV5,          PV = 5,  PORT = PVCTRL_1_PORT }
+   {ELMNT = PV6,          PV = 6,  PORT = PVCTRL_1_PORT }
+   {ELMNT = PV7,          PV = 7,  PORT = PVCTRL_1_PORT }
+   {ELMNT = PV8,          PV = 8,  PORT = PVCTRL_1_PORT }
+   {ELMNT = PV9,          PV = 9,  PORT = PVCTRL_1_PORT }
+   {ELMNT = PV10,         PV = 10, PORT = PVCTRL_1_PORT }
+
+}
