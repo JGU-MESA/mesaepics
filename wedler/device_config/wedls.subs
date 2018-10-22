@@ -1,7 +1,8 @@
 
 file ./db/wedlerchannels.db
 {
- 
+ #{UMAX = 20}
+
  #card 5
   { P = melba_050: R = trip_sh1:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 80 }
   { P = melba_050: R = trip_sv1:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 81 }
@@ -10,8 +11,8 @@ file ./db/wedlerchannels.db
   { P = melba_050: R = trip_q3:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 84 }
   { P = melba_060: R = sh:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 86 }
   { P = melba_060: R = sv:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 87 }
-  { P = ruckel: R = test:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 95 }
-  
+  #{ P = ruckel: R = test:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 95 }
+
  #card 6
   { P = melba_030: R = sh:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 96 }
   { P = melba_030: R = sv:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 97 }
@@ -29,7 +30,7 @@ file ./db/wedlerchannels.db
   { P = melba_050: R = sv:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 109 }
   { P = melba_050: R = trip_q1:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 110 }
   { P = melba_050: R = trip_q2:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 111 }
- 
+
  #card 7
   { P = steam: R = sh:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 112 }
   { P = steam: R = sv:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 113 }
@@ -40,12 +41,12 @@ file ./db/wedlerchannels.db
   { P = melba_020: R = sh:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 118 }
   { P = melba_020: R = sv:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 119 }
   { P = melba_020: R = trip_q1:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 120 }
-  { P = melba_020: R = trip_q2:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 121 }   
+  { P = melba_020: R = trip_q2:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 121 }
   { P = melba_020: R = trip_sh1:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 122 }
   { P = melba_020: R = trip_sv1:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 123 }
   { P = melba_020: R = trip_sh2:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 124 }
   { P = melba_020: R = trip_sv2:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 125 }
   { P = melba_020: R = trip_q3:, WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 126 }
   #{ P = , WEDLKI = melba:wedlposu01:, PORT = K_1_PORT, CHAN = 127 }
-  
+
 }
