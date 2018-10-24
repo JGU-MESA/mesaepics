@@ -29,7 +29,7 @@ record(ao, "$(P)$(R)iwobblemin_set")
     field(VAL, "90")
     field(EGU,  "%")
     field(PREC, "0")
-    field(LOPR, "50")    # min value
+    field(LOPR, "0")    # min value
     field(HOPR, "99")    # max value
     field(FLNK, "$(P)$(R)calc_iwobblemin")
     info(autosaveFields_pass0, "VAL")
@@ -43,7 +43,7 @@ record(ao, "$(P)$(R)iwobblemax_set")
     field(EGU,  "%")
     field(PREC, "0")
     field(LOPR, "101")    # min value
-    field(HOPR, "150")    # max value
+    field(HOPR, "1000")    # max value
     field(FLNK, "$(P)$(R)calc_iwobblemax")
     info(autosaveFields_pass0, "VAL")
 }
@@ -92,7 +92,7 @@ record(mbbo, "$(P)$(R)wob_init")
     field(FLNK, "$(P)$(R)wob_init_seq.VAL PP NMS")
     field(ZRVL, "0x300")      #Bit Map: 1100000000 do LNK9 - LNKA
     field(ZRST, "DE-INIT")
-    field(ONVL, "0xFF")       #BIT MAP: 0011111111 do LNK1 - LNK7
+    field(ONVL, "0xFF")       #Bit Map: 0011111111 do LNK1 - LNK7
     field(ONST, "INIT")
 }
 
@@ -116,7 +116,7 @@ record(sseq,"$(P)$(R)wob_init_seq")
     field(DOL6, "$(P)$(R)delaymax_set")
     field(LNK6, "$(P)$(R)wobblen_seq.DLY4 NPP NMS")
 
-    field(STR7, "$(P)$(R)")                               #set status wobblet WOBBL    
+    field(STR7, "$(P)$(R)")                              #set status wobblet WOBBL    
     field(LNK7, "wobble_name PP NMS")
     
     field(DOL8, "1")                                     #start wobblen      
