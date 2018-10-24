@@ -23,7 +23,6 @@ record(ai, "$(ELMNT):A:stat_get")
     field(SCAN, "1 second")
     field(DTYP, "stream")
     field(INP,  "@pvctrl.proto getChanStat($(ELMNT):A) $(PORT)")
-    #field(INP,  "@pvctrl.proto getChanStat($(PV):A) $(PORT)")
     field(FLNK, "$(ELMNT):calc_stat.INPA")
 }
 
