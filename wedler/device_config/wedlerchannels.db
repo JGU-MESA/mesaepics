@@ -2,9 +2,9 @@
 #Load DAC register values into DAC
 record(stringout, "$(WEDLKI)load_dac")
 {
-    field (DESC, "Load DAC register values into DAC")
-    field (DTYP, "stream")
-    field (OUT,  "@wedlkiste.proto loaddac $(PORT)")
+    field(DESC, "Load DAC register values into DAC")
+    field(DTYP, "stream")
+    field(OUT,  "@wedlkiste.proto loaddac $(PORT)")
 }
 
 # on/off state of a channel
@@ -66,7 +66,7 @@ record(ao, "$(WEDLKI)reset_Erroreg")
     #info(autosaveFields, "VAL")
 }
 
-record(ao, "$(WEDLKI)reset_Therm")   
+record(ao, "$(WEDLKI)reset_Therm")
 {
     field(DESC, "Reset Thermal-Shutdown-Register")
     field(DTYP, "stream")
@@ -74,7 +74,7 @@ record(ao, "$(WEDLKI)reset_Therm")
 }
 
 ### Da beim Einschalten der Wedlerkiste ein reset_Therm und reset_Erroreg gemacht werden muss
-### und diese aber auch für das Einschalten eines Kanals benötigt werden, muss der Rekord für das
+### und diese aber auch fï¿½r das Einschalten eines Kanals benï¿½tigt werden, muss der Rekord fï¿½r das
 ### Einschalten der Kiste auch hier definiert werden und nicht in wedlkiste.db
 record(bo, "$(WEDLKI)on_set")
 {
@@ -106,7 +106,7 @@ record(ai, "$(P)$(R)imax_get")
     field(EGU,  "A")
     field(PREC, "1")
     field(FLNK, "$(P)$(R)limits1_seq")
-    info (autosaveFields_pass0, "VAL")
+    #info (autosaveFields_pass0, "VAL")
 }
 
 record(calc, "$(P)$(R)calc-imax") {
@@ -147,16 +147,10 @@ record(seq, "$(P)$(R)limits2_seq")
     field(DESC, "Distribute card current limit")
     field(SELM, "All")
     field(DOL1, "$(P)$(R)calc-imax")
-    field(DOL2, "$(P)$(R)imax_get")
-    field(DOL3, "$(P)$(R)imax_get")
-    field(DOL4, "$(P)$(R)calc-imax")
     field(LNK1, "$(P)$(R)i_get.LOPR")
-    field(LNK2, "$(P)$(R)u_get.EGUF")
-    field(LNK3, "$(P)$(R)u_get.HOPR")
-    field(LNK4, "$(P)$(R)u_get.LOPR")
 }
 
-record(ao, "$(P)$(R)i_set") 
+record(ao, "$(P)$(R)i_set")
 {
     field(DESC, "Set DAC value of a channel")
     #field(OROC, "0")
@@ -165,7 +159,7 @@ record(ao, "$(P)$(R)i_set")
     field(SCAN, "Passive")
     field(LINR, "LINEAR")
     field(EGUL, "0")    # Engineering Units Low
-    #field(EGUF, ""$(P)$(R)imax_get")    # highest eng. value # Engineering Units Full
+    #field(EGUF, "$(P)$(R)imax_get")    # highest eng. value # Engineering Units Full
     field(EGU,  "A")
     field(PREC, "6")
     #field(DRVL, "$(P)$(R)imax_get")    # max value
@@ -191,12 +185,13 @@ record(ai, "$(P)$(R)inom_get")
     #field(LOPR, "-$(P)$(R)imax_get")               # min display
 }
 
+##### old method, automatic measurement mode (MUX AUTO)
 record(ai, "$(P)$(R)i_get")
 {
     field(DESC, "Read measured current of a channel")
     field(DTYP, "stream")
     field(INP,  "@wedlkiste.proto getact($(CHAN),$(P)$(R)vrdy) $(PORT)")
-    field(SCAN, "10 second")
+    field(SCAN, "10 second")  #lt. Oliver nicht schneller mï¿½glich 10.7.18
     field(LINR, "LINEAR")
     field(EGUL, "0")
     #field(EGUF, "$(P)$(R)imax_get")
@@ -214,6 +209,50 @@ record(ai, "$(P)$(R)u_get")
     field(INP,  "@wedlkiste.proto getvolt($(CHAN),$(P)$(R)vrdy) $(PORT)")
     field(SCAN, "10 second")
     field(LINR, "LINEAR")
+    #field(EGUL, "0")
+    #field(EGUF, "20")   ?????
+    field(EGU,  "V")
+    field(PREC, "6")
+    field(HOPR, "20")
+    field(LOPR, "-20")
+}
+
+record(ai, "$(P)$(R)sngl_get")
+{
+    field(DESC, "Read fast of a channel")
+    field(DTYP, "stream")
+    #field(INP,  "@wedlkiste.proto getsngl($(CHAN),$(P)$(R)uf_get,$(P)$(R)if_get) $(PORT)") #too long
+    field(INP,  "@wedlkiste.proto getsngl($(CHAN),$(P),$(R)) $(PORT)")
+    field(SCAN, "Passive")
+    field(LINR, "LINEAR")
+    #field(EGUL, "0")
+    #field(EGUF, "$(P)$(R)imax_get")
+    #field(EGU,  "V")
+    #field(PREC, "6")
+    #field(HOPR, "$(P)$(R)imax_get")
+    #field(LOPR, "-$(P)$(R)imax_get")
+    #field(FLNK, "$(P)$(R)if_get")
+    #field(FLNK, "$(P)$(R)devi.PROC")  # process devi after read
+}
+
+record(ai, "$(P)$(R)if_get")
+{
+    field(DESC, "Read measured current of a channel")
+    #field(DTYP, "Soft Channel")
+    field(LINR, "LINEAR")
+    field(EGUL, "0")
+    #field(EGUF, "$(P)$(R)imax_get")
+    field(EGU,  "A")
+    field(PREC, "6")
+    #field(HOPR, "$(P)$(R)imax_get")
+    #field(LOPR, "-$(P)$(R)imax_get")
+}
+
+record(ai, "$(P)$(R)uf_get")
+{
+    field(DESC, "Read measured voltage of a channel")
+    #field(DTYP, "Soft Channel")
+    field(LINR, "LINEAR")
     field(EGUL, "0")
     #field(EGUF, "$(P)$(R)imax_get")
     field(EGU,  "V")
@@ -225,7 +264,6 @@ record(ai, "$(P)$(R)u_get")
 record(calc, "$(P)$(R)devi")
 {
     field(DESC, "Diff nominal-actual")
-    #field(INPA, "$(P)$(R)inom_get")    # Hajo 29.06.17
     field(INPA, "$(P)$(R)i_set")
     field(INPB, "$(P)$(R)i_get")
     field(INPC, "$(P)$(R)vrdy")
@@ -235,11 +273,11 @@ record(calc, "$(P)$(R)devi")
     field(PREC, "6")
     field(HOPR, "1000")      #all settings from Hajo
     field(LOPR, "-1000")
-    field(HIHI, "500")   
+    field(HIHI, "500")
     field(LOLO, "-500")
     field(HIGH, "100")
     field(LOW,  "-100")
-    #field(HOPR, "1100")     
+    #field(HOPR, "1100")
     #field(LOPR, "-1100")
     #field(HIHI, "1000")
     #field(LOLO, "-1000")
@@ -251,12 +289,19 @@ record(calc, "$(P)$(R)devi")
     field(HHSV, "MAJOR")
 }
 
+#wird bei der schnellen Messung nicht benÃ¶tigt, immer aktuell
 # Messwert aktuell
 record(bi, "$(P)$(R)vrdy") {
     field(ZNAM, "UNREADY")
     field(ONAM, "READY")
 }
 
+#Set automatic measurement mode (MUX AUTO)
+#record(ao, "$(P)$(R)manual_set")
+#{
+#    field(DESC, "Set manual measurement")
+#    field(DTYP, "stream")
+#    field(OUT,  "@wedlkiste.proto setmanual($(CHAN)) $(PORT)")
+#}
+
 include "./db/wobblen.db"
-
-

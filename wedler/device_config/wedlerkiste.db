@@ -1,4 +1,26 @@
 
+#Set automatic measurement mode (MUX AUTO)
+record(bo, "$(WEDLKI)auto_set")
+{
+    field(DESC, "Set measurement mode")
+    field(DTYP, "stream")
+    field(PINI, "YES")
+    field(OUT,  "@wedlkiste.proto setauto $(PORT)")
+    field(ZNAM, "SLOW")   #fast measurement mode
+    field(ONAM, "FAST")    #slow measurement mode
+}
+
+record(bi, "$(WEDLKI)auto_get")
+{
+    field(DESC, "Get measurement mode")
+    field(DTYP, "stream")
+    field(PINI, "YES")
+    field(SCAN, "10 second")
+    field(INP,  "@wedlkiste.proto getauto $(PORT)")
+    field(ZNAM, "SLOW")   #fast measurement mode
+    field(ONAM, "FAST")    #slow measurement mode
+}
+
 # Im folgenden sind verschiedene Darstellungen des 16-Bit Status #
 
 ##### Status Bits of Wedler PS #####
@@ -19,6 +41,16 @@ record (ai, "$(WEDLKI)stat_get")
     field (SCAN, "10 second")
     field (DTYP, "stream")
     field (INP,  "@wedlkiste.proto state.posu $(PORT)")
+    field (FLNK,  "$(WEDLKI)calc_stat_get")
+}
+
+record(calc, "$(WEDLKI)calc_stat_get") {
+    field (DESC, "Calc alarm")
+    field (INPA, "$(WEDLKI)stat_get")
+    field (INPB, "$(WEDLKI)on_get")
+    field (CALC, "((A>=1)&&(B=0) || (A>1)&&(B=1)) ? 1:0")
+    field (HIHI, "1")
+    field (HHSV, "MAJOR")
 }
 
 ##### On/Off Status of Wedler PS #####
