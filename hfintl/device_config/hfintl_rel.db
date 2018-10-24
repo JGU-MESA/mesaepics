@@ -1,0 +1,306 @@
+
+### das mechanische Relais und das dazugehörige Photorelais
+### müssen gleichzeitig ein- bzw. ausschaltet werden, z. B. 1 und 9
+### ob, es geklappt hat, sehe ich nur mit on_get
+
+# Switch on/off a relais (Befehl out), to use Boolean Button
+record(bo, "relais_$(R):on_set")
+{
+    field(DESC, "Switch on/off a relais")
+    field(DTYP, "stream")
+    field(OUT,  "@hfintl.proto setOutput($(R),$(P)) $(PORT)")
+    field(ZNAM, "OFF")
+    field(ONAM, "ON")
+}
+
+# On/off state of a relais 1-16  (Befehl stat:rel?)
+# 16-Bitmaske
+record (ai, "relais_stat")
+{
+    field(DESC, "On/Off-Status of a relais")
+    field(DTYP, "stream")
+    field(SCAN, "10 second")
+    field(INP,  "@hfintl.proto getRel_stat $(PORT)")
+    field(FLNK, "calc_relais_stat")
+}
+
+record(calc, "calc_relais_stat") {
+    field(DESC,  "Calc alarm")
+    field(INPA,  "relais_stat")
+    field(CALC,  "A > 1?1:0")
+    field(HIHI,  "1")
+    #field(ALARM, "MAJOR")
+}
+
+record (waveform, "wav_relais_stat")
+{
+    field(DESC, "On/Off-Status of a relais")
+    field(DTYP, "stream")
+    field(SCAN, "10 second")
+    field(INP,  "@hfintl.proto wavRel_stat $(PORT)")
+    field(FTVL, "ULONG")
+    field(NELM, "16")
+}
+
+record(bi, "r_1")
+{
+    field(DESC, "Get on/off status of a relais 1")
+    field(DTYP, "stream")
+    field(SCAN, "10 second")
+    #redirection to  fields
+    field(INP,  "@hfintl.proto rel_stat_1-8(r_2,r_3,r_4,r_5,r_6,r_7,r_8) $(PORT)")
+ ###field(INP,  "@hfintl.proto rel_stat_1-8($1,$2,$3,$4,$5,$6,$7) $(PORT)")
+ ###Only up to 9 parameters, referenced as $1 ... $9 can be specified in parentheses, separated by comma. (PSI)
+ ###deshalb in 2 records aufgeteilt
+    field(ZNAM, "OFF")
+    field(ONAM, "ON")
+}
+
+record(bi, "r_2") {
+   field(DESC, "Get on/off status of a relais 2")
+   field(ZNAM,  "OFF")
+   field(ONAM,  "ON")
+   field(ZSV,   "MAJOR")
+}
+
+record(bi, "r_3") {
+   field(DESC, "Get on/off status of a relais 3")
+   field(ZNAM,  "OFF")
+   field(ONAM,  "ON")
+}
+
+record(bi, "r_4") {
+   field(DESC, "Get on/off status of a relais 4")
+   field(ZNAM,  "OFF")
+   field(ONAM,  "ON")
+}
+
+record(bi, "r_5") {
+   field(DESC, "Get on/off status of a relais 5")
+   field(ZNAM,  "OFF")
+   field(ONAM,  "ON")
+}
+
+record(bi, "r_6") {
+   field(DESC, "Get on/off status of a relais 6")
+   field(ZNAM,  "OFF")
+   field(ONAM,  "ON")
+}
+
+record(bi, "r_7") {
+   field(DESC, "Get on/off status of a relais 7")
+   field(ZNAM,  "OFF")
+   field(ONAM,  "ON")
+}
+
+record(bi, "r_8") {
+   field(DESC, "Get on/off status of a relais 8")
+   field(ZNAM,  "OFF")
+   field(ONAM,  "ON")
+}
+
+
+record(bi, "r_9")
+{
+    field(DESC, "Get on/off status of a relais 9")
+    field(DTYP, "stream")
+    field(SCAN, "10 second")
+    field(INP,  "@hfintl.proto rel_stat_9-16(r_10,r_11,r_12,r_13,r_14,r_15,r_16) $(PORT)")
+    field(ZNAM, "OFF")
+    field(ONAM, "ON")
+}
+
+record(bi, "r_10") {
+   field(DESC, "Get on/off status of a relais 10")
+   field(ZNAM,  "OFF")
+   field(ONAM,  "ON")
+}
+record(bi, "r_11") {
+   field(DESC, "Get on/off status of a relais 11")
+   field(ZNAM,  "OFF")
+   field(ONAM,  "ON")
+}
+record(bi, "r_12") {
+   field(DESC, "Get on/off status of a relais 12")
+   field(ZNAM,  "OFF")
+   field(ONAM,  "ON")
+}
+record(bi, "r_13") {
+   field(DESC, "Get on/off status of a relais 13")
+   field(ZNAM,  "OFF")
+   field(ONAM,  "ON")
+}
+record(bi, "r_14") {
+   field(DESC, "Get on/off status of a relais 14")
+   field(ZNAM,  "OFF")
+   field(ONAM,  "ON")
+}
+record(bi, "r_15") {
+   field(DESC, "Get on/off status of a relais 15")
+   field(ZNAM,  "OFF")
+   field(ONAM,  "ON")
+}
+record(bi, "r_16") {
+   field(DESC, "Get on/off status of a relais 16")
+   field(ZNAM,  "OFF")
+   field(ONAM,  "ON")
+}
+
+#Get single bits with I/O interrupt method
+##ecord (bi, "relais_1")
+##
+##   field(DESC, "On/Off-Status of a relais")
+##   field(DTYP, "stream")
+##   field(SCAN, "10 second")
+##   field(INP,  "@hfintl.proto getRel_stat_1 $(PORT)")
+##   field(ZNAM,  "OFF")
+##   field(ONAM,  "ON")
+##
+##
+##ecord (bi, "relais_2")
+##
+##   field(SCAN, "I/O Intr")
+##   field(DTYP, "stream")
+##   field(INP,  "@hfintl.proto getRel_stat_2 $(PORT)")
+##   field(ZNAM,  "OFF")
+##   field(ONAM,  "ON")
+##
+##
+##ecord (bi, "relais_3")
+##
+##   field(SCAN, "I/O Intr")
+##   field(DTYP, "stream")
+##   field(INP,  "@hfintl.proto getRel_stat_3 $(PORT)")
+##   field(ZNAM,  "OFF")
+##   field(ONAM,  "ON")
+##
+##
+##ecord (bi, "relais_4")
+##
+##   field(SCAN, "I/O Intr")
+##   field(DTYP, "stream")
+##   field(INP,  "@hfintl.proto getRel_stat_4 $(PORT)")
+##   field(ZNAM,  "OFF")
+##   field(ONAM,  "ON")
+##
+##
+##ecord (bi, "relais_5")
+##
+##   field(SCAN, "I/O Intr")
+##   field(DTYP, "stream")
+##   field(INP,  "@hfintl.proto getRel_stat_5 $(PORT)")
+##   field(ZNAM,  "OFF")
+##   field(ONAM,  "ON")
+##
+##
+##ecord (bi, "relais_6")
+##
+##   field(SCAN, "I/O Intr")
+##   field(DTYP, "stream")
+##   field(INP,  "@hfintl.proto getRel_stat_6 $(PORT)")
+##   field(ZNAM,  "OFF")
+##   field(ONAM,  "ON")
+##
+##
+##ecord (bi, "relais_7")
+##
+##   field(SCAN, "I/O Intr")
+##   field(DTYP, "stream")
+##   field(INP,  "@hfintl.proto getRel_stat_7 $(PORT)")
+##   field(ZNAM,  "OFF")
+##   field(ONAM,  "ON")
+##
+##
+##ecord (bi, "relais_8")
+##
+##   field(SCAN, "I/O Intr")
+##   field(DTYP, "stream")
+##   field(INP,  "@hfintl.proto getRel_stat_8 $(PORT)")
+##   field(ZNAM,  "OFF")
+##   field(ONAM,  "ON")
+##
+##
+##ecord (bi, "relais_9")
+##
+##   field(SCAN, "I/O Intr")
+##   field(DTYP, "stream")
+##   field(INP,  "@hfintl.proto getRel_stat_9 $(PORT)")
+##   field(ZNAM,  "OFF")
+##   field(ONAM,  "ON")
+##
+##
+##ecord (bi, "relais_10")
+##
+##   field(SCAN, "I/O Intr")
+##   field(DTYP, "stream")
+##   field(INP,  "@hfintl.proto getRel_stat_10 $(PORT)")
+##   field(ZNAM,  "OFF")
+##   field(ONAM,  "ON")
+##
+##
+##ecord (bi, "relais_11")
+##
+##   field(SCAN, "I/O Intr")
+##   field(DTYP, "stream")
+##   field(INP,  "@hfintl.proto getRel_stat_11 $(PORT)")
+##   field(ZNAM,  "OFF")
+##   field(ONAM,  "ON")
+##
+##
+##ecord (bi, "relais_12")
+##
+##   field(SCAN, "I/O Intr")
+##   field(DTYP, "stream")
+##   field(INP,  "@hfintl.proto getRel_stat_12 $(PORT)")
+##   field(ZNAM,  "OFF")
+##   field(ONAM,  "ON")
+##
+##
+##ecord (bi, "relais_13")
+##
+##   field(SCAN, "I/O Intr")
+##   field(DTYP, "stream")
+##   field(INP,  "@hfintl.proto getRel_stat_13 $(PORT)")
+##   field(ZNAM,  "OFF")
+##   field(ONAM,  "ON")
+##
+##
+##ecord (bi, "relais_14")
+##
+##   field(SCAN, "I/O Intr")
+##   field(DTYP, "stream")
+##   field(INP,  "@hfintl.proto getRel_stat_14 $(PORT)")
+##   field(ZNAM,  "OFF")
+##   field(ONAM,  "ON")
+##
+##
+##ecord (bi, "relais_15")
+##
+##   field (SCAN, "I/O Intr")
+##   field (DTYP, "stream")
+##   field (INP,  "@hfintl.proto getRel_stat_15 $(PORT)")
+##   field (ZNAM,  "OFF")
+##   field (ONAM,  "ON")
+##
+##
+##ecord (bi, "relais_16")
+##
+##   field (SCAN, "I/O Intr")
+##   field (DTYP, "stream")
+##   field (INP,  "@hfintl.proto getRel_stat_16 $(PORT)")
+##   field (ZNAM,  "OFF")
+##   field (ONAM,  "ON")
+##
+
+
+#record (aai, "analog_vals")
+record (waveform, "analog_vals")
+{
+    field(DESC, "read analog values chan 33 - 40")
+    field(DTYP, "stream")
+    field(PREC, "5")
+    field(SCAN, "10 second")
+    field(INP,  "@hfintl.proto anal_val $(PORT)")
+    field(FTVL, "FLOAT")
+    field(NELM, "8")
+}

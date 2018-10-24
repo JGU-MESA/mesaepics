@@ -1,0 +1,76 @@
+########## INFO channels ##########
+
+record(ai, "$(P)$(R):maxlim_get")
+{
+    field(DESC, "Read maximal limit of a channel")
+    field(DTYP, "stream")
+    field(INP,  "@hfintl.proto getMaxlim($(CHAN),$(P)$(R):val_get.HIHI) $(PORT)")
+    field(PINI, "YES")
+    field(PREC, "$(PRECLIM)")
+    field(FLNK, "$(P)$(R):val_get.HIHI")
+    #info (autosaveFields_pass0, "VAL")
+}
+
+record(ai, "$(P)$(R):minlim_get")
+{
+    field(DESC, "Read maximal limit of a channel")
+    field(DTYP, "stream")
+    field(INP,  "@hfintl.proto getMinlim($(CHAN),$(P)$(R):val_get.LOLO) $(PORT)")
+    field(PINI, "YES")
+    field(PREC, "$(PRECLIM)")
+    field(FLNK, "$(P)$(R):val_get.LOLO")
+    #info (autosaveFields_pass0, "VAL")
+}
+
+record(stringin, "$(P)$(R):unit_get")
+{
+    field(DESC, "Read maximal limit of a channel")
+    field(DTYP, "stream")
+    field(INP,  "@hfintl.proto getUnit($(CHAN),$(P)$(R):val_get.EGU) $(PORT)")
+    #info (autosaveFields_pass0, "VAL")
+}
+
+record(ai, "$(P)$(R):val_get")
+{
+    field(DESC, "Get input of a channel")
+    field(DTYP, "stream")
+    field(INP,  "@hfintl.proto getValue($(CHAN),$(P)$(R):stat_get) $(PORT)")
+    field(SCAN, "1 second")
+    field(PREC, "$(PRECVAL)")
+    #field(HIHI, "$(P)$(R):maxlim_get.VAL")
+    #field(LOLO, "$(P)$(R):minlim_get.VAL")
+    field(LLSV, "MAJOR")
+    field(HHSV, "MAJOR")
+}
+
+record(mbbi, "$(P)$(R):stat_get")
+{
+    field(DESC, "Info channel")
+    #field(ZRST, "")
+    field(ONST, "OK")   
+    field(TWST, "BAD")
+    field(THST, "INFO")
+    field(TWSV, "MAJOR")
+}
+
+########## Read webpage zuwapc ##########
+
+record(stringin, "exhaust:get") {
+
+   field(DESC, "Read exhaust from zuwapc")
+   field(DTYP, "stream")
+   field(PINI,  "YES")
+   field(SCAN, "10 second")   #10 sec = maximum
+   field(INP,  "@hfintl.proto readExhaustStatus PAGE_PORT")
+}
+
+#record(waveform, "webpage:get") {
+#
+#  field(DESC, "Read full webpage")
+#  field(DTYP, "stream")
+#  field(PINI,  "YES")
+#  field(SCAN, "10 second")
+#  field(INP,  "@hfintl.proto readPage PAGE_PORT")
+#  field(FTVL, "CHAR")
+#  field(NELM, "800")
+#}

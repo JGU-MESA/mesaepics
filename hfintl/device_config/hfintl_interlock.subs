@@ -1,0 +1,25 @@
+
+file ./db/hfintl_interlock.db {
+
+  # digitale Eingaenge 1 - 32
+  { P = Di0:, R = Wafl-Zi/WL,    PRECLIM = 0, PRECVAL = 0, CHAN = 1,  PORT = HFIL_1_PORT }
+ #{ P = Di1:, R = Wafl-SiPhiV,   PRECLIM = 0, PRECVAL = 0, CHAN = 2,  PORT = HFIL_1_PORT }
+  { P = Di2:, R = Wafl-Sek,      PRECLIM = 0, PRECVAL = 2, CHAN = 3,  PORT = HFIL_1_PORT }
+ #{ P = Di3:, R = Arc-Zir,       PRECLIM = 0, PRECVAL = 1, CHAN = 4,  PORT = HFIL_1_PORT }
+ #{ P = Di4:, R = Arc-Cryo1,     PRECLIM = 0, PRECVAL = 1, CHAN = 5,  PORT = HFIL_1_PORT }
+ #{ P = Di5:, R = Arc-Cryo2,     PRECLIM = 0, PRECVAL = 1, CHAN = 6,  PORT = HFIL_1_PORT }
+ #{ P = Di6:, R = Arc-Sek,       PRECLIM = 0, PRECVAL = 1, CHAN = 7,  PORT = HFIL_1_PORT }
+  { P = Di7:, R = SiPhi-Verst,   PRECLIM = 0, PRECVAL = 1, CHAN = 8,  PORT = HFIL_1_PORT }
+  { P = Di8:, R = Bodenfuehler,  PRECLIM = 0, PRECVAL = 1, CHAN = 9,  PORT = HFIL_1_PORT }
+
+  # analoge Eingaenge 33 - 40
+  { P = Ana0:, R = Pin-SiPhi,    PRECLIM = 2, PRECVAL = 2, CHAN = 33, PORT = HFIL_1_PORT }
+  { P = Ana1:, R = Pvor-SiPhi,   PRECLIM = 0, PRECVAL = 2, CHAN = 34, PORT = HFIL_1_PORT }
+  { P = Ana2:, R = Prueck-SiPhi, PRECLIM = 0, PRECVAL = 2, CHAN = 35, PORT = HFIL_1_PORT }
+ #{ P = Ana3:, R = XXX,          PRECLIM = 1, PRECVAL = 5, CHAN = 36, PORT = HFIL_1_PORT }
+ #{ P = Ana4:, R = XXX,          PRECLIM = 2, PRECVAL = 5, CHAN = 37, PORT = HFIL_1_PORT }
+ #{ P = Ana5:, R = XXX,          PRECLIM = 1, PRECVAL = 5, CHAN = 38, PORT = HFIL_1_PORT }
+ #{ P = Ana6:, R = XXX,          PRECLIM = 1, PRECVAL = 5, CHAN = 39, PORT = HFIL_1_PORT }
+ #{ P = Ana7:, R = XXX,          PRECLIM = 1, PRECVAL = 2, CHAN = 40, PORT = HFIL_1_PORT }
+ 
+}

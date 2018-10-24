@@ -1,0 +1,125 @@
+########## INTERLOCK channels ##########
+
+record(ai, "$(P)$(R):maxlim_get")
+{
+    field(DESC, "Read maximal limit of a channel")
+    field(DTYP, "stream")
+    field(INP,  "@hfintl.proto getMaxlim($(CHAN),$(P)$(R):val_get.HIHI) $(PORT)")
+    field(PINI, "YES")
+    field(PREC, "$(PRECLIM)")
+    field(FLNK, "$(P)$(R):val_get.HIHI")
+    #info (autosaveFields_pass0, "VAL")
+}
+
+record(ai, "$(P)$(R):minlim_get")
+{
+    field(DESC, "Read maximal limit of a channel")
+    field(DTYP, "stream")
+    field(INP,  "@hfintl.proto getMinlim($(CHAN),$(P)$(R):val_get.LOLO) $(PORT)")
+    field(PINI, "YES")
+    field(PREC, "$(PRECLIM)")
+    field(FLNK, "$(P)$(R):val_get.LOLO")
+    #info (autosaveFields_pass0, "VAL")
+}
+
+record(stringin, "$(P)$(R):unit_get")
+{
+    field(DESC, "Read maximal limit of a channel")
+    field(DTYP, "stream")
+    field(INP,  "@hfintl.proto getUnit($(CHAN),$(P)$(R):val_get.EGU) $(PORT)")
+    #info (autosaveFields_pass0, "VAL")
+}
+
+record(ai, "$(P)$(R):val_get")
+{
+    field(DESC, "Get input of a channel")
+    field(DTYP, "stream")
+    field(INP,  "@hfintl.proto getValue($(CHAN),$(P)$(R):stat_get) $(PORT)")
+    field(SCAN, "1 second")
+    field(PREC, "$(PRECVAL)")
+    #field(HIHI, "$(P)$(R):maxlim_get.VAL")
+    #field(LOLO, "$(P)$(R):minlim_get.VAL")
+    field(LLSV, "MAJOR")
+    field(HHSV, "MAJOR")
+}
+
+record(mbbi, "$(P)$(R):stat_get")
+{
+    field(DESC, "Interlock channel")
+    #field(ZRST, "")
+    field(ONST, "OK")   
+    field(TWST, "BAD")
+    field(THST, "INFO")
+    field(TWSV, "MAJOR")
+}
+
+########## Others ##########
+record(ai, "err:count_get")
+{
+    field(DESC, "Get error count")
+    field(DTYP, "stream")
+    field(INP,  "@hfintl.proto getErrors $(PORT)")
+    field(SCAN, "10 second")
+}
+
+record(stringout, "reset")
+{
+    field(DESC, "Reset")
+    field(DTYP, "stream")
+    field(OUT,  "@hfintl.proto reset(reset_get) $(PORT)")
+}
+
+record(stringin, "reset_get")
+{
+    field(DESC, "Reset")
+}
+
+record(ai, "DAC:val_get")
+{
+    field(DESC, "Get input of DAC")
+    field(DTYP, "stream")
+    field(INP,  "@hfintl.proto getDACValue(41,DAC:stat_get) $(PORT)")
+    field(SCAN, "5 second")
+    field(PREC, "4")
+    field(EGU,  "V")
+}
+
+record(mbbi, "DAC:stat_get")
+{
+    field(DESC, "Info channel")
+    #field(ZRST, "")
+    field(ONST, "OK")   
+    field(TWST, "BAD")
+    field(THST, "INFO")
+}
+
+## Wenn das benutzt werden soll, benötigt man ein calc Rekord
+## wenn ein Wert < 0 eingestellt wird, so soll der aktuelle Wert
+## erhalten bleiben und nicht! der kleinstmögliche Wert nämlich 0
+## eingestellt werden
+## außerdem erzeugt die Werteinstellung 0 einen Fehler!
+
+record(calcout, "DAC:val_set")
+{
+    field(DESC, "Check value < 0")
+    field(OOPT, "On Change")
+    field(PREC, "4")
+    field(INPA, "DAC:val_set CP")  #CP cause the input link to process
+    field(INPB, "DAC:val_get CP")  #otherwise these fields = 0
+   #field(CALC, "A<0?B:A")
+    field(CALC, "A>7.5?7.5:(A<0?B:A)")
+    field(OUT,  "DAC:val2_set PP") #default NPP NMS, dann wird DAC:val2_set nicht ausgeführt!!!
+}
+
+record(ao, "DAC:val2_set")
+{
+   field(DESC, "Get input of DAC")
+   field(DTYP, "stream")
+   field(OUT,  "@hfintl.proto setDACValue $(PORT)")
+   field(PREC, "4")
+   field(EGU,  "V")
+   field(LOLO, "0")
+   field(LOPR, "0")
+   field(HIHI, "7.5")
+   field(HOPR, "7.5")
+}

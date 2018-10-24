@@ -1,0 +1,14 @@
+
+file ./db/hfintl_rel.db {
+
+  ### Relais R (1-8) and photorelais P (9-16) ###
+  { R  = 1,  P = 9,  PORT = HFIL_1_PORT }
+  { R  = 2,  P = 10, PORT = HFIL_1_PORT }
+  { R  = 3,  P = 11, PORT = HFIL_1_PORT }
+  { R  = 4,  P = 12, PORT = HFIL_1_PORT }
+  { R  = 5,  P = 13, PORT = HFIL_1_PORT }
+  { R  = 6,  P = 14, PORT = HFIL_1_PORT }
+  { R  = 7,  P = 15, PORT = HFIL_1_PORT }
+  { R  = 8,  P = 16, PORT = HFIL_1_PORT }
+
+}

@@ -1,0 +1,206 @@
+#ReplyTimeout = 5000; #msec
+#Integer. Affects in commands.
+#Different devices need different times to calculate a reply and start sending it. How many milliseconds to wait for the first byte of the input from the device? Since several other records may be waiting to access the device during this time, LockTimeout should be larger than ReplyTimeout. 
+ReplyTimeout = 1000;
+
+#Integer. Affects in commands.
+#The device may send input in pieces (e.g. bytes). When it stops sending, how many milliseconds to wait for more input bytes before giving up? If InTerminator = "", a read timeout is not an error but a valid input termination. 
+ReadTimeout  = 5000;
+
+#Integer. Affects out commands.
+#If we have access to the device but output cannot be written immediately, how many milliseconds to wait before giving up? 
+WriteTimeout = 3000;
+
+# define the record waiting time in the queue to be processed
+#If other records currently use the device, how many milliseconds to wait for exclusive access to the device before giving up? 
+LockTimeout = 9000;
+
+#In & out terminator must be defined, otherwise the readTimeout & replyTimeout will be used ???
+#outterminator = CR;
+#interminator = CR;
+
+Terminator = CR LF;
+
+getValue {
+   out "inp? \$1";
+   in  "%(\$2)i %f";
+}
+
+getMaxlim {
+   out "max? \$1";
+   in  "%f";
+   @init {out "max? \$1"; in "%(\$2)f";}
+}
+
+getMinlim {
+   out "min? \$1";
+   in  "%f";
+   @init {out "min? \$1"; in "%(\$2)f";}
+}
+
+getUnit {
+   out "unit? \$1";
+   in  "%s";
+   @init {out "unit? \$1"; in "%(\$2)s";}
+}
+
+### Relais ###
+### während eines reset-Befehls kann kein Status abgefragt werden, siehe mismatch
+getRel_stat {
+   out "stat:rel?";
+   in  "%16b";
+   @mismatch {in "ERR stat-Befehl_ignoriert(AHist_aktiv).";}
+}
+
+wavRel_stat {
+   out "stat:rel?";
+   Separator = "";
+   in "%{0|1}";
+}
+
+rel_stat_1-8 {
+   out "stat:rel?";
+   #redirection to  fields
+   in "%*8b%(\$7){0|1}%(\$6){0|1}%(\$5){0|1}%(\$4){0|1}%(\$3){0|1}%(\$2){0|1}%(\$1){0|1}%{0|1}";
+   @mismatch {in "ERR stat-Befehl_ignoriert(AHist_aktiv).";}
+}
+
+rel_stat_9-16 {
+   out "stat:rel?";
+   in "%(\$7){0|1}%(\$6){0|1}%(\$5){0|1}%(\$4){0|1}%(\$3){0|1}%(\$2){0|1}%(\$1){0|1}%{0|1}%*8b";
+   @mismatch {in "ERR stat-Befehl_ignoriert(AHist_aktiv).";}
+}
+
+#Get single bits with I/O interrupt method
+##getRel_stat_1 {
+##   out "stat:rel?"; 
+##   in "%*15b%{0|1}";
+##}
+##
+##getRel_stat_2 {
+##   in "%*14b%{0|1}";
+##}
+##
+##getRel_stat_3 {
+##   in "%*13b%{0|1}";
+##}
+##
+##getRel_stat_4 {
+##   in "%*12b%{0|1}";
+##}
+##
+##getRel_stat_5 {
+##   in "%*11b%{0|1}";
+##}
+##
+##getRel_stat_6 {
+##   in "%*10b%{0|1}";
+##}
+##
+##getRel_stat_7 {
+##   in "%*9b%{0|1}";
+##}
+##
+##getRel_stat_8 {
+##   in "%*8b%{0|1}";
+##}
+##
+##getRel_stat_9 {
+##   in "%*7b%{0|1}";
+##}
+##
+##getRel_stat_10 {
+##   in "%*6b%{0|1}";
+##}
+##
+##getRel_stat_11 {
+##   in "%*5b%{0|1}";
+##}
+##
+##getRel_stat_12 {
+##   in "%*4b%{0|1}";
+##}
+##
+##getRel_stat_13 {
+##   in "%*3b%{0|1}";
+##}
+##
+##getRel_stat_14 {
+##   in "%*2b%{0|1}";
+##}
+##
+##getRel_stat_15 {
+##   in "%*1b%{0|1}";
+##}
+##
+##getRel_stat_16 {
+##   in "%{0|1}";
+##}
+
+setOutput {
+  out "out \$1 %{0|1}";
+  in  "%i %*s %*s";
+  #wait 300; #msec
+  out "out \$2 %{0|1}";
+  in  "%i %*s %*s";
+}
+###
+
+# DAC ###
+setDACValue {
+  out "out 41 %f";
+  in  "ok %*s";   
+  @mismatch {in "ERR";}  ### value<0 nicht erlaubt, akueller Wert bleibt erhalten
+  @mismatch {in "0 bad AVR-unipolarDA";}  ### value=0 nicht erlaubt, Wert wird 0 gesetzt
+}
+
+getDACValue {
+   out "inp? 41";
+   in  "%(\$2)i %f";
+   @mismatch {in "DACinVolt";}
+}
+###
+
+getErrors {
+   out "stat? 51";
+   in  "%i";
+   #extrainput = ignore;
+   @mismatch {in "ERR";}
+}
+
+reset {
+   out "reset";
+   in "%(\$1)s";
+   extrainput = ignore;
+}
+
+anal_val {
+   Separator = ",";
+   ExtraInput = ignore;
+   out "analoges";
+   in "%9f";
+}
+
+readExhaustStatus {
+  OutTerminator = CR LF;
+  ExtraInput = ignore;
+  ReplyTimeout = 4000;  #msec
+  InTerminator = "</html>";
+  connect 5000;
+  #out "GET /digi40a0 HTTP/1.1\n";    # HTTP request
+  out "GET /?IniDateiname=ausg1135  HTTP/1.1\r\n";    # HTTP request
+  in  "%+.1/(?m)&nbsp; (.*) <\/font>/";
+  disconnect;
+}
+
+#readPage {
+# OutTerminator = CR LF;
+# ReplyTimeout = 40000;
+# InTerminator = "</html>";
+# connect 5000;
+# #out "GET /digi40a0 HTTP/1.1\n";    # HTTP request
+# out "GET  /?IniDateiname=ausg1135 HTTP/1.1\r\n";    # HTTP request
+# in "%#800s";
+# disconnect;
+#}
+

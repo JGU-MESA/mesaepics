@@ -1,0 +1,68 @@
+#!../../bin/linux-x86_64/hf
+
+## You may have to change hf to something else
+## everywhere it appears in this file
+
+< envPaths
+epicsEnvSet("STREAM_PROTOCOL_PATH", ".:../../db")
+epicsEnvSet "HFIL_1" "$(HFIL_1=mesa:hfintl01:)"
+epicsEnvSet("ENGINEER", "Petra Schwalbach")
+
+cd "${TOP}"
+
+## Register all support components
+dbLoadDatabase "dbd/hfintl.dbd"
+hfintl_registerRecordDeviceDriver pdbbase
+
+#Increase to get more informational messages printed to the console.
+#save_restoreSet_Debug(10)                    # 0=initially
+
+#< ./iocBoot/$(IOC)/AutoSaveSetup.cmd
+
+#drvAsynIPPortConfigure("portName","hostInfo",priority,noAutoConnect,noProcessEos)
+drvAsynIPPortConfigure("HFIL_1_PORT","10.32.200.143:1515",0,0,0)
+
+drvAsynIPPortConfigure("PAGE_PORT","zuwapc.kph.uni-mainz.de:1508",0,0,0)
+#drvAsynIPPortConfigure("PAGE_PORT","134.93.133.142:80",0,0,0)            #zuwapc
+#drvAsynIPPortConfigure("PAGE_PORT","10.32.200.186:1508",0,0,0)           #jrpc2
+#drvAsynIPPortConfigure("PAGE_PORT","jrpc2.office.mami.kph:1508",0,0,0)    #jrpc2
+#drvAsynIPPortConfigure("PAGE_PORT","134.93.132.72:80 HTTP",0,0,0)        #homepage portal
+
+
+## Debugging mode
+#asynSetTraceMask(portName,addr,mask)
+#asynSetTraceIOMask(portName,addr,mask)
+#addr: In integer specifying the address of the device. For multiDevice ports a value of -1 means the port itself.
+#mask: The mask value to set. See the mask bit definitions in asynDriver.h
+
+#asynSetTraceIOMask("HFIL_1_PORT",-1,0x2)
+#asynSetTraceMask("HFIL_1_PORT",-1,0x9)
+#asynSetTraceIOMask("PAGE_PORT",-1,0x2)
+#asynSetTraceMask("PAGE_PORT",-1,0x9)
+
+#asynSetTraceFile("HFIL_1_PORT",-1,filename)
+## End Debugging mode
+
+## Load record instances
+#dbLoadRecords("db/xxx.db","user=schwalbaHost")
+#dbLoadRecords("db/hfintl.db", "PORT=HFIL_1_PORT")
+
+#dbLoadRecords("$(AUTOSAVE)/asApp/Db/save_restoreStatus.db", "P=$(HFIL_1)")
+
+dbLoadTemplate("db/hfintl_interlock.subs")
+dbLoadTemplate("db/hfintl_info.subs")
+dbLoadTemplate("db/hfintl_rel.subs")
+
+#dbLoadTemplate("db/hfintl_rel_onset.subs")
+#dbLoadTemplate("db/hfintl_rel_onget.subs")
+
+## pcMonitor
+dbLoadRecords("$(IOCSTATS)/db/ioc.db", "IOCNAME=HF-IOC-Status,TODFORMAT=%d.%m.%Y %H:%M:%S")
+
+cd "${TOP}/iocBoot/${IOC}"
+iocInit
+
+#< AutoSaveTask.cmd
+
+## Start any sequence programs
+#seq sncxxx,"user=schwalbaHost"
