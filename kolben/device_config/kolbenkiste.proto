@@ -1,0 +1,85 @@
+ReplyTimeout = 2000;
+
+Terminator = CR LF;
+
+getMinPos {
+  out "S\$1.K\$2.Minpos";
+  in "%*13c%d";
+@init {out "S\$1.K\$2.Minpos"; in "%*13c%(\$3)d";}
+}
+
+getMaxPos {
+  out "S\$1.K\$2.Maxpos";
+  in "%*13c%d";
+@init {out "S\$1.K\$2.Maxpos"; in "%*13c%(\$3)d";}
+}
+
+getMotorPos {
+  out "S\$1.K\$2.Istpos";
+  in "%*13c%i";
+}
+
+setMotorPos {
+  out "S\$1.K\$2.Sollpos=%i";
+  in "%*14c%i";
+}
+
+getUphase {
+  out "S\$1.Uphase";
+  in "%*10c%f%*2c";
+}
+
+getUdiode {
+  out "S\$1.Udioden";
+  in "%*11c%f%*2c";
+}
+
+getEndSwitch {
+  out "S\$1.K\$2.Endschalter";
+  in "%*18c%6c";
+}
+
+getSpeed {
+  out "S\$1.K\$2.Vist";
+  in "%*11c%f";
+}
+
+getModeReg {
+  out "S\$1.K\$2.Mode";
+  in "%*11c%4c%*13c";
+}
+
+setModeReg {
+  out "S\$1.K\$2.Mode=%s";
+  in "%*11c%4c%*13c";
+}
+
+setStart {
+  out "S\$1.Startwert=%f";
+  in "%*13c%f";
+}
+
+getStart {
+  out "S\$1.Startwert";
+  in "%*13c%f";
+}
+
+setPanteil {
+  out "S\$1.Panteil=%f";
+  in "%*11c%f";
+}
+
+getPanteil {
+  out "S\$1.Panteil";
+  in "%*11c%f";
+}
+
+setDanteil {
+  out "S\$1.Danteil=%f";
+  in "%*11c%f";
+}
+
+getDanteil {
+  out "S\$1.Danteil";
+  in "%*11c%f";
+}

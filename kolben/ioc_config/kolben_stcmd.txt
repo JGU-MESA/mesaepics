@@ -1,0 +1,51 @@
+#!../../bin/linux-x86_64/kolben
+
+## You may have to change kolben to something else
+## everywhere it appears in this file
+
+< envPaths
+epicsEnvSet("STREAM_PROTOCOL_PATH", ".:../../db"
+epicsEnvSet "K" "$(K=melba:kolbenk01:)"
+epicsEnvSet("ENGINEER", "Petra Schwalbach")
+#epicsEnvSet "MOVE_PER_STEPS" "$(MOVE_PER_STEPS=0.00125)"
+
+cd "${TOP}"
+
+## Register all support components
+dbLoadDatabase "dbd/kolben.dbd"
+kolben_registerRecordDeviceDriver pdbbase
+
+< ./iocBoot/$(IOC)/AutoSaveSetup.cmd
+
+#drvAsynIPPortConfigure(portName, hostInfo, priority, noAutoConnect, noProcessEos)
+drvAsynIPPortConfigure("L0","134.93.133.237:4001",0,0,0) #L0 = LNull
+
+## Debugging mode
+#asynSetTraceMask(portName,addr,mask)
+#asynSetTraceIOMask(portName,addr,mask)
+#addr: In integer specifying the address of the device. For multiDevice ports a value of -1 means the port it self.
+#mask: The mask value to set. See the mask bit definitions in asynDriver.h
+
+#asynSetTraceFile("L0",-1,output)
+#asynSetTraceIOMask("L0",-1,0x2)
+#asynSetTraceMask("L0",-1,0x9)
+## End Debugging mode
+
+## Load record instances
+#dbLoadRecords("db/xxx.db","user=schwalbaHost")
+#dbLoadRecords("db/kolbenkiste.db", "KOLBKI=$(K), PORT=L0")
+
+dbLoadRecords("$(AUTOSAVE)/asApp/Db/save_restoreStatus.db", "P=$(K)")
+
+dbLoadTemplate("db/kolben.subs")
+
+## pcMonitor
+dbLoadRecords("$(IOCSTATS)/db/ioc.db", "IOCNAME=KOLB-IOC-Status,TODFORMAT=%d.%m.%Y %H:%M:%S")
+
+cd "${TOP}/iocBoot/${IOC}"
+iocInit
+
+< AutoSaveTask.cmd
+
+## Start any sequence programs
+#seq sncxxx,"user=schwalbaHost"

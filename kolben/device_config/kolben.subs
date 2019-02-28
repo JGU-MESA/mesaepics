@@ -1,0 +1,16 @@
+file ./db/kolbenkiste.db {
+
+  ### Sektion SEK (1-4) and Kolben KOLB (1-2) ###
+  { P = melba_070:, R = c_cav1:, SEK  = 1, KOLB = 1, PORT = L0, MOVE_PER_STEPS = 1.25 }
+  { P = melba_070:, R = c_cav2:, SEK  = 2, KOLB = 1, PORT = L0, MOVE_PER_STEPS = 1.25 }
+  { P = melba_100:, R = bf1:,    SEK  = 3, KOLB = 1, PORT = L0, MOVE_PER_STEPS = 1.25 }
+  { P = melba_110:, R = bf2:,    SEK  = 4, KOLB = 1, PORT = L0, MOVE_PER_STEPS = 1.25 }
+  #{ P = melba:, R = S1K1:, SEK  = 1,  KOLB = 1, PORT = L0, MOVE_PER_STEPS = 1.25 }
+  #{ P = melba:, R = S2K1:, SEK  = 2,  KOLB = 1, PORT = L0, MOVE_PER_STEPS = 1.25 }
+  #{ P = melba:, R = S3K1:, SEK  = 3,  KOLB = 1, PORT = L0, MOVE_PER_STEPS = 1.25 }
+  #{ P = melba:, R = S4K1:, SEK  = 4,  KOLB = 1, PORT = L0, MOVE_PER_STEPS = 1.25 }
+  #{ P = melba:, R = S1K2:, SEK  = 1,  KOLB = 2, PORT = L0, MOVE_PER_STEPS = 1.25 }
+  #{ P = melba:, R = S2K2:, SEK  = 2,  KOLB = 2, PORT = L0, MOVE_PER_STEPS = 1.25 }
+  #{ P = melba:, R = S3K2:, SEK  = 3,  KOLB = 2, PORT = L0, MOVE_PER_STEPS = 1.25 }
+  #{ P = melba:, R = S4K2:, SEK  = 4,  KOLB = 2, PORT = L0, MOVE_PER_STEPS = 1.25 }
+}

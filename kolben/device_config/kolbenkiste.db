@@ -1,0 +1,209 @@
+
+record(ai, "$(P)$(R)below_get")
+{
+    field(DESC, "Read limit switch position below")
+    field(DTYP, "stream")
+    field(PINI, "YES")
+    field(SCAN, "10 second")
+    field(INP,  "@kolbenkiste.proto getMaxPos($(SEK),$(KOLB),$(P)$(R)mpos_get.LOPR) $(PORT)")
+    field(EGU,  "steps")
+    #field(FLNK, "$(P)$(R)calc_maxpos")
+}
+#für die progress bar in css maxpos = lOPR, dann wird das Max oben angezeigt
+
+record(ai, "$(P)$(R)above_get")
+{
+    field(DESC, "Read limit switch position above")
+    field(DTYP, "stream")
+    field(PINI, "YES")
+    field(SCAN, "10 second")
+    field(INP,  "@kolbenkiste.proto getMinPos($(SEK),$(KOLB),$(P)$(R)mpos_get.HOPR) $(PORT)")
+    field(EGU,  "steps")
+    field(FLNK, "$(P)$(R)calc_depth")
+}
+#für die progress bar in css minpos = HOPR, dann wird das Min oben angezeigt
+
+record(ai, "$(P)$(R)mpos_get")
+{
+    field(DESC, "Read current stepper motor position")
+    field(DTYP, "stream")
+    field(SCAN, "2 second")
+    field(INP,  "@kolbenkiste.proto getMotorPos($(SEK),$(KOLB)) $(PORT)")
+    field(EGU,  "steps")
+    field(FLNK, "$(P)$(R)calc_depth")
+}
+
+record(ao, "$(P)$(R)mpos_set")
+{
+    field(DESC, "Set current stepper motor position")
+    field(DTYP, "stream")
+    field(OUT,  "@kolbenkiste.proto setMotorPos($(SEK),$(KOLB)) $(PORT)")
+    field(EGU,  "steps")
+     #[-2147483648, 2147483647]
+    field(LOPR, "-9999")
+    field(HOPR, "99999")
+    field(FLNK, "$(P)$(R)calc_depth")
+}
+
+record(calc, "$(P)$(R)calc_depth")
+{
+  field(DESC, "Calc depth")
+  field(INPA, "$(P)$(R)above_get")
+  field(INPB, "$(P)$(R)mpos_get")
+  #field(CALC, "(-A+B)*0.00125")
+  field(CALC, "(-A+B)*$(MOVE_PER_STEPS)/1000")
+  field(PREC, "4")
+  field(EGU,  "mm")
+  #field(LOPR,  "$(P)$(R)calc_maxpos.LOPR")
+  field(HOPR,  "0")
+  field(FLNK, "$(P)$(R)calc_maxpos")
+}
+
+record(calcout, "$(P)$(R)calc_maxpos")
+{
+  field(DESC, "Calc maxpos")
+  field(INPA, "$(P)$(R)below_get")
+  field(INPB, "$(P)$(R)above_get")
+  #field(CALC, "(A-B)*0.00125")
+  field(CALC, "(A-B)*$(MOVE_PER_STEPS)/1000")
+  field(PREC, "4")
+  field(EGU,  "mm")
+  field(OUT,  "$(P)$(R)calc_depth.LOPR")
+}
+
+record(ai, "$(P)$(R)uphase_get")
+{
+    field(DESC, "Read mean of the actual phase deviation")
+    field(DTYP, "stream")
+    field(SCAN, "2 second")
+    field(INP,  "@kolbenkiste.proto getUphase($(SEK)) $(PORT)")
+    field(PREC, "2")
+    field(EGU,  "mV")
+}
+
+record(ai, "$(P)$(R)udiode_get")
+{
+    field(DESC, "Read mean of the actual HF-Power")
+    field(DTYP, "stream")
+    field(SCAN, "5 second")
+    field(INP,  "@kolbenkiste.proto getUdiode($(SEK)) $(PORT)")
+    field(PREC, "2")
+    field(EGU,  "mV")
+}
+
+record(stringin, "$(P)$(R)endswitch_get")
+{
+    field(DESC, "Read end switch")
+    field(DTYP, "stream")
+    field(SCAN, "5 second")
+    field(INP,  "@kolbenkiste.proto getEndSwitch($(SEK),$(KOLB)) $(PORT)")
+}
+
+record(ai, "$(P)$(R)speed_get")
+{
+    field(DESC, "Read speed in half steps")
+    field(DTYP, "stream")
+    field(SCAN, "5 second")
+    field(INP,  "@kolbenkiste.proto getSpeed($(SEK),$(KOLB)) $(PORT)")
+    field(PREC, "10")
+    field(EGU,  "/s")
+    field(FLNK, "$(P)$(R)calc_speed")
+}
+
+record(calc,  "$(P)$(R)calc_speed") {
+  field(DESC, "Calc speed um/s")
+  field(INPA, "$(P)$(R)speed_get")
+  field(CALC, "A*$(MOVE_PER_STEPS)")
+  field(PREC, "2")
+  field(EGU,  "um/s")
+}
+
+record(stringin, "$(P)$(R)mode_reg_get")
+{
+    field(DESC, "Read control mode")
+    field(DTYP, "stream")
+    field(SCAN, "5 second")
+    field(INP,  "@kolbenkiste.proto getModeReg($(SEK),$(KOLB)) $(PORT)")
+}
+
+record(stringout, "$(P)$(R)mode_reg_set")
+{
+    field(DESC, "Set control mode")
+    field(DTYP, "stream")
+    field(OUT,  "@kolbenkiste.proto setModeReg($(SEK),$(KOLB)) $(PORT)")
+}
+
+record(ao, "$(P)$(R)start_set")
+{
+   field(DESC, "Set start value")
+   field(DTYP, "stream")
+   field(OUT,  "@kolbenkiste.proto setStart($(SEK)) $(PORT)")
+   field(PREC, "2")
+   field(EGU,  "mV")
+   field(LOPR, "-1100")
+   field(HOPR, "1100")
+   info (autosaveFields_pass0, "VAL")
+}
+
+record(ai, "$(P)$(R)start_get")
+{
+   field(DESC, "Get start value")
+   field(DTYP, "stream")
+   field(SCAN, "10 second") #einmal init
+   field(INP,  "@kolbenkiste.proto getStart($(SEK)) $(PORT)")
+   field(PREC, "2")
+   field(EGU,  "mV")
+   field(LOPR, "-200")
+   field(HOPR, "200")
+}
+
+record(ao, "$(P)$(R)panteil_set")
+{
+   field(DESC, "Set proportional prop. of the regulation")
+   field(DTYP, "stream")
+   field(OUT,  "@kolbenkiste.proto setPanteil($(SEK)) $(PORT)")
+   field(PREC, "5")
+   field(LOPR, "-1")
+   field(HOPR, "1")
+   info (autosaveFields_pass0, "VAL")
+}
+
+record(ai, "$(P)$(R)panteil_get")
+{
+   field(DESC, "Get proportional prop. of the regulation")
+   field(DTYP, "stream")
+   field(SCAN, "10 second") #einmal init
+   field(INP,  "@kolbenkiste.proto getPanteil($(SEK)) $(PORT)")
+   field(PREC, "5")
+}
+
+record(ao, "$(P)$(R)danteil_set")
+{
+   field(DESC, "Set differential prop. of the regulation")
+   field(DTYP, "stream")
+   field(OUT,  "@kolbenkiste.proto setDanteil($(SEK)) $(PORT)")
+   field(PREC, "5")
+   field(LOPR, "-1")
+   field(HOPR, "1")
+   info (autosaveFields_pass0, "VAL")
+}
+
+record(ai, "$(P)$(R)danteil_get")
+{
+   field(DESC, "Get differential prop of the regulation")
+   field(DTYP, "stream")
+   field(SCAN, "10 second")
+   field(INP,  "@kolbenkiste.proto getDanteil($(SEK)) $(PORT)")
+   field(PREC, "5")
+   field(LOPR, "-1")
+   field(HOPR, "1")
+}
+
+record(mbbi, "$(P)$(R)stepnum_set")
+{
+    field(DESC, "Error state of selected channel")
+    field(ZRST, "1")
+    field(ONST, "10")
+    field(TWST, "100")
+    field(THST, "1000")
+}
