@@ -1,90 +1,168 @@
 #thorlabs mc1000
-ReplyTimeout = 2000;
+#ReplyTimeout = 1000;
+#ReadTimeout = 1000;
+LockTimeout = 100;
 Terminator = CR LF;
+#Terminator = "";
+#ExtraInput = Ignore;
+#=============== DEBUG ===============
 debug{
     out "%s";
     in "%39c";
 }
 
-return{
+
+#=============== INFO ===============
+info_get{
     out "";
+    @init{
+        out "";
+    }
+}
+
+
+#=============== Revision ===============
+revision_get{
+    in "MC1000 Control Software - Revision %f (build  %*d)";
+}
+
+
+#=============== Build ===============
+build_get{
+    in "MC1000 Control Software - Revision %*f (build  %0d)";
+}
+
+
+#=============== RUN ===============
+on_get{
+	in "(R)un motor              (%{Off| On})";
 }
 
 on_set{
+	Terminator ="";
     out "R";
 }
 
-blade_set{
-    out "B %d";
+
+
+#=============== Echo ===============
+echo_get{
+	in "(E)cho panel             (%{Off| On})";
+}
+
+echo_set{
+	Terminator ="";
+	out "E";
+}
+
+
+#=============== Frequency ===============
+freq_get{
+	inTerminator  = "";
+	ExtraInput = Ignore;
+	in "<\"%d\">";
+}
+
+inner_freq_get{
+    in "(I)nternal Frequency     (%u)";
 }
 
 inner_freq_set{
-    out "I %d";
+	Terminator ="";
+    out "I";
+	in CR, LF,"Enter new value (xxxxH for hex)> ";
+	out "%d", CR, LF;
+}
+
+
+#=============== Blade ===============
+blade_set{
+	# Set commands for mc 1000 react without pressing Enter!
+	Terminator  = "";
+    out "B";
+    in CR,LF,"Enter new value (xxxxH for hex)> ";
+    out "%d",CR,LF;
+}
+
+
+blade_get{
+	in "(B)lade                  (B%{ 10| 15| 30| 60| 2F|  2|2-2})";
+}
+
+#=============== Harmonic Multiplier ===============
+harm_mult_get{
+	in "(N) Harmonic Multiplier  (%#4u)";
 }
 
 harm_mult_set{
-    out "N %d";
+	Terminator  = "";
+    out "N";
+	in CR,LF,"Enter new value (xxxxH for hex)> ";
+	out "%d", CR, LF;
 }
 
-sub_harm_dev_set{
-    out "M %d";
+#=============== Subharmonic Multiplier =============== 
+sub_harm_mult_get{
+	in "(M) Sub-Harmonic Divider (%#4u)";
+}
+
+sub_harm_mult_set{
+	Terminator  = "";
+    out "M";
+	in CR,LF,"Enter new value (xxxxH for hex)> ";
+	out "%d", CR, LF;
+}   
+
+ 
+#=============== Mode =============== 
+
+mode_get{
+    # Internal or external reference modes
+    in "(X) External Reference   (%{Off| On})";
 }
 
 mode_set{
     # Toggle between internal and external reference modes
+	Terminator = "";
     out "X";
 }
 
-ref_out_set{
-    out "O %d";
-}
-
-
-#===== GETS =====
-info_get{
-    out "";
-}
-
-revision_get{
-    in "MC1000 Control Software - Revision %f";
-    ExtraInput = Ignore;
-}
-
-build_get{
-    in "MC1000 Control Software - Revision %*f (build  %0d)";
-    ExtraInput = Ignore;
-}
-
-on_get{
-    in "(R)un motor              (%{Off| On})";
-    ExtraInput = Ignore;
-}
-
-blade_get{
-    in "(B)lade                  (B%{ 10| 15| 30| 60| 2F| 2|2-2})";
-    ExtraInput = Ignore;
-}
-  
-inner_freq_get{
-    in "(I)nternal Frequency     ( %d)";
-    ExtraInput = Ignore;
-}
-
-harm_mult_get{
-    in "(N) Harmonic Multiplier  (   %d)";
-    ExtraInput = Ignore;
-}
-
-sub_harm_mult_get{
-    in "(M) Sub-Harmonic Divider (   %d)";
-    ExtraInput = Ignore;
-}
-
-mode_get{
-    # Toggle between internal and external reference modes
-    in "(X) External Reference   (%{Off| On})";
-}
+#=============== Reference =============== 
 
 ref_out_get{
-    in "(O) Reference Output     (%s)";
+	#source for the REF OUT signal. Note, the available options are mode-dependent
+     in "(O) Reference Output     (%{outer|synth|  sum|  diff})";
+ }
+
+
+ref_out_set{
+	Terminator  = "";
+    out "O";
+	in CR,LF,"Enter new value (xxxxH for hex)> ";
+	out "%d", CR, LF;
+}    
+ 
+#=============== Motor Exceeded =============== 
+motor_interrupt{
+	Terminator ="";
+	in "%{<motor exceeded>}";
 }
+
+
+#all_get{
+#	out "";
+#	in $t;
+#	in "MC1000 Control Software - Revision 2.67 (build  00137)";
+#	in "Operating Menu";
+#	in $t;
+#	in "(R)un motor              (%{Off| On})";
+#	in "(E)cho panel             (Off)";
+#	in "(B)lade                  (B  2)";
+#	in "(I)nternal Frequency     (  50)";
+#	in "(N) Harmonic Multiplier  (  10)";
+#	in "(M) Sub-Harmonic Divider (   1)";
+#	in "(X) External Reference   (Off)";
+#	in "(O) Reference Output     (synth)";
+#	in $t;
+#	in "Enter choice>";
+#}

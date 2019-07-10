@@ -23,7 +23,7 @@ asynSetOption("TTY_RIESLING", 0, "clocal", "Y")
 asynSetOption("TTY_RIESLING", 0, "crtscts", "N")
 asynSetTraceMask("TTY_RIESLING", -1, 9)
 asynSetTraceIOMask("TTY_RIESLING", -1, 2)
-dbLoadRecords("riesling0.6.db", "P=test:, R=riesling1: , AA=1, PORT=TTY_RIESLING")
+dbLoadRecords("riesling0.6.db", "P=test:, R=riesling1: , AA=01, PORT=TTY_RIESLING")
 
 
 iocInit
