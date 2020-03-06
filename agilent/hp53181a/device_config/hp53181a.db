@@ -1,0 +1,29 @@
+record(waveform,"$(P)$(R)raw_num")
+{
+    field(DTYP, "stream")
+    field(INP, "@hp53181a.proto raw_num $(PORT)")
+    field(SCAN, "I/O Intr")
+    field(FLNK, "$(P)$(R)f_get")
+}
+
+record(bi,"$(P)$(R)display_unit_get")
+{
+	#Display unit may change from Hz to MHz.
+	#This record detects which one and adopts frequency scalcout-record accordingly
+	field(DESC, "Displayed unit (Hz or MHz)")
+    field(DTYP, "stream")
+    field(INP, "@hp53181a.proto read_unit $(PORT)")
+	field(ZNAM, "Hz")
+	field(ONAM, "MHz")
+    field(SCAN, "I/O Intr")
+	field(FLNK, "$(P)$(R)f_get")
+}
+
+record(scalcout,"$(P)$(R)fres_get")
+{
+	field(DESC, "Frequency from HP53181A in Hz")
+    field(INAA, "$(P)$(R)raw_num")
+    field(INPB, "$(P)$(R)display_unit_get")
+	field(EGU, "Hz")
+    field(CALC, "B? DBL(AA{',',''}{',',''})*1e6: DBL(AA{',',''}{',',''})")
+}

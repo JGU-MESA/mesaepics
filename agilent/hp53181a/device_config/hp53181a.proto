@@ -1,0 +1,11 @@
+Terminator = CR LF;
+ReadTimeout = 500;
+ExtraInput = Ignore;
+
+raw_num{
+    in "%[0-9,.]";
+}
+
+read_unit{
+    in "%*[0-9,.]\_%{Hz|MHz}";
+}
