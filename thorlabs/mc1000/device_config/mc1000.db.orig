@@ -1,0 +1,284 @@
+#thorlabs mc1000
+#=============== DEBUG ===============
+record(stringout, "$(P)$(R)debug") {
+	field(DTYP, "stream")
+	field(OUT, "@mc1000.proto debug $(PORT)")
+}
+
+
+#=============== INFO ===============
+record(bo, "$(P)$(R)info_get") {
+	field(DESC, "Record to read information")
+	field(DTYP, "stream")
+	field(OUT, "@mc1000.proto info_get $(PORT)")
+    #field(SCAN, "5 second")
+}
+
+
+#=============== Revision ===============
+record(ai, "$(P)$(R)revision_get") {
+	field(DTYP, "stream")
+	field(INP, "@mc1000.proto revision_get $(PORT)")
+	field(SCAN, "I/O Intr")
+	field(PREC, 2)
+}
+
+
+#=============== Build ===============
+record(ai, "$(P)$(R)build_get") {
+	field(DTYP, "stream")
+	field(INP, "@mc1000.proto build_get $(PORT)")
+	field(SCAN, "I/O Intr")
+}
+
+
+#=============== RUN ===============
+record(bi, "$(P)$(R)on_get") {
+	field(DTYP, "stream")
+	field(INP, "@mc1000.proto on_get $(PORT)")
+	field(SCAN, "I/O Intr")
+	field(ZNAM, "OFF")
+	field(ONAM, "ON")
+}
+
+record(bo, "$(P)$(R)on_set") {
+	field(DESC, "Toggle run on/off")
+	field(DTYP, "stream")
+	field(OUT, "@mc1000.proto on_set $(PORT)")
+<<<<<<< HEAD
+    #field(FLNK, "$(P)$(R)info_get.PROC")
+=======
+    field(FLNK, "$(P)$(R)reset_trigger.PROC")
+>>>>>>> steam
+}
+
+
+#=============== Echo ===============
+record(bi, "$(P)$(R)echo_get") {
+	field(DTYP, "stream")
+	field(INP, "@mc1000.proto echo_get $(PORT)")
+	field(SCAN, "I/O Intr")
+	field(ZNAM, "OFF")
+	field(ONAM, "ON")
+	field(FLNK, "$(P)$(R)freq_get")
+}
+
+record(bo, "$(P)$(R)echo_set") {
+	field(DTYP, "stream")
+	field(OUT, "@mc1000.proto echo_set $(PORT)")
+	field(ZNAM, "OFF")
+	field(ONAM, "ON")
+	#field(FLNK, "$(P)$(R)info_get.PROC")
+}
+
+
+#=============== Frequency ===============
+# freq_get_raw and calc-record needed:
+# freq_get_raw only receives data if echo-mode is enabled
+record(ai, "$(P)$(R)freq_get_raw") {
+	field(DTYP, "stream")
+	field(INP, "@mc1000.proto freq_get $(PORT)")
+	field(SCAN, "I/O Intr")
+	field(EGU, "Hz")
+	field(LOPR, "14")
+	field(HOPR, "6000")
+	field(FLNK, "$(P)$(R)freq_get")
+}
+
+record(calc, "$(P)$(R)freq_get") {
+	field(INPA, "$(P)$(R)freq_get_raw")
+	field(INPB, "$(P)$(R)echo_get")
+	field(INPC, "9999")
+	field(SCAN, "Passive")
+	field(EGU, "Hz")
+	field(CALC, "B==1?A/100:C")
+	field(PREC, 2)
+	field(LOPR, "14")
+	field(HOPR, "6000")
+}
+
+record(ao, "$(P)$(R)inner_freq_set") {
+	field(DESC, "Blade dependent inner frequency")
+	field(DTYP, "stream")
+	field(OUT,  "@mc1000.proto inner_freq_set $(PORT)")
+	field(DRVH, "6000")
+	field(DRVL, "14")
+	field(HOPR, "6000")
+	field(LOPR, "14")
+	field(EGU, "Hz")
+	#field(FLNK, "$(P)$(R)info_get.PROC")
+}
+
+record(ai, "$(P)$(R)inner_freq_get") {
+	field(DESC, "Blade dependent inner frequency")
+	field(DTYP, "stream")
+	field(INP, "@mc1000.proto inner_freq_get $(PORT)")
+	field(SCAN, "I/O Intr")
+	field(EGU, "Hz")
+	field(LOPR, "14")
+	field(HOPR, "6000")
+}
+
+
+#=============== Blade ===============
+record(mbbi, "$(P)$(R)blade_get") {
+	field(DESC, "Set currently installed chopper blade")
+	field(DTYP, "stream")
+	field(INP,  "@mc1000.proto blade_get $(PORT)")
+	field(SCAN, "I/O Intr")
+	field(ZRST, "10 slot")
+	field(ONST, "15 slot")
+	field(TWST, "30 slot")
+	field(THST, "60 slot")
+	field(FRST, "2-frequency blade")
+	field(FVST, "2 slot")
+	field(SXST, "2 slot slave")
+}
+
+
+record(mbbo, "$(P)$(R)blade_set") {
+	field(DESC, "Set currently installed chopper blade")
+	field(DTYP, "stream")
+	field(OUT,  "@mc1000.proto blade_set $(PORT)")
+	field(ZRST, "10 slot")
+	field(ONST, "15 slot")
+	field(TWST, "30 slot")
+	field(THST, "60 slot")
+	field(FRST, "2-frequency blade")
+	field(FVST, "2 slot")
+	field(SXST, "2 slot slave")
+    #field(FLNK, "$(P)$(R)info_get.PROC")
+}
+
+#=============== Harmonic Multiplier ===============
+record(ai, "$(P)$(R)harm_mult_get") {
+	field(DESC, "Read the harmonic multiplier")
+	field(DTYP, "stream")
+	field(INP, "@mc1000.proto harm_mult_get $(PORT)")
+	field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)harm_mult_set") {
+	field(DESC, "Set the harmonic multiplier")
+	field(DTYP, "stream")
+	field(OUT,  "@mc1000.proto harm_mult_set $(PORT)")
+	field(DRVH, "15")
+	field(DRVL, "1")
+	field(HOPR, "15")
+	field(LOPR, "1")
+	#field(FLNK, "$(P)$(R)info_get.PROC")
+}
+
+
+#=============== Subharmonic Multiplier ===============
+record(ai, "$(P)$(R)sub_harm_mult_get") {
+	field(DESC, "Read the subharmonic multiplier")
+	field(DTYP, "stream")
+	field(INP, "@mc1000.proto sub_harm_mult_get $(PORT)")
+	field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)sub_harm_mult_set") {
+	field(DESC, "Set the sub-harmonic multiplier")
+	field(DTYP, "stream")
+	field(OUT,  "@mc1000.proto sub_harm_mult_set $(PORT)")
+	field(DRVH, "15")
+	field(DRVL, "1")
+	field(HOPR, "15")
+	field(LOPR, "1")
+	#field(FLNK, "$(P)$(R)info_get.PROC")
+}
+
+
+#=============== Reference Mode ===============
+record(bo, "$(P)$(R)toggle_mode_set") {
+	field(DESC, "Toggle int./ext. reference mode")
+	field(DTYP, "stream")
+	field(OUT, "@mc1000.proto mode_set $(PORT)")
+	#field(FLNK, "$(P)$(R)info_get.PROC")
+}
+
+record(bi, "$(P)$(R)toggle_mode_get") {
+	field(DTYP, "stream")
+	field(INP, "@mc1000.proto mode_get $(PORT)")
+	field(SCAN, "I/O Intr")
+	field(ZNAM, "OFF")
+	field(ONAM, "ON")
+}
+
+record(mbbo, "$(P)$(R)refout_set") {
+	field(DESC, "Set source for the REF OUT signal")
+	field(DTYP, "stream")
+	field(OUT, "@mc1000.proto ref_out_set $(PORT)")
+	field(ZRST, "Outer (Chopper wheel)")
+	field(ONST, "Internal synthesizer")
+	#field(TWST, "SUM frequency")
+	#field(THST, "DIFF frequency")
+	#field(FLNK, "$(P)$(R)info_get.PROC")
+}
+
+record(mbbi, "$(P)$(R)refout_get") { 
+	field(DESC, "Get source for the REF OUT signal")
+	field(DTYP, "stream")
+	field(INP, "@mc1000.proto ref_out_get $(PORT)")
+	field(SCAN, "I/O Intr")
+	field(ZRST, "Outer (Chopper wheel)")
+	field(ONST, "Internal synthesizer")
+	field(TWST, "SUM frequency")
+	field(THST, "DIFF frequency")
+}
+
+#=============== Motor exceeded ===============
+record(stringin, "$(P)$(R)motor_exceeded") {
+	field(DTYP, "stream")
+	field(INP, "@mc1000.proto mode_get $(PORT)")
+	field(SCAN, "I/O Intr")
+<<<<<<< HEAD
+=======
+	field(FLNK, "mc_alarm")
+}
+
+#timestamp alarm of mc1000
+record(bi, "mc_alarm")
+{
+    field(DESC, "Show status of motor exceedance")
+    field(ZNAM, "OK")
+    field(ONAM, "Motor Exceeded")
+    field(OSV,  "MAJOR")
+    #field(TPRO, "1")
+    field(FLNK, "trigger1-TS")
+}
+
+record(calcout, "$(P)$(R)trigger-TS")
+{
+    field(INPA, "mc_alarm")
+    field(OOPT, "Transition To Non-zero")
+    field(CALC, "A=1")
+    field(OUT,  "$(P)$(R)timestamp.PROC")
+    #field(TPRO, "1")
+}
+
+record (stringin, "$(P)$(R)timestamp")
+{
+    field(DESC, "Timestamp the alarm water meter")
+    field(DTYP, "Soft Timestamp")
+    field(INP,  "@%b %d, %Y %H:%M:%S")
+    #field(INP,  "@%b %d, %Y %H:%M:%S.%0f")
+    #field(TPRO, "1")
+}
+
+record (stringin, "$(P)$(R)device_set")
+{
+    field(DESC, "Input the monitored device")
+    field(DTYP, "Soft Channel")
+    info(autosaveFields_pass0, "VAL")
+}
+
+record(calcout, "$(P)$(R)reset_trigger")
+{
+    field(INPA, "mc_alarm")
+    field(CALC, "A=0")
+    field(OUT,  "$(P)$(R)timestamp.PROC")
+    #field(TPRO, "1")
+>>>>>>> steam
+}
