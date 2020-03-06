@@ -45,7 +45,11 @@ record(bo, "$(P)$(R)on_set") {
 	field(DESC, "Toggle run on/off")
 	field(DTYP, "stream")
 	field(OUT, "@mc1000.proto on_set $(PORT)")
+<<<<<<< HEAD
     #field(FLNK, "$(P)$(R)info_get.PROC")
+=======
+    field(FLNK, "$(P)$(R)reset_trigger.PROC")
+>>>>>>> steam
 }
 
 
@@ -229,4 +233,52 @@ record(stringin, "$(P)$(R)motor_exceeded") {
 	field(DTYP, "stream")
 	field(INP, "@mc1000.proto mode_get $(PORT)")
 	field(SCAN, "I/O Intr")
+<<<<<<< HEAD
+=======
+	field(FLNK, "mc_alarm")
+}
+
+#timestamp alarm of mc1000
+record(bi, "mc_alarm")
+{
+    field(DESC, "Show status of motor exceedance")
+    field(ZNAM, "OK")
+    field(ONAM, "Motor Exceeded")
+    field(OSV,  "MAJOR")
+    #field(TPRO, "1")
+    field(FLNK, "trigger1-TS")
+}
+
+record(calcout, "$(P)$(R)trigger-TS")
+{
+    field(INPA, "mc_alarm")
+    field(OOPT, "Transition To Non-zero")
+    field(CALC, "A=1")
+    field(OUT,  "$(P)$(R)timestamp.PROC")
+    #field(TPRO, "1")
+}
+
+record (stringin, "$(P)$(R)timestamp")
+{
+    field(DESC, "Timestamp the alarm water meter")
+    field(DTYP, "Soft Timestamp")
+    field(INP,  "@%b %d, %Y %H:%M:%S")
+    #field(INP,  "@%b %d, %Y %H:%M:%S.%0f")
+    #field(TPRO, "1")
+}
+
+record (stringin, "$(P)$(R)device_set")
+{
+    field(DESC, "Input the monitored device")
+    field(DTYP, "Soft Channel")
+    info(autosaveFields_pass0, "VAL")
+}
+
+record(calcout, "$(P)$(R)reset_trigger")
+{
+    field(INPA, "mc_alarm")
+    field(CALC, "A=0")
+    field(OUT,  "$(P)$(R)timestamp.PROC")
+    #field(TPRO, "1")
+>>>>>>> steam
 }
